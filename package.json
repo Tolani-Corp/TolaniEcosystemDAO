@@ -1,0 +1,25 @@
+{
+  "name": "tolani-ecosystem-dao",
+  "version": "1.0.0",
+  "description": "Tolani Ecosystem DAO - Decentralized Governance for TUT Token",
+  "main": "index.js",
+  "type": "commonjs",
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "deploy:local": "hardhat run scripts/deploy.js --network localhost",
+    "node": "hardhat node"
+  },
+  "keywords": ["dao", "governance", "ethereum", "hardhat", "tut", "tolani"],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "@openzeppelin/contracts": "^5.0.0",
+    "hardhat": "^2.19.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Tolani-Corp/TolaniToken"
+  }
+}
