@@ -1,11 +1,11 @@
-// Contract addresses - Update these after deployment
+// Contract addresses - Deployed on Sepolia (Dec 29, 2025)
 export const CONTRACT_ADDRESSES = {
   // Testnet (Sepolia)
   sepolia: {
-    governor: "0x0000000000000000000000000000000000000000",
-    timelock: "0x0000000000000000000000000000000000000000",
-    treasury: "0x0000000000000000000000000000000000000000",
-    token: "0x0000000000000000000000000000000000000000", // TUT Token
+    governor: "0x4bfc55437d2006B0f3615dA96Dad41051006f32D",
+    timelock: "0x707b6e5513aB897CE30A8791b81Cb1eF4D2bE8d4",
+    treasury: "0xBA83421da27c435f5F8eB8E6f5cFFe555aF3d669",
+    token: "0x6D07D1dC1750B9d939e1b503d7fa6Faa803e2eFb", // Mock TUT Token
   },
   // Localhost
   localhost: {
