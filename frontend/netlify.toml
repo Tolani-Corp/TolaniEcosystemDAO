@@ -1,0 +1,16 @@
+# Netlify config for TolaniDAO Next.js frontend (static export)
+[build]
+  command = "pnpm run build"
+  publish = "out"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[build.environment]
+  NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID = "3cad94471e9d0a4bf32db8a5a201a984"
+  NEXT_PUBLIC_GOVERNOR_ADDRESS = "0x4bfc55437d2006B0f3615dA96Dad41051006f32D"
+  NEXT_PUBLIC_TIMELOCK_ADDRESS = "0x707b6e5513aB897CE30A8791b81Cb1eF4D2bE8d4"
+  NEXT_PUBLIC_TREASURY_ADDRESS = "0xBA83421da27c435f5F8eB8E6f5cFFe555aF3d669"
+  NEXT_PUBLIC_TOKEN_ADDRESS = "0x6D07D1dC1750B9d939e1b503d7fa6Faa803e2eFb"
