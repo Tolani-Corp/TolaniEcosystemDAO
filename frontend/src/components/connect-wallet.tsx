@@ -10,14 +10,17 @@ import {
   ExternalLink,
   LogOut,
   Check,
+  Globe,
 } from "lucide-react";
 import { formatAddress } from "@/lib/utils";
+import { useUDName } from "@/lib/hooks";
 
 export function ConnectWallet() {
   const { connectors, connect, isPending } = useConnect();
   const { address, isConnected, chain } = useAccount();
   const { disconnect } = useDisconnect();
   const { data: balance } = useBalance({ address });
+  const { name: udName, isLoading: udLoading } = useUDName(address);
   const [isOpen, setIsOpen] = useState(false);
   const [copied, setCopied] = useState(false);
 
@@ -29,6 +32,9 @@ export function ConnectWallet() {
     }
   };
 
+  // Display name: UD domain or shortened address
+  const displayName = udName || formatAddress(address || "");
+
   if (isConnected && address) {
     return (
       <div className="relative">
@@ -39,11 +45,15 @@ export function ConnectWallet() {
           className="flex items-center gap-3 px-4 py-2.5 bg-gradient-to-r from-violet-600/20 to-purple-600/20 hover:from-violet-600/30 hover:to-purple-600/30 border border-violet-500/30 rounded-xl transition-all duration-200"
         >
           <div className="w-8 h-8 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
-            <Wallet className="w-4 h-4 text-white" />
+            {udName ? (
+              <Globe className="w-4 h-4 text-white" />
+            ) : (
+              <Wallet className="w-4 h-4 text-white" />
+            )}
           </div>
           <div className="text-left">
             <p className="text-sm font-medium text-white">
-              {formatAddress(address)}
+              {udLoading ? "..." : displayName}
             </p>
             <p className="text-xs text-gray-400">
               {balance ? `${(Number(balance.value) / 10 ** balance.decimals).toFixed(4)} ${balance.symbol}` : "Loading..."}
@@ -71,12 +81,21 @@ export function ConnectWallet() {
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-10 h-10 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
-                    <Wallet className="w-5 h-5 text-white" />
+                    {udName ? (
+                      <Globe className="w-5 h-5 text-white" />
+                    ) : (
+                      <Wallet className="w-5 h-5 text-white" />
+                    )}
                   </div>
                   <div>
                     <p className="text-sm font-medium text-white">
-                      {formatAddress(address)}
+                      {udName || formatAddress(address)}
                     </p>
+                    {udName && (
+                      <p className="text-xs text-violet-400">
+                        {formatAddress(address)}
+                      </p>
+                    )}
                     <p className="text-xs text-gray-400">
                       {balance ? `${(Number(balance.value) / 10 ** balance.decimals).toFixed(4)} ${balance.symbol}` : ""}
                     </p>
