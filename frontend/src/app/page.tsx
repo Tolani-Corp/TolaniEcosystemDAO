@@ -55,24 +55,24 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-8">
-      {/* Hero Section */}
+      {/* Hero Section - TUT Branding */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-violet-600/20 via-purple-600/10 to-fuchsia-600/20 border border-violet-500/20 p-8"
+        className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#004D4D]/40 via-[#007373]/20 to-[#00AFAF]/30 border border-[#E5C64B]/20 p-8"
       >
         <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
-        <div className="absolute top-0 right-0 w-96 h-96 bg-violet-500/20 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-purple-500/20 rounded-full blur-3xl" />
+        <div className="absolute top-0 right-0 w-96 h-96 bg-[#007373]/20 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#E5C64B]/10 rounded-full blur-3xl" />
         
         <div className="relative z-10">
           <div className="flex items-center gap-2 mb-4">
-            <Badge variant="info" className="bg-violet-500/20 text-violet-300 border-violet-500/30">
+            <Badge variant="info" className="bg-[#004D4D]/40 text-[#E5C64B] border-[#E5C64B]/30">
               <Zap className="w-3 h-3 mr-1" />
               Live on Sepolia
             </Badge>
           </div>
-          <h1 className="text-4xl font-bold text-white mb-3">
+          <h1 className="text-4xl font-bold text-[#E5C64B] mb-3">
             Welcome to Tolani Ecosystem DAO
           </h1>
           <p className="text-lg text-gray-300 max-w-2xl mb-6">

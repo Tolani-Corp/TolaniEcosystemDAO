@@ -25,7 +25,8 @@ contract TokenAllocator is AccessControl, ReentrancyGuard {
         TASK_BOUNTIES,         // L.O.E task completion
         ECOSYSTEM_GRANTS,      // Project funding
         COMMUNITY_INCENTIVES,  // Airdrops, contests, etc.
-        RESERVE                // Emergency/future use
+        RESERVE,               // Emergency/future use
+        TOLANI_FOUNDATION      // Tolani Foundation allocation for sustainability
     }
 
     struct Pool {

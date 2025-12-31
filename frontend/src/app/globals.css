@@ -1,13 +1,28 @@
 @import "tailwindcss";
 
+/* TUT Token Branding Colors */
 :root {
+  /* TUT Official Brand Colors */
+  --tut-base-teal: #004D4D;
+  --tut-highlight-teal: #007373;
+  --tut-gold: #E5C64B;
+  --tut-circuit: #00AFAF;
+  
+  /* Applied Theme */
   --background: #030712;
   --foreground: #f9fafb;
+  --accent-primary: var(--tut-gold);
+  --accent-secondary: var(--tut-highlight-teal);
+  --accent-glow: var(--tut-circuit);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-tut-gold: var(--tut-gold);
+  --color-tut-teal: var(--tut-base-teal);
+  --color-tut-highlight: var(--tut-highlight-teal);
+  --color-tut-circuit: var(--tut-circuit);
 }
 
 html {
@@ -15,9 +30,9 @@ html {
 }
 
 body {
-  background: linear-gradient(to bottom right, #030712, #0f0f23, #030712);
+  background: linear-gradient(to bottom right, #030712, var(--tut-base-teal), #030712);
   color: var(--foreground);
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: 'Montserrat', 'Inter', system-ui, sans-serif;
   min-height: 100vh;
 }
 
@@ -41,15 +56,15 @@ body {
   background: #6b7280;
 }
 
-/* Selection */
+/* Selection - TUT Gold */
 ::selection {
-  background: rgba(139, 92, 246, 0.3);
+  background: rgba(229, 198, 75, 0.3);
   color: #fff;
 }
 
-/* Focus styles */
+/* Focus styles - TUT Teal */
 *:focus-visible {
-  outline: 2px solid rgba(139, 92, 246, 0.5);
+  outline: 2px solid var(--tut-highlight-teal);
   outline-offset: 2px;
 }
 
@@ -65,8 +80,8 @@ body {
 }
 
 @keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 20px rgba(139, 92, 246, 0.3); }
-  50% { box-shadow: 0 0 40px rgba(139, 92, 246, 0.5); }
+  0%, 100% { box-shadow: 0 0 20px rgba(0, 175, 175, 0.3); }
+  50% { box-shadow: 0 0 40px rgba(229, 198, 75, 0.5); }
 }
 
 .animate-fade-in {
@@ -90,5 +105,74 @@ body {
 
 .glass-hover:hover {
   background: rgba(17, 24, 39, 0.7);
-  border-color: rgba(139, 92, 246, 0.3);
+  border-color: var(--tut-highlight-teal);
+}
+
+/* TUT Brand Utilities */
+.text-tut-gold {
+  color: var(--tut-gold);
+}
+
+.text-tut-teal {
+  color: var(--tut-highlight-teal);
+}
+
+.bg-tut-teal {
+  background-color: var(--tut-base-teal);
+}
+
+.bg-tut-gold {
+  background-color: var(--tut-gold);
+}
+
+.border-tut-gold {
+  border-color: var(--tut-gold);
+}
+
+.border-tut-teal {
+  border-color: var(--tut-highlight-teal);
+}
+
+/* TUT Gradient Backgrounds */
+.bg-tut-gradient {
+  background: linear-gradient(135deg, var(--tut-base-teal), var(--tut-highlight-teal));
+}
+
+.bg-tut-gold-gradient {
+  background: linear-gradient(135deg, var(--tut-gold), #c9a93f);
+}
+
+/* TUT Glow Effects */
+.glow-tut-gold {
+  box-shadow: 0 0 20px rgba(229, 198, 75, 0.4);
+}
+
+.glow-tut-teal {
+  box-shadow: 0 0 20px rgba(0, 175, 175, 0.4);
+}
+
+/* TUT Button Styles */
+.btn-tut-primary {
+  background: linear-gradient(135deg, var(--tut-gold), #c9a93f);
+  color: var(--tut-base-teal);
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.btn-tut-primary:hover {
+  box-shadow: 0 0 20px rgba(229, 198, 75, 0.5);
+  transform: translateY(-1px);
+}
+
+.btn-tut-secondary {
+  background: transparent;
+  border: 2px solid var(--tut-highlight-teal);
+  color: var(--tut-highlight-teal);
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.btn-tut-secondary:hover {
+  background: var(--tut-highlight-teal);
+  color: white;
 }

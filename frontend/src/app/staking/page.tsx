@@ -146,7 +146,7 @@ export default function StakingPage() {
       label: "Total Staked",
       value: `${Number(formatUnits(totalStaked, 18)).toLocaleString()} TUT`,
       icon: Lock,
-      color: "text-purple-400",
+      color: "text-[#E5C64B]",
     },
     {
       label: "Your Staked",
@@ -154,7 +154,7 @@ export default function StakingPage() {
         ? `${Number(formatUnits(userTotalStaked as bigint, 18)).toLocaleString()} TUT`
         : "0 TUT",
       icon: Coins,
-      color: "text-blue-400",
+      color: "text-[#00AFAF]",
     },
     {
       label: "Pending Rewards",
@@ -162,7 +162,7 @@ export default function StakingPage() {
         ? `${Number(formatUnits(pendingRewards as bigint, 18)).toFixed(2)} TUT`
         : "0 TUT",
       icon: TrendingUp,
-      color: "text-green-400",
+      color: "text-[#007373]",
     },
     {
       label: "Voting Power",

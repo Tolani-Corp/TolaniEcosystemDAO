@@ -48,8 +48,8 @@ export const CONTRACT_ADDRESSES = {
     payroll: '0x4d8FD67c3BAf949A9f7CfCE7830A9588CA0F13dC' as `0x${string}`,
     compliance: '0xE253d4EeA0AB79d04a9ABca1257C7F2167886298' as `0x${string}`,
     esg: '0x7Eb46955704c7a75c6eA182A8b0E8C1ec2b06867' as `0x${string}`,
-    // Allocation contracts (Dec 30, 2025)
-    tokenAllocator: '0xc43eECDba896c44159Ce5d3cf87B2f1b777f9552' as `0x${string}`,
+    // Allocation contracts (Dec 30, 2025 - Updated Jan 2025 with Tolani Foundation)
+    tokenAllocator: '0x2b3B2a6036099B144b0C5fB95a26b775785B3360' as `0x${string}`,
     trainingRewards: '0x27D6Dd0797a3F4e5fa90A0214B06AEF4528a0596' as `0x${string}`,
     vestingManager: '0x4185218AC05736bd5903A4E4A6765B24EabF4c62' as `0x${string}`,
     taskBounties: '0x19ba97DFF787916bA064E33000225b4e725e50fB' as `0x${string}`,
