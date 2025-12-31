@@ -16,15 +16,6 @@
   --accent-glow: var(--tut-circuit);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-tut-gold: var(--tut-gold);
-  --color-tut-teal: var(--tut-base-teal);
-  --color-tut-highlight: var(--tut-highlight-teal);
-  --color-tut-circuit: var(--tut-circuit);
-}
-
 html {
   color-scheme: dark;
 }

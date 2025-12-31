@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <!-- Gradient for coin face -->
+    <linearGradient id="coinGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#E5C64B"/>
+      <stop offset="50%" style="stop-color:#c9a93f"/>
+      <stop offset="100%" style="stop-color:#E5C64B"/>
+    </linearGradient>
+    
+    <!-- Gradient for coin edge (3D effect) -->
+    <linearGradient id="edgeGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#b8942f"/>
+      <stop offset="50%" style="stop-color:#8a6f23"/>
+      <stop offset="100%" style="stop-color:#b8942f"/>
+    </linearGradient>
+    
+    <!-- Gradient for inner circle -->
+    <radialGradient id="innerGlow" cx="30%" cy="30%" r="70%">
+      <stop offset="0%" style="stop-color:#f5d65b"/>
+      <stop offset="100%" style="stop-color:#c9a93f"/>
+    </radialGradient>
+    
+    <!-- Teal gradient for ankh -->
+    <linearGradient id="ankhGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#007373"/>
+      <stop offset="50%" style="stop-color:#004D4D"/>
+      <stop offset="100%" style="stop-color:#00AFAF"/>
+    </linearGradient>
+    
+    <!-- Drop shadow -->
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000" flood-opacity="0.3"/>
+    </filter>
+    
+    <!-- Inner shadow for depth -->
+    <filter id="innerShadow">
+      <feOffset dx="0" dy="2"/>
+      <feGaussianBlur stdDeviation="2"/>
+      <feComposite operator="out" in="SourceGraphic"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.3 0"/>
+      <feBlend mode="normal" in2="SourceGraphic"/>
+    </filter>
+  </defs>
+  
+  <!-- Coin edge (3D effect) -->
+  <ellipse cx="256" cy="270" rx="220" ry="220" fill="url(#edgeGradient)"/>
+  
+  <!-- Main coin body -->
+  <circle cx="256" cy="256" r="220" fill="url(#coinGradient)" filter="url(#shadow)"/>
+  
+  <!-- Inner circle with glow -->
+  <circle cx="256" cy="256" r="190" fill="url(#innerGlow)" stroke="#b8942f" stroke-width="3"/>
+  
+  <!-- Decorative outer ring -->
+  <circle cx="256" cy="256" r="205" fill="none" stroke="#b8942f" stroke-width="2" stroke-dasharray="8 4"/>
+  
+  <!-- Circuit pattern ring -->
+  <circle cx="256" cy="256" r="175" fill="none" stroke="#00AFAF" stroke-width="1" opacity="0.3"/>
+  <circle cx="256" cy="256" r="165" fill="none" stroke="#00AFAF" stroke-width="1" opacity="0.2"/>
+  
+  <!-- Ankh Symbol - Centered and stylized -->
+  <g transform="translate(256, 256)" filter="url(#innerShadow)">
+    <!-- Ankh loop (oval at top) -->
+    <ellipse cx="0" cy="-85" rx="45" ry="55" fill="none" stroke="url(#ankhGradient)" stroke-width="22" stroke-linecap="round"/>
+    
+    <!-- Ankh horizontal bar -->
+    <rect x="-65" y="-35" width="130" height="22" rx="11" fill="url(#ankhGradient)"/>
+    
+    <!-- Ankh vertical stem -->
+    <rect x="-11" y="-35" width="22" height="145" rx="11" fill="url(#ankhGradient)"/>
+  </g>
+  
+  <!-- TUT text at bottom -->
+  <text x="256" y="380" text-anchor="middle" font-family="Montserrat, Arial, sans-serif" font-size="42" font-weight="700" fill="#004D4D">TUT</text>
+  
+  <!-- Small decorative dots around the coin -->
+  <g fill="#b8942f" opacity="0.6">
+    <circle cx="256" cy="46" r="4"/>
+    <circle cx="256" cy="466" r="4"/>
+    <circle cx="46" cy="256" r="4"/>
+    <circle cx="466" cy="256" r="4"/>
+    <circle cx="108" cy="108" r="3"/>
+    <circle cx="404" cy="108" r="3"/>
+    <circle cx="108" cy="404" r="3"/>
+    <circle cx="404" cy="404" r="3"/>
+  </g>
+</svg>

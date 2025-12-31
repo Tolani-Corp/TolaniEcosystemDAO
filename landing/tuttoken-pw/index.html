@@ -11,7 +11,9 @@
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://tuttoken.pw">
   <meta name="twitter:card" content="summary_large_image">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☥</text></svg>">
+  <meta property="og:image" content="./tut-token.svg">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link rel="apple-touch-icon" href="../tut-token.svg">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -475,6 +477,78 @@
     }
     
     .animate-float { animation: float 3s ease-in-out infinite; }
+    
+    /* Token Hero Styles */
+    .token-hero {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4rem;
+      flex-wrap: wrap;
+    }
+    
+    .token-visual {
+      flex: 0 0 280px;
+      position: relative;
+    }
+    
+    .token-coin {
+      width: 280px;
+      height: 280px;
+      animation: coinFloat 4s ease-in-out infinite, coinGlow 3s ease-in-out infinite;
+      filter: drop-shadow(0 20px 40px rgba(229, 198, 75, 0.3));
+    }
+    
+    @keyframes coinFloat {
+      0%, 100% { transform: translateY(0) rotateY(0deg); }
+      25% { transform: translateY(-15px) rotateY(5deg); }
+      50% { transform: translateY(0) rotateY(0deg); }
+      75% { transform: translateY(-15px) rotateY(-5deg); }
+    }
+    
+    @keyframes coinGlow {
+      0%, 100% { filter: drop-shadow(0 20px 40px rgba(229, 198, 75, 0.3)); }
+      50% { filter: drop-shadow(0 25px 50px rgba(229, 198, 75, 0.5)); }
+    }
+    
+    .token-rings {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 320px;
+      height: 320px;
+      pointer-events: none;
+    }
+    
+    .ring {
+      position: absolute;
+      border: 2px solid var(--tut-circuit);
+      border-radius: 50%;
+      opacity: 0;
+      animation: ringPulse 3s ease-out infinite;
+    }
+    
+    .ring:nth-child(1) { width: 100%; height: 100%; animation-delay: 0s; }
+    .ring:nth-child(2) { width: 120%; height: 120%; top: -10%; left: -10%; animation-delay: 1s; }
+    .ring:nth-child(3) { width: 140%; height: 140%; top: -20%; left: -20%; animation-delay: 2s; }
+    
+    @keyframes ringPulse {
+      0% { opacity: 0.6; transform: scale(0.8); }
+      100% { opacity: 0; transform: scale(1.2); }
+    }
+    
+    .hero-content {
+      flex: 1;
+      min-width: 300px;
+      text-align: left;
+    }
+    
+    @media (max-width: 900px) {
+      .token-hero { flex-direction: column; }
+      .hero-content { text-align: center; }
+      .hero-buttons { justify-content: center; }
+    }
   </style>
 </head>
 <body>
@@ -501,15 +575,29 @@
       <div class="hero-badge">
         <span>🌐</span> tuttoken.pw - Official Portal
       </div>
-      <h1>The Future of<br><span>Decentralized Governance</span></h1>
-      <p>TUT Token powers the Tolani Ecosystem DAO. Stake your tokens, participate in governance, and earn rewards while building a decentralized future.</p>
-      <div class="hero-buttons">
-        <a href="https://app.tuttoken.pw" class="btn btn-primary">
-          Launch App →
-        </a>
-        <a href="#tokenomics" class="btn btn-secondary">
-          View Tokenomics
-        </a>
+      
+      <div class="token-hero">
+        <div class="token-visual">
+          <div class="token-rings">
+            <div class="ring"></div>
+            <div class="ring"></div>
+            <div class="ring"></div>
+          </div>
+          <img src="../tut-token-animated.svg" alt="TUT Token" class="token-coin">
+        </div>
+        
+        <div class="hero-content">
+          <h1>The Future of<br><span>Decentralized Governance</span></h1>
+          <p>TUT Token powers the Tolani Ecosystem DAO. Stake your tokens, participate in governance, and earn rewards while building a decentralized future.</p>
+          <div class="hero-buttons">
+            <a href="https://app.tuttoken.pw" class="btn btn-primary">
+              Launch App →
+            </a>
+            <a href="#tokenomics" class="btn btn-secondary">
+              View Tokenomics
+            </a>
+          </div>
+        </div>
       </div>
     </section>
     

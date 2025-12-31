@@ -11,7 +11,9 @@
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://tuttoken.dao">
   <meta name="twitter:card" content="summary_large_image">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏛️</text></svg>">
+  <meta property="og:image" content="./tut-token.svg">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link rel="apple-touch-icon" href="../tut-token.svg">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -521,6 +523,72 @@
     }
     
     .animate-pulse { animation: pulse 2s ease-in-out infinite; }
+    
+    /* Token Hero Styles */
+    .token-hero {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3rem;
+      flex-wrap: wrap;
+      margin-top: 2rem;
+    }
+    
+    .token-visual {
+      flex: 0 0 200px;
+      position: relative;
+    }
+    
+    .token-coin {
+      width: 200px;
+      height: 200px;
+      animation: coinFloat 4s ease-in-out infinite;
+      filter: drop-shadow(0 15px 30px rgba(139, 92, 246, 0.4));
+    }
+    
+    @keyframes coinFloat {
+      0%, 100% { transform: translateY(0) rotateY(0deg); }
+      25% { transform: translateY(-10px) rotateY(3deg); }
+      50% { transform: translateY(0) rotateY(0deg); }
+      75% { transform: translateY(-10px) rotateY(-3deg); }
+    }
+    
+    .token-rings {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 240px;
+      height: 240px;
+      pointer-events: none;
+    }
+    
+    .ring {
+      position: absolute;
+      border: 2px solid var(--dao-purple);
+      border-radius: 50%;
+      opacity: 0;
+      animation: ringPulse 3s ease-out infinite;
+    }
+    
+    .ring:nth-child(1) { width: 100%; height: 100%; animation-delay: 0s; }
+    .ring:nth-child(2) { width: 130%; height: 130%; top: -15%; left: -15%; animation-delay: 1s; }
+    
+    @keyframes ringPulse {
+      0% { opacity: 0.5; transform: scale(0.8); }
+      100% { opacity: 0; transform: scale(1.3); }
+    }
+    
+    .hero-content {
+      flex: 1;
+      min-width: 300px;
+    }
+    
+    @media (max-width: 900px) {
+      .token-hero { flex-direction: column; }
+      .hero-content { text-align: center; }
+      .hero-buttons { justify-content: center; }
+    }
   </style>
 </head>
 <body>
@@ -547,15 +615,28 @@
       <div class="hero-badge animate-pulse">
         <span>🏛️</span> tolanidao.eth - ENS Governance Portal
       </div>
-      <h1>Decentralized<br><span>Community Governance</span></h1>
-      <p>Shape the future of the Tolani Ecosystem. Create proposals, vote on changes, and participate in truly decentralized decision-making.</p>
-      <div class="hero-buttons">
-        <a href="https://app.tuttoken.dao/governance" class="btn btn-primary">
-          View Proposals →
-        </a>
-        <a href="#voting" class="btn btn-secondary">
-          Learn About Voting
-        </a>
+      
+      <div class="token-hero">
+        <div class="token-visual">
+          <div class="token-rings">
+            <div class="ring"></div>
+            <div class="ring"></div>
+          </div>
+          <img src="../tut-token-animated.svg" alt="TUT Token" class="token-coin">
+        </div>
+        
+        <div class="hero-content">
+          <h1>Decentralized<br><span>Community Governance</span></h1>
+          <p>Shape the future of the Tolani Ecosystem. Create proposals, vote on changes, and participate in truly decentralized decision-making.</p>
+          <div class="hero-buttons">
+            <a href="https://app.tuttoken.dao/governance" class="btn btn-primary">
+              View Proposals →
+            </a>
+            <a href="#voting" class="btn btn-secondary">
+              Learn About Voting
+            </a>
+          </div>
+        </div>
       </div>
     </section>
     

@@ -11,6 +11,13 @@ export const metadata: Metadata = {
   title: "Tolani Ecosystem DAO | Governance Portal",
   description: "Decentralized governance for the Tolani ecosystem. Vote on proposals, manage treasury, and shape the future.",
   keywords: ["DAO", "Governance", "Web3", "Ethereum", "DeFi", "Tolani", "TUT"],
+  icons: {
+    icon: "/favicon.svg",
+    apple: "/tut-token.svg",
+  },
+  openGraph: {
+    images: ["/tut-token.svg"],
+  },
 };
 
 export default function RootLayout({

@@ -24,6 +24,7 @@ import {
   useQuorum,
 } from "@/hooks/useGovernance";
 import { useTreasuryStats, useEcosystemValue } from "@/hooks/useTreasury";
+import { TutToken } from "@/components/tut-token";
 
 function StatCardLoading({ title, icon: Icon, gradient }: { title: string; icon: React.ElementType; gradient: string }) {
   return (
@@ -65,19 +66,25 @@ export default function Dashboard() {
         <div className="absolute top-0 right-0 w-96 h-96 bg-[#007373]/20 rounded-full blur-3xl" />
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#E5C64B]/10 rounded-full blur-3xl" />
         
-        <div className="relative z-10">
-          <div className="flex items-center gap-2 mb-4">
-            <Badge variant="info" className="bg-[#004D4D]/40 text-[#E5C64B] border-[#E5C64B]/30">
-              <Zap className="w-3 h-3 mr-1" />
-              Live on Sepolia
-            </Badge>
+        <div className="relative z-10 flex flex-col lg:flex-row items-center gap-8">
+          {/* Animated Token */}
+          <div className="flex-shrink-0">
+            <TutToken size="xl" animated showRings />
           </div>
-          <h1 className="text-4xl font-bold text-[#E5C64B] mb-3">
-            Welcome to Tolani Ecosystem DAO
-          </h1>
-          <p className="text-lg text-gray-300 max-w-2xl mb-6">
-            Shape the future of decentralized governance. Vote on proposals, delegate your voting power, and participate in key decisions that drive the ecosystem forward.
-          </p>
+          
+          <div className="flex-1">
+            <div className="flex items-center gap-2 mb-4">
+              <Badge variant="info" className="bg-[#004D4D]/40 text-[#E5C64B] border-[#E5C64B]/30">
+                <Zap className="w-3 h-3 mr-1" />
+                Live on Sepolia
+              </Badge>
+            </div>
+            <h1 className="text-4xl font-bold text-[#E5C64B] mb-3">
+              Welcome to Tolani Ecosystem DAO
+            </h1>
+            <p className="text-lg text-gray-300 max-w-2xl mb-6">
+              Shape the future of decentralized governance. Vote on proposals, delegate your voting power, and participate in key decisions that drive the ecosystem forward.
+            </p>
           <div className="flex flex-wrap gap-4">
             <Link href="/proposals">
               <Button size="lg">
@@ -91,6 +98,7 @@ export default function Dashboard() {
                 Delegate Votes
               </Button>
             </Link>
+          </div>
           </div>
         </div>
       </motion.div>

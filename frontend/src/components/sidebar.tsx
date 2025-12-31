@@ -52,8 +52,8 @@ export function Sidebar() {
             animate={{ opacity: isCollapsed ? 0 : 1 }}
             className="flex items-center gap-3"
           >
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#004D4D] via-[#007373] to-[#00AFAF] flex items-center justify-center shadow-lg shadow-[#007373]/25">
-              <span className="text-xl font-bold text-[#E5C64B]">☥</span>
+            <div className="w-10 h-10 rounded-xl overflow-hidden shadow-lg shadow-[#007373]/25">
+              <img src="/favicon.svg" alt="TUT" className="w-full h-full" />
             </div>
             {!isCollapsed && (
               <div>
