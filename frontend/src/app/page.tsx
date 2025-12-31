@@ -7,87 +7,52 @@ import {
   Vault,
   Users,
   TrendingUp,
-  Clock,
   ArrowRight,
   Zap,
   Shield,
+  Loader2,
 } from "lucide-react";
 import Link from "next/link";
 import { StatCard, GlassCard, CardHeader, CardContent } from "@/components/ui/cards";
 import { Button, Badge } from "@/components/ui/button";
-import { ProposalCard, type Proposal } from "@/components/proposals/proposal-card";
-import { ActivityChart, ParticipationChart } from "@/components/dashboard/activity-charts";
 import { formatNumber } from "@/lib/utils";
+import { useAccount } from "wagmi";
+import { 
+  useVotingPower, 
+  useTokenBalance, 
+  useGovernorParams,
+  useQuorum,
+} from "@/hooks/useGovernance";
+import { useTreasuryStats, useEcosystemValue } from "@/hooks/useTreasury";
 
-// Mock data - replace with actual contract calls
-const mockStats = {
-  activeProposals: 3,
-  totalVotes: 45230,
-  treasuryValue: 2450000,
-  totalDelegates: 156,
-};
-
-const mockProposals: Proposal[] = [
-  {
-    id: "0x1234567890abcdef",
-    title: "TIP-12: Increase Treasury Allocation for Development",
-    description: "This proposal seeks to allocate 15% of treasury funds towards core protocol development and ecosystem growth initiatives.",
-    proposer: "0x1234567890123456789012345678901234567890",
-    state: "Active",
-    forVotes: 125000,
-    againstVotes: 45000,
-    abstainVotes: 8000,
-    quorum: 100000,
-    deadline: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
-    createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
-  },
-  {
-    id: "0xabcdef1234567890",
-    title: "TIP-13: Community Grants Program Q1 2025",
-    description: "Establish a community grants program to fund innovative projects building on the Tolani ecosystem.",
-    proposer: "0xabcdef1234567890abcdef1234567890abcdef12",
-    state: "Pending",
-    forVotes: 0,
-    againstVotes: 0,
-    abstainVotes: 0,
-    quorum: 100000,
-    deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-    createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
-  },
-  {
-    id: "0x567890abcdef1234",
-    title: "TIP-11: Protocol Fee Adjustment",
-    description: "Adjust protocol fee structure to better align incentives and ensure long-term sustainability.",
-    proposer: "0x567890abcdef1234567890abcdef1234567890ab",
-    state: "Succeeded",
-    forVotes: 230000,
-    againstVotes: 15000,
-    abstainVotes: 5000,
-    quorum: 100000,
-    deadline: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
-    createdAt: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000),
-  },
-];
-
-const mockActivityData = [
-  { date: "Jan", proposals: 5, votes: 12500, participation: 65 },
-  { date: "Feb", proposals: 8, votes: 18200, participation: 72 },
-  { date: "Mar", proposals: 6, votes: 15800, participation: 68 },
-  { date: "Apr", proposals: 12, votes: 28400, participation: 78 },
-  { date: "May", proposals: 9, votes: 22100, participation: 71 },
-  { date: "Jun", proposals: 11, votes: 31500, participation: 82 },
-];
-
-const mockParticipationData = [
-  { month: "Jan", rate: 65 },
-  { month: "Feb", rate: 72 },
-  { month: "Mar", rate: 68 },
-  { month: "Apr", rate: 78 },
-  { month: "May", rate: 71 },
-  { month: "Jun", rate: 82 },
-];
+function StatCardLoading({ title, icon: Icon, gradient }: { title: string; icon: React.ElementType; gradient: string }) {
+  return (
+    <div className={`${gradient} rounded-2xl p-6`}>
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-sm text-white/70">{title}</p>
+          <div className="flex items-center gap-2 mt-2">
+            <Loader2 className="w-5 h-5 text-white animate-spin" />
+            <span className="text-white/50">Loading...</span>
+          </div>
+        </div>
+        <div className="p-3 bg-white/10 rounded-xl">
+          <Icon className="w-6 h-6 text-white" />
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function Dashboard() {
+  const { isConnected } = useAccount();
+  const { votingPowerFormatted, isLoading: votingLoading } = useVotingPower();
+  const { balanceFormatted, isLoading: balanceLoading } = useTokenBalance();
+  const { proposalThresholdFormatted } = useGovernorParams();
+  const { quorumFormatted } = useQuorum();
+  const treasuryStats = useTreasuryStats();
+  const ecosystemValue = useEcosystemValue();
+
   return (
     <div className="space-y-8">
       {/* Hero Section */}
@@ -104,7 +69,7 @@ export default function Dashboard() {
           <div className="flex items-center gap-2 mb-4">
             <Badge variant="info" className="bg-violet-500/20 text-violet-300 border-violet-500/30">
               <Zap className="w-3 h-3 mr-1" />
-              Live Governance
+              Live on Sepolia
             </Badge>
           </div>
           <h1 className="text-4xl font-bold text-white mb-3">
@@ -123,113 +88,223 @@ export default function Dashboard() {
             <Link href="/delegates">
               <Button variant="secondary" size="lg">
                 <Users className="w-4 h-4 mr-2" />
-                Browse Delegates
+                Delegate Votes
               </Button>
             </Link>
           </div>
         </div>
       </motion.div>
 
-      {/* Stats Grid */}
+      {/* User Stats (if connected) */}
+      {isConnected && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+        >
+          <GlassCard>
+            <CardContent className="p-6">
+              <div className="flex items-center gap-4">
+                <div className="p-3 rounded-xl bg-violet-500/20">
+                  <Vault className="w-6 h-6 text-violet-400" />
+                </div>
+                <div>
+                  <p className="text-sm text-gray-400">Your TUT Balance</p>
+                  {balanceLoading ? (
+                    <div className="flex items-center gap-2 mt-1">
+                      <Loader2 className="w-4 h-4 animate-spin text-violet-400" />
+                    </div>
+                  ) : (
+                    <p className="text-2xl font-bold text-white">
+                      {formatNumber(parseFloat(balanceFormatted))} TUT
+                    </p>
+                  )}
+                </div>
+              </div>
+            </CardContent>
+          </GlassCard>
+
+          <GlassCard>
+            <CardContent className="p-6">
+              <div className="flex items-center gap-4">
+                <div className="p-3 rounded-xl bg-blue-500/20">
+                  <Vote className="w-6 h-6 text-blue-400" />
+                </div>
+                <div>
+                  <p className="text-sm text-gray-400">Your Voting Power</p>
+                  {votingLoading ? (
+                    <div className="flex items-center gap-2 mt-1">
+                      <Loader2 className="w-4 h-4 animate-spin text-blue-400" />
+                    </div>
+                  ) : (
+                    <p className="text-2xl font-bold text-white">
+                      {formatNumber(parseFloat(votingPowerFormatted))} TUT
+                    </p>
+                  )}
+                </div>
+              </div>
+            </CardContent>
+          </GlassCard>
+
+          <GlassCard>
+            <CardContent className="p-6">
+              <div className="flex items-center gap-4">
+                <div className="p-3 rounded-xl bg-emerald-500/20">
+                  <FileText className="w-6 h-6 text-emerald-400" />
+                </div>
+                <div>
+                  <p className="text-sm text-gray-400">Proposal Threshold</p>
+                  <p className="text-2xl font-bold text-white">
+                    {formatNumber(parseFloat(proposalThresholdFormatted))} TUT
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </GlassCard>
+        </motion.div>
+      )}
+
+      {/* Protocol Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {treasuryStats.isLoading ? (
+          <>
+            <StatCardLoading title="Treasury ETH" icon={Vault} gradient="bg-gradient-to-br from-blue-500 to-indigo-600" />
+            <StatCardLoading title="Treasury TUT" icon={Vault} gradient="bg-gradient-to-br from-violet-500 to-purple-600" />
+          </>
+        ) : (
+          <>
+            <StatCard
+              title="Treasury ETH"
+              value={`${parseFloat(treasuryStats.ethBalanceFormatted).toFixed(4)} ETH`}
+              change="On-chain balance"
+              changeType="neutral"
+              icon={Vault}
+              gradient="bg-gradient-to-br from-blue-500 to-indigo-600"
+            />
+            <StatCard
+              title="Treasury TUT"
+              value={formatNumber(parseFloat(treasuryStats.tokenBalanceFormatted))}
+              change="On-chain balance"
+              changeType="neutral"
+              icon={Vault}
+              gradient="bg-gradient-to-br from-violet-500 to-purple-600"
+            />
+          </>
+        )}
         <StatCard
-          title="Active Proposals"
-          value={mockStats.activeProposals.toString()}
-          change="+2 this week"
-          changeType="positive"
-          icon={FileText}
-          gradient="bg-gradient-to-br from-violet-500 to-purple-600"
-        />
-        <StatCard
-          title="Total Votes Cast"
-          value={formatNumber(mockStats.totalVotes)}
-          change="+12.5%"
-          changeType="positive"
-          icon={Vote}
-          gradient="bg-gradient-to-br from-blue-500 to-cyan-600"
-        />
-        <StatCard
-          title="Treasury Value"
-          value={`$${formatNumber(mockStats.treasuryValue)}`}
-          change="+8.3%"
-          changeType="positive"
-          icon={Vault}
+          title="Quorum Needed"
+          value={formatNumber(parseFloat(quorumFormatted))}
+          change="TUT votes required"
+          changeType="neutral"
+          icon={Users}
           gradient="bg-gradient-to-br from-emerald-500 to-green-600"
         />
         <StatCard
-          title="Active Delegates"
-          value={mockStats.totalDelegates.toString()}
-          change="+23 this month"
-          changeType="positive"
-          icon={Users}
+          title="Ecosystem Value"
+          value={`${formatNumber(parseFloat(ecosystemValue.totalTokensFormatted))} TUT`}
+          change="Total across contracts"
+          changeType="neutral"
+          icon={TrendingUp}
           gradient="bg-gradient-to-br from-orange-500 to-amber-600"
         />
       </div>
 
       {/* Quick Actions */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <motion.div
-          whileHover={{ scale: 1.02 }}
-          className="p-6 rounded-2xl bg-gradient-to-br from-violet-500/10 to-purple-500/10 border border-violet-500/20 cursor-pointer group"
-        >
-          <div className="flex items-center gap-4 mb-4">
-            <div className="p-3 rounded-xl bg-violet-500/20 group-hover:bg-violet-500/30 transition-colors">
-              <FileText className="w-6 h-6 text-violet-400" />
+        <Link href="/proposals/create">
+          <motion.div
+            whileHover={{ scale: 1.02 }}
+            className="p-6 rounded-2xl bg-gradient-to-br from-violet-500/10 to-purple-500/10 border border-violet-500/20 cursor-pointer group"
+          >
+            <div className="flex items-center gap-4 mb-4">
+              <div className="p-3 rounded-xl bg-violet-500/20 group-hover:bg-violet-500/30 transition-colors">
+                <FileText className="w-6 h-6 text-violet-400" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-white">Create Proposal</h3>
+                <p className="text-sm text-gray-400">Submit a new governance proposal</p>
+              </div>
             </div>
-            <div>
-              <h3 className="font-semibold text-white">Create Proposal</h3>
-              <p className="text-sm text-gray-400">Submit a new governance proposal</p>
-            </div>
-          </div>
-          <p className="text-xs text-gray-500">
-            Requires 100,000 TUT voting power
-          </p>
-        </motion.div>
+            <p className="text-xs text-gray-500">
+              Requires {formatNumber(parseFloat(proposalThresholdFormatted))} TUT voting power
+            </p>
+          </motion.div>
+        </Link>
 
-        <motion.div
-          whileHover={{ scale: 1.02 }}
-          className="p-6 rounded-2xl bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border border-blue-500/20 cursor-pointer group"
-        >
-          <div className="flex items-center gap-4 mb-4">
-            <div className="p-3 rounded-xl bg-blue-500/20 group-hover:bg-blue-500/30 transition-colors">
-              <Users className="w-6 h-6 text-blue-400" />
+        <Link href="/delegates">
+          <motion.div
+            whileHover={{ scale: 1.02 }}
+            className="p-6 rounded-2xl bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border border-blue-500/20 cursor-pointer group"
+          >
+            <div className="flex items-center gap-4 mb-4">
+              <div className="p-3 rounded-xl bg-blue-500/20 group-hover:bg-blue-500/30 transition-colors">
+                <Users className="w-6 h-6 text-blue-400" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-white">Delegate Votes</h3>
+                <p className="text-sm text-gray-400">Assign your voting power</p>
+              </div>
             </div>
-            <div>
-              <h3 className="font-semibold text-white">Delegate Votes</h3>
-              <p className="text-sm text-gray-400">Assign your voting power</p>
-            </div>
-          </div>
-          <p className="text-xs text-gray-500">
-            Maximize your governance impact
-          </p>
-        </motion.div>
+            <p className="text-xs text-gray-500">
+              Maximize your governance impact
+            </p>
+          </motion.div>
+        </Link>
 
-        <motion.div
-          whileHover={{ scale: 1.02 }}
-          className="p-6 rounded-2xl bg-gradient-to-br from-emerald-500/10 to-green-500/10 border border-emerald-500/20 cursor-pointer group"
-        >
-          <div className="flex items-center gap-4 mb-4">
-            <div className="p-3 rounded-xl bg-emerald-500/20 group-hover:bg-emerald-500/30 transition-colors">
-              <Shield className="w-6 h-6 text-emerald-400" />
+        <Link href="/vote">
+          <motion.div
+            whileHover={{ scale: 1.02 }}
+            className="p-6 rounded-2xl bg-gradient-to-br from-emerald-500/10 to-green-500/10 border border-emerald-500/20 cursor-pointer group"
+          >
+            <div className="flex items-center gap-4 mb-4">
+              <div className="p-3 rounded-xl bg-emerald-500/20 group-hover:bg-emerald-500/30 transition-colors">
+                <Shield className="w-6 h-6 text-emerald-400" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-white">Cast Vote</h3>
+                <p className="text-sm text-gray-400">Vote on active proposals</p>
+              </div>
             </div>
-            <div>
-              <h3 className="font-semibold text-white">Claim Rewards</h3>
-              <p className="text-sm text-gray-400">Earn for participation</p>
-            </div>
-          </div>
-          <p className="text-xs text-gray-500">
-            0 TUT available to claim
-          </p>
-        </motion.div>
+            <p className="text-xs text-gray-500">
+              {isConnected ? `${formatNumber(parseFloat(votingPowerFormatted))} TUT voting power` : 'Connect wallet to vote'}
+            </p>
+          </motion.div>
+        </Link>
       </div>
 
-      {/* Charts Section */}
+      {/* Charts Section - Placeholder */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <ActivityChart data={mockActivityData} />
-        <ParticipationChart data={mockParticipationData} />
+        <GlassCard>
+          <CardHeader
+            title="Governance Activity"
+            description="Historical data requires indexer integration"
+          />
+          <CardContent className="h-64 flex items-center justify-center">
+            <div className="text-center text-gray-400">
+              <TrendingUp className="w-12 h-12 mx-auto mb-4 opacity-50" />
+              <p>Activity charts will populate as governance events occur</p>
+              <p className="text-sm mt-2 text-gray-500">Requires subgraph or event indexer</p>
+            </div>
+          </CardContent>
+        </GlassCard>
+        
+        <GlassCard>
+          <CardHeader
+            title="Participation Metrics"
+            description="Real-time voting participation data"
+          />
+          <CardContent className="h-64 flex items-center justify-center">
+            <div className="text-center text-gray-400">
+              <Users className="w-12 h-12 mx-auto mb-4 opacity-50" />
+              <p>Participation data will appear after first proposal</p>
+              <p className="text-sm mt-2 text-gray-500">Create a proposal to get started</p>
+            </div>
+          </CardContent>
+        </GlassCard>
       </div>
 
-      {/* Active Proposals */}
+      {/* Active Proposals - Empty State */}
       <GlassCard>
         <CardHeader
           title="Active Proposals"
@@ -243,81 +318,49 @@ export default function Dashboard() {
             </Link>
           }
         />
-        <CardContent className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-          {mockProposals.map((proposal, index) => (
-            <ProposalCard key={proposal.id} proposal={proposal} index={index} />
-          ))}
+        <CardContent className="py-16">
+          <div className="text-center">
+            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gray-800/50 flex items-center justify-center">
+              <FileText className="w-8 h-8 text-gray-500" />
+            </div>
+            <h3 className="text-xl font-semibold text-white mb-2">
+              No Active Proposals
+            </h3>
+            <p className="text-gray-400 max-w-sm mx-auto mb-6">
+              Be the first to create a governance proposal and shape the future of the ecosystem.
+            </p>
+            <Link href="/proposals/create">
+              <Button>
+                Create First Proposal
+                <ArrowRight className="w-4 h-4 ml-2" />
+              </Button>
+            </Link>
+          </div>
         </CardContent>
       </GlassCard>
 
-      {/* Recent Activity */}
+      {/* Contract Info */}
       <GlassCard>
         <CardHeader
-          title="Recent Activity"
-          description="Latest governance actions"
+          title="Contract Information"
+          description="Deployed ecosystem contracts on Sepolia"
         />
         <CardContent>
-          <div className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {[
-              {
-                type: "vote",
-                user: "0x1234...5678",
-                action: "voted For on",
-                target: "TIP-12",
-                time: "2 hours ago",
-                icon: Vote,
-                color: "text-green-400",
-              },
-              {
-                type: "delegate",
-                user: "0xabcd...ef12",
-                action: "delegated 50,000 TUT to",
-                target: "delegate.eth",
-                time: "5 hours ago",
-                icon: Users,
-                color: "text-blue-400",
-              },
-              {
-                type: "proposal",
-                user: "0x5678...9abc",
-                action: "created proposal",
-                target: "TIP-13",
-                time: "1 day ago",
-                icon: FileText,
-                color: "text-violet-400",
-              },
-              {
-                type: "execute",
-                user: "Timelock",
-                action: "executed",
-                target: "TIP-10",
-                time: "2 days ago",
-                icon: TrendingUp,
-                color: "text-emerald-400",
-              },
-            ].map((activity, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: index * 0.1 }}
-                className="flex items-center gap-4 p-4 rounded-xl hover:bg-white/5 transition-colors"
-              >
-                <div className={`p-2 rounded-lg bg-gray-800/50 ${activity.color}`}>
-                  <activity.icon className="w-4 h-4" />
-                </div>
-                <div className="flex-1">
-                  <p className="text-sm text-white">
-                    <span className="text-violet-400">{activity.user}</span>{" "}
-                    {activity.action}{" "}
-                    <span className="font-medium">{activity.target}</span>
-                  </p>
-                </div>
-                <div className="flex items-center gap-1 text-xs text-gray-500">
-                  <Clock className="w-3 h-3" />
-                  {activity.time}
-                </div>
-              </motion.div>
+              { name: 'Governor', address: '0xD360...4607' },
+              { name: 'Timelock', address: '0xf475...591C' },
+              { name: 'Treasury', address: '0xC120...28F7' },
+              { name: 'Token', address: '0x6D07...2eFb' },
+              { name: 'Escrow', address: '0x8be1...faFd' },
+              { name: 'Payroll', address: '0x4d8F...13dC' },
+              { name: 'Compliance', address: '0xE253...6298' },
+              { name: 'ESG', address: '0x7Eb4...0867' },
+            ].map((contract) => (
+              <div key={contract.name} className="p-4 rounded-xl bg-gray-800/30 border border-gray-700/30">
+                <p className="text-sm text-gray-400">{contract.name}</p>
+                <p className="text-white font-mono text-sm">{contract.address}</p>
+              </div>
             ))}
           </div>
         </CardContent>

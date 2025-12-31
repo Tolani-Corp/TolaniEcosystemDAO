@@ -6,79 +6,28 @@ import {
   ArrowUpRight,
   ArrowDownLeft,
   TrendingUp,
-  TrendingDown,
   Coins,
   DollarSign,
+  ExternalLink,
+  Loader2,
+  FileText,
 } from "lucide-react";
+import Link from "next/link";
 import { StatCard, GlassCard, CardHeader, CardContent } from "@/components/ui/cards";
 import { Button, Badge } from "@/components/ui/button";
-import { TreasuryOverview, AssetRow } from "@/components/treasury/treasury-charts";
 import { formatNumber } from "@/lib/utils";
-
-const mockTreasuryData = {
-  ethBalance: 450,
-  tokenBalance: 15000000,
-  totalValue: 2450000,
-  assets: [
-    { name: "ETH", value: 1125000, color: "#627EEA" },
-    { name: "TUT", value: 750000, color: "#8B5CF6" },
-    { name: "USDC", value: 350000, color: "#2775CA" },
-    { name: "USDT", value: 225000, color: "#50AF95" },
-  ],
-  history: [
-    { date: "Jan", value: 1800000 },
-    { date: "Feb", value: 1950000 },
-    { date: "Mar", value: 2100000 },
-    { date: "Apr", value: 2000000 },
-    { date: "May", value: 2250000 },
-    { date: "Jun", value: 2450000 },
-  ],
-};
-
-const mockTransactions = [
-  {
-    type: "inflow",
-    description: "Protocol fees collected",
-    amount: "+125,000 TUT",
-    value: "$6,250",
-    time: "2 hours ago",
-    hash: "0x1234...5678",
-  },
-  {
-    type: "outflow",
-    description: "Developer grant payment",
-    amount: "-50,000 USDC",
-    value: "$50,000",
-    time: "1 day ago",
-    hash: "0xabcd...ef12",
-  },
-  {
-    type: "inflow",
-    description: "NFT royalties",
-    amount: "+2.5 ETH",
-    value: "$6,250",
-    time: "2 days ago",
-    hash: "0x5678...9abc",
-  },
-  {
-    type: "outflow",
-    description: "Security audit payment",
-    amount: "-75,000 USDC",
-    value: "$75,000",
-    time: "5 days ago",
-    hash: "0xdef1...2345",
-  },
-  {
-    type: "inflow",
-    description: "Partnership revenue",
-    amount: "+100,000 TUT",
-    value: "$5,000",
-    time: "1 week ago",
-    hash: "0x9876...5432",
-  },
-];
+import { useTreasuryStats, useEscrowBalance, usePayrollBalance, useEcosystemValue } from "@/hooks/useTreasury";
+import { useContracts } from "@/hooks/useContracts";
 
 export default function TreasuryPage() {
+  const contracts = useContracts();
+  const treasuryStats = useTreasuryStats();
+  const escrowBalance = useEscrowBalance();
+  const payrollBalance = usePayrollBalance();
+  const ecosystemValue = useEcosystemValue();
+
+  const isLoading = treasuryStats.isLoading || escrowBalance.isLoading || payrollBalance.isLoading;
+
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -86,245 +35,248 @@ export default function TreasuryPage() {
         <div>
           <h1 className="text-3xl font-bold text-white">Treasury</h1>
           <p className="text-gray-400 mt-1">
-            Manage and monitor DAO treasury assets
+            Real-time on-chain treasury balances
           </p>
         </div>
         <div className="flex gap-3">
-          <Button variant="secondary">
-            <ArrowDownLeft className="w-4 h-4 mr-2" />
-            Deposit
-          </Button>
-          <Button>
-            <ArrowUpRight className="w-4 h-4 mr-2" />
-            Create Withdrawal Proposal
-          </Button>
+          <Link href="/proposals/create">
+            <Button>
+              <ArrowUpRight className="w-4 h-4 mr-2" />
+              Create Treasury Proposal
+            </Button>
+          </Link>
         </div>
       </div>
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {isLoading ? (
+          <>
+            <div className="bg-gradient-to-br from-emerald-500 to-green-600 rounded-2xl p-6">
+              <div className="flex items-center gap-2">
+                <Loader2 className="w-5 h-5 text-white animate-spin" />
+                <span className="text-white/70">Loading...</span>
+              </div>
+            </div>
+            <div className="bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl p-6">
+              <div className="flex items-center gap-2">
+                <Loader2 className="w-5 h-5 text-white animate-spin" />
+                <span className="text-white/70">Loading...</span>
+              </div>
+            </div>
+          </>
+        ) : (
+          <>
+            <StatCard
+              title="Treasury ETH"
+              value={`${parseFloat(treasuryStats.ethBalanceFormatted).toFixed(4)} ETH`}
+              change="Main treasury"
+              changeType="neutral"
+              icon={Coins}
+              gradient="bg-gradient-to-br from-blue-500 to-indigo-600"
+            />
+            <StatCard
+              title="Treasury TUT"
+              value={`${formatNumber(parseFloat(treasuryStats.tokenBalanceFormatted))} TUT`}
+              change="Token reserves"
+              changeType="neutral"
+              icon={Vault}
+              gradient="bg-gradient-to-br from-violet-500 to-purple-600"
+            />
+          </>
+        )}
         <StatCard
-          title="Total Value"
-          value={`$${formatNumber(mockTreasuryData.totalValue)}`}
-          change="+8.3% this month"
-          changeType="positive"
+          title="Escrow Held"
+          value={`${formatNumber(parseFloat(escrowBalance.tokenBalanceFormatted))} TUT`}
+          change="In escrow contracts"
+          changeType="neutral"
           icon={DollarSign}
           gradient="bg-gradient-to-br from-emerald-500 to-green-600"
         />
         <StatCard
-          title="ETH Balance"
-          value={`${mockTreasuryData.ethBalance} ETH`}
-          change="+12 ETH"
-          changeType="positive"
-          icon={Coins}
-          gradient="bg-gradient-to-br from-blue-500 to-indigo-600"
-        />
-        <StatCard
-          title="TUT Balance"
-          value={formatNumber(mockTreasuryData.tokenBalance)}
-          change="+500K TUT"
-          changeType="positive"
-          icon={Vault}
-          gradient="bg-gradient-to-br from-violet-500 to-purple-600"
-        />
-        <StatCard
-          title="30D Change"
-          value="+$320,000"
-          change="+15.1%"
-          changeType="positive"
+          title="Ecosystem Total"
+          value={`${formatNumber(parseFloat(ecosystemValue.totalTokensFormatted))} TUT`}
+          change="All contracts combined"
+          changeType="neutral"
           icon={TrendingUp}
           gradient="bg-gradient-to-br from-orange-500 to-amber-600"
         />
       </div>
 
-      {/* Charts */}
-      <TreasuryOverview data={mockTreasuryData} />
-
-      {/* Assets and Transactions */}
+      {/* Contract Balances Breakdown */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Asset Holdings */}
         <GlassCard>
           <CardHeader
-            title="Asset Holdings"
-            description="Current treasury asset breakdown"
+            title="Contract Balances"
+            description="Token holdings across ecosystem contracts"
           />
-          <CardContent className="space-y-2">
-            <AssetRow
-              name="Ethereum"
-              symbol="ETH"
-              balance="450 ETH"
-              value="$1,125,000"
-              change="+5.2%"
-              changeType="positive"
-              icon={<Coins className="w-5 h-5 text-blue-400" />}
+          <CardContent className="space-y-4">
+            <BalanceRow
+              name="Treasury"
+              address={contracts.treasury.address}
+              tutBalance={treasuryStats.tokenBalanceFormatted}
+              ethBalance={treasuryStats.ethBalanceFormatted}
+              isLoading={treasuryStats.isLoading}
             />
-            <AssetRow
-              name="Tolani Token"
-              symbol="TUT"
-              balance="15,000,000 TUT"
-              value="$750,000"
-              change="+2.8%"
-              changeType="positive"
-              icon={<Coins className="w-5 h-5 text-violet-400" />}
+            <BalanceRow
+              name="Escrow"
+              address={contracts.escrow.address}
+              tutBalance={escrowBalance.tokenBalanceFormatted}
+              ethBalance={escrowBalance.ethBalanceFormatted}
+              isLoading={escrowBalance.isLoading}
             />
-            <AssetRow
-              name="USD Coin"
-              symbol="USDC"
-              balance="350,000 USDC"
-              value="$350,000"
-              change="0.0%"
-              changeType="positive"
-              icon={<Coins className="w-5 h-5 text-blue-500" />}
-            />
-            <AssetRow
-              name="Tether"
-              symbol="USDT"
-              balance="225,000 USDT"
-              value="$225,000"
-              change="0.0%"
-              changeType="positive"
-              icon={<Coins className="w-5 h-5 text-green-500" />}
+            <BalanceRow
+              name="Payroll"
+              address={contracts.payroll.address}
+              tutBalance={payrollBalance.tokenBalanceFormatted}
+              isLoading={payrollBalance.isLoading}
             />
           </CardContent>
         </GlassCard>
 
-        {/* Recent Transactions */}
+        {/* Treasury Info */}
         <GlassCard>
           <CardHeader
-            title="Recent Transactions"
-            description="Latest treasury movements"
-            action={
-              <Button variant="ghost" size="sm">
-                View All
-              </Button>
-            }
+            title="Treasury Management"
+            description="How treasury funds are managed"
           />
           <CardContent className="space-y-4">
-            {mockTransactions.map((tx, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.05 }}
-                className="flex items-center justify-between p-3 rounded-xl hover:bg-white/5 transition-colors"
-              >
-                <div className="flex items-center gap-3">
-                  <div
-                    className={`p-2 rounded-lg ${
-                      tx.type === "inflow"
-                        ? "bg-green-500/20 text-green-400"
-                        : "bg-red-500/20 text-red-400"
-                    }`}
-                  >
-                    {tx.type === "inflow" ? (
-                      <ArrowDownLeft className="w-4 h-4" />
-                    ) : (
-                      <ArrowUpRight className="w-4 h-4" />
-                    )}
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-white">
-                      {tx.description}
-                    </p>
-                    <p className="text-xs text-gray-500">{tx.time}</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p
-                    className={`text-sm font-medium ${
-                      tx.type === "inflow" ? "text-green-400" : "text-red-400"
-                    }`}
-                  >
-                    {tx.amount}
-                  </p>
-                  <p className="text-xs text-gray-500">{tx.value}</p>
-                </div>
-              </motion.div>
-            ))}
+            <div className="p-4 rounded-xl bg-gray-800/30">
+              <h4 className="font-medium text-white mb-2">Governance Controlled</h4>
+              <p className="text-sm text-gray-400">
+                All treasury operations require a governance proposal to pass before execution via the Timelock.
+              </p>
+            </div>
+            
+            <div className="p-4 rounded-xl bg-gray-800/30">
+              <h4 className="font-medium text-white mb-2">Timelock Protected</h4>
+              <p className="text-sm text-gray-400">
+                A minimum delay is enforced between proposal approval and execution, allowing time for review.
+              </p>
+            </div>
+
+            <div className="p-4 rounded-xl bg-gray-800/30">
+              <h4 className="font-medium text-white mb-2">Multi-Contract System</h4>
+              <p className="text-sm text-gray-400">
+                Funds are distributed across Treasury, Escrow, and Payroll contracts for different purposes.
+              </p>
+            </div>
           </CardContent>
         </GlassCard>
       </div>
 
-      {/* Spending Proposals */}
+      {/* Contract Addresses */}
       <GlassCard>
         <CardHeader
-          title="Pending Spending Proposals"
-          description="Treasury withdrawal requests awaiting execution"
+          title="Contract Addresses"
+          description="View contracts on Sepolia Etherscan"
         />
         <CardContent>
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-gray-800/50">
-                  <th className="text-left py-3 px-4 text-sm font-medium text-gray-400">
-                    Proposal
-                  </th>
-                  <th className="text-left py-3 px-4 text-sm font-medium text-gray-400">
-                    Recipient
-                  </th>
-                  <th className="text-left py-3 px-4 text-sm font-medium text-gray-400">
-                    Amount
-                  </th>
-                  <th className="text-left py-3 px-4 text-sm font-medium text-gray-400">
-                    Status
-                  </th>
-                  <th className="text-right py-3 px-4 text-sm font-medium text-gray-400">
-                    Action
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="border-b border-gray-800/30 hover:bg-white/5 transition-colors">
-                  <td className="py-4 px-4">
-                    <p className="text-sm font-medium text-white">
-                      TIP-12: Dev Grant Q1
-                    </p>
-                    <p className="text-xs text-gray-500">Created 3 days ago</p>
-                  </td>
-                  <td className="py-4 px-4">
-                    <p className="text-sm text-gray-300 font-mono">
-                      0x1234...5678
-                    </p>
-                  </td>
-                  <td className="py-4 px-4">
-                    <p className="text-sm text-white">150,000 USDC</p>
-                  </td>
-                  <td className="py-4 px-4">
-                    <Badge variant="warning">Queued</Badge>
-                  </td>
-                  <td className="py-4 px-4 text-right">
-                    <Button variant="secondary" size="sm">
-                      Execute
-                    </Button>
-                  </td>
-                </tr>
-                <tr className="hover:bg-white/5 transition-colors">
-                  <td className="py-4 px-4">
-                    <p className="text-sm font-medium text-white">
-                      TIP-8: Ecosystem Fund
-                    </p>
-                    <p className="text-xs text-gray-500">Created 1 week ago</p>
-                  </td>
-                  <td className="py-4 px-4">
-                    <p className="text-sm text-gray-300 font-mono">
-                      0xabcd...ef12
-                    </p>
-                  </td>
-                  <td className="py-4 px-4">
-                    <p className="text-sm text-white">500,000 TUT</p>
-                  </td>
-                  <td className="py-4 px-4">
-                    <Badge variant="info">Ready</Badge>
-                  </td>
-                  <td className="py-4 px-4 text-right">
-                    <Button size="sm">Execute</Button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <ContractLink name="Treasury" address={contracts.treasury.address} />
+            <ContractLink name="Escrow" address={contracts.escrow.address} />
+            <ContractLink name="Payroll" address={contracts.payroll.address} />
+            <ContractLink name="Token (TUT)" address={contracts.token.address} />
+            <ContractLink name="Governor" address={contracts.governor.address} />
+            <ContractLink name="Timelock" address={contracts.timelock.address} />
+            <ContractLink name="Compliance" address={contracts.compliance.address} />
+            <ContractLink name="ESG" address={contracts.esg.address} />
+          </div>
+        </CardContent>
+      </GlassCard>
+
+      {/* Create Proposal CTA */}
+      <GlassCard>
+        <CardContent className="p-8">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+            <div className="flex items-center gap-4">
+              <div className="p-4 rounded-xl bg-gradient-to-br from-violet-500/20 to-purple-500/20">
+                <FileText className="w-8 h-8 text-violet-400" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-white">
+                  Request Treasury Funds
+                </h3>
+                <p className="text-gray-400">
+                  Create a governance proposal to allocate treasury funds for ecosystem development
+                </p>
+              </div>
+            </div>
+            <Link href="/proposals/create">
+              <Button>
+                Create Proposal
+                <ArrowUpRight className="w-4 h-4 ml-2" />
+              </Button>
+            </Link>
           </div>
         </CardContent>
       </GlassCard>
     </div>
+  );
+}
+
+function BalanceRow({ 
+  name, 
+  address, 
+  tutBalance, 
+  ethBalance, 
+  isLoading 
+}: { 
+  name: string; 
+  address: string; 
+  tutBalance: string; 
+  ethBalance?: string; 
+  isLoading: boolean;
+}) {
+  return (
+    <div className="flex items-center justify-between p-4 rounded-xl hover:bg-white/5 transition-colors border border-gray-800/50">
+      <div className="flex items-center gap-3">
+        <div className="p-2 rounded-lg bg-violet-500/20">
+          <Vault className="w-5 h-5 text-violet-400" />
+        </div>
+        <div>
+          <p className="font-medium text-white">{name}</p>
+          <p className="text-xs text-gray-500 font-mono">
+            {address.slice(0, 6)}...{address.slice(-4)}
+          </p>
+        </div>
+      </div>
+      <div className="text-right">
+        {isLoading ? (
+          <Loader2 className="w-4 h-4 text-gray-400 animate-spin" />
+        ) : (
+          <>
+            <p className="text-white font-medium">
+              {formatNumber(parseFloat(tutBalance))} TUT
+            </p>
+            {ethBalance && (
+              <p className="text-xs text-gray-400">
+                {parseFloat(ethBalance).toFixed(4)} ETH
+              </p>
+            )}
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function ContractLink({ name, address }: { name: string; address: string }) {
+  return (
+    <a
+      href={`https://sepolia.etherscan.io/address/${address}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="flex items-center justify-between p-4 rounded-xl bg-gray-800/30 border border-gray-700/30 hover:border-violet-500/30 transition-colors group"
+    >
+      <div>
+        <p className="text-sm text-gray-400">{name}</p>
+        <p className="text-white font-mono text-sm">
+          {address.slice(0, 6)}...{address.slice(-4)}
+        </p>
+      </div>
+      <ExternalLink className="w-4 h-4 text-gray-500 group-hover:text-violet-400 transition-colors" />
+    </a>
   );
 }

@@ -6,14 +6,28 @@ const PRIVATE_KEY = process.env.PRIVATE_KEY || "0x000000000000000000000000000000
 /** @type {import("hardhat/config").HardhatUserConfig} */
 module.exports = {
   solidity: {
-    version: "0.8.24",
-    settings: {
-      evmVersion: "cancun",
-      optimizer: {
-        enabled: true,
-        runs: 200,
+    compilers: [
+      {
+        version: "0.8.24",
+        settings: {
+          evmVersion: "cancun",
+          optimizer: {
+            enabled: true,
+            runs: 200,
+          },
+        },
       },
-    },
+      {
+        version: "0.8.28",
+        settings: {
+          evmVersion: "cancun",
+          optimizer: {
+            enabled: true,
+            runs: 200,
+          },
+        },
+      },
+    ],
   },
   networks: {
     hardhat: {
@@ -22,6 +36,12 @@ module.exports = {
     localhost: {
       url: "http://127.0.0.1:8545",
       chainId: 31337,
+    },
+    mainnet: {
+      url: process.env.MAINNET_RPC_URL || "https://eth.llamarpc.com",
+      accounts: [PRIVATE_KEY],
+      chainId: 1,
+      gasPrice: "auto",
     },
     sepolia: {
       url: process.env.SEPOLIA_RPC_URL || "",
@@ -45,12 +65,7 @@ module.exports = {
     },
   },
   etherscan: {
-    apiKey: {
-      sepolia: process.env.ETHERSCAN_API_KEY || "",
-      polygon: process.env.POLYGONSCAN_API_KEY || "",
-      polygonMumbai: process.env.POLYGONSCAN_API_KEY || "",
-      arbitrumOne: process.env.ARBISCAN_API_KEY || "",
-    },
+    apiKey: process.env.ETHERSCAN_API_KEY || "",
   },
   paths: {
     sources: "./contracts",

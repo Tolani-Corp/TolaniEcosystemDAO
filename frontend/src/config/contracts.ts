@@ -2,6 +2,19 @@ import GovernorABI from '@/abi/Governor.json';
 import TimelockABI from '@/abi/Timelock.json';
 import TreasuryABI from '@/abi/Treasury.json';
 import TokenABI from '@/abi/Token.json';
+import EscrowABI from '@/abi/Escrow.json';
+import PayrollABI from '@/abi/Payroll.json';
+import ComplianceABI from '@/abi/Compliance.json';
+import ESGABI from '@/abi/ESG.json';
+// Allocation contracts
+import TokenAllocatorABI from '@/abi/TokenAllocator.json';
+import TrainingRewardsABI from '@/abi/TrainingRewards.json';
+import VestingManagerABI from '@/abi/VestingManager.json';
+import TaskBountiesABI from '@/abi/TaskBounties.json';
+// DeFi contracts
+import StakingPoolABI from '@/abi/StakingPool.json';
+import LiquidityManagerABI from '@/abi/LiquidityManager.json';
+import LiquidityIncentivesABI from '@/abi/LiquidityIncentives.json';
 
 // Chain IDs
 export const CHAIN_IDS = {
@@ -19,13 +32,31 @@ export const CONTRACT_ADDRESSES = {
     timelock: '0x0000000000000000000000000000000000000000' as `0x${string}`,
     treasury: '0x0000000000000000000000000000000000000000' as `0x${string}`,
     token: '0x0000000000000000000000000000000000000000' as `0x${string}`,
+    escrow: '0x0000000000000000000000000000000000000000' as `0x${string}`,
+    payroll: '0x0000000000000000000000000000000000000000' as `0x${string}`,
+    compliance: '0x0000000000000000000000000000000000000000' as `0x${string}`,
+    esg: '0x0000000000000000000000000000000000000000' as `0x${string}`,
   },
-  // Sepolia Testnet (current deployment - Dec 29, 2025)
+  // Sepolia Testnet (NEW deployment - Dec 30, 2025)
+  // Using upgraded TUT token with ERC20Votes governance
   [CHAIN_IDS.SEPOLIA]: {
-    governor: '0x4bfc55437d2006B0f3615dA96Dad41051006f32D' as `0x${string}`,
-    timelock: '0x707b6e5513aB897CE30A8791b81Cb1eF4D2bE8d4' as `0x${string}`,
-    treasury: '0xBA83421da27c435f5F8eB8E6f5cFFe555aF3d669' as `0x${string}`,
-    token: '0x6D07D1dC1750B9d939e1b503d7fa6Faa803e2eFb' as `0x${string}`,
+    governor: '0x1aB158036C5cdb5ACcfb0ae1B390A7E89273C86f' as `0x${string}`,
+    timelock: '0x9d0ccD1371B3a1f570B353c46840C268Aac57872' as `0x${string}`,
+    treasury: '0xBB9d207ee665e9680458F2E451098f23D707Ad25' as `0x${string}`,
+    token: '0x6888CE424242B2d4460104Ffc5042E8B1A52F3E6' as `0x${string}`, // Upgraded TUT with ERC20Votes
+    escrow: '0x8be1b90e8E6A7025814Cf249031795D7fa89faFd' as `0x${string}`,
+    payroll: '0x4d8FD67c3BAf949A9f7CfCE7830A9588CA0F13dC' as `0x${string}`,
+    compliance: '0xE253d4EeA0AB79d04a9ABca1257C7F2167886298' as `0x${string}`,
+    esg: '0x7Eb46955704c7a75c6eA182A8b0E8C1ec2b06867' as `0x${string}`,
+    // Allocation contracts (Dec 30, 2025)
+    tokenAllocator: '0xc43eECDba896c44159Ce5d3cf87B2f1b777f9552' as `0x${string}`,
+    trainingRewards: '0x27D6Dd0797a3F4e5fa90A0214B06AEF4528a0596' as `0x${string}`,
+    vestingManager: '0x4185218AC05736bd5903A4E4A6765B24EabF4c62' as `0x${string}`,
+    taskBounties: '0x19ba97DFF787916bA064E33000225b4e725e50fB' as `0x${string}`,
+    // DeFi contracts (Dec 30, 2025)
+    stakingPool: '0x50E0660068d2D3411885BD533a5943189b7AdF70' as `0x${string}`,
+    liquidityManager: '0xbAFAD13BAAF482bBE58D3949ABd05dAD64C051cB' as `0x${string}`,
+    liquidityIncentives: '0x09cCCc3D8F9D1269Fd6bd8C83fE448de37D46031' as `0x${string}`,
   },
 } as const;
 
@@ -41,6 +72,19 @@ export const ABIS = {
   timelock: TimelockABI.abi,
   treasury: TreasuryABI.abi,
   token: TokenABI.abi,
+  escrow: EscrowABI.abi,
+  payroll: PayrollABI.abi,
+  compliance: ComplianceABI.abi,
+  esg: ESGABI.abi,
+  // Allocation
+  tokenAllocator: TokenAllocatorABI.abi,
+  trainingRewards: TrainingRewardsABI.abi,
+  vestingManager: VestingManagerABI.abi,
+  taskBounties: TaskBountiesABI.abi,
+  // DeFi
+  stakingPool: StakingPoolABI.abi,
+  liquidityManager: LiquidityManagerABI.abi,
+  liquidityIncentives: LiquidityIncentivesABI.abi,
 } as const;
 
 // Helper to get contract config for a specific chain
@@ -68,6 +112,22 @@ export function getContractConfig(chainId: number) {
     token: {
       address: addresses.token,
       abi: ABIS.token,
+    },
+    escrow: {
+      address: addresses.escrow,
+      abi: ABIS.escrow,
+    },
+    payroll: {
+      address: addresses.payroll,
+      abi: ABIS.payroll,
+    },
+    compliance: {
+      address: addresses.compliance,
+      abi: ABIS.compliance,
+    },
+    esg: {
+      address: addresses.esg,
+      abi: ABIS.esg,
     },
   };
 }

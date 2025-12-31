@@ -12,6 +12,10 @@ import {
   Settings,
   Menu,
   X,
+  GraduationCap,
+  Coins,
+  Target,
+  BookOpen,
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -21,6 +25,10 @@ const navigation = [
   { name: "Proposals", href: "/proposals", icon: FileText },
   { name: "Vote", href: "/vote", icon: Vote },
   { name: "Treasury", href: "/treasury", icon: Vault },
+  { name: "Staking", href: "/staking", icon: Coins },
+  { name: "Bounties", href: "/bounties", icon: Target },
+  { name: "Training", href: "/training", icon: BookOpen },
+  { name: "Learn", href: "/learn", icon: GraduationCap },
   { name: "Delegates", href: "/delegates", icon: Users },
   { name: "Settings", href: "/settings", icon: Settings },
 ];
