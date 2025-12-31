@@ -15,6 +15,10 @@ import TaskBountiesABI from '@/abi/TaskBounties.json';
 import StakingPoolABI from '@/abi/StakingPool.json';
 import LiquidityManagerABI from '@/abi/LiquidityManager.json';
 import LiquidityIncentivesABI from '@/abi/LiquidityIncentives.json';
+// IBM SkillsBuild Training contracts
+import uTUTABI from '@/abi/uTUT.json';
+import TrainingRewardsV2ABI from '@/abi/TrainingRewardsV2.json';
+import SessionKeyRegistryABI from '@/abi/SessionKeyRegistry.json';
 
 // Chain IDs
 export const CHAIN_IDS = {
@@ -57,6 +61,13 @@ export const CONTRACT_ADDRESSES = {
     stakingPool: '0x50E0660068d2D3411885BD533a5943189b7AdF70' as `0x${string}`,
     liquidityManager: '0xbAFAD13BAAF482bBE58D3949ABd05dAD64C051cB' as `0x${string}`,
     liquidityIncentives: '0x09cCCc3D8F9D1269Fd6bd8C83fE448de37D46031' as `0x${string}`,
+    // IBM SkillsBuild Training Contracts (Dec 31, 2025)
+    uTUT: '0xc9D0D68aC9A4678Fb58CB7AE5c4c6b0B7cf60E38' as `0x${string}`,
+    tutConverter: '0x82D131Fbf9aC7629499cC05DA21b7dD317e5748D' as `0x${string}`,
+    sessionKeyRegistry: '0xF9e6A163852D7B73B8F5A13cAbAe529C5b4c4c27' as `0x${string}`,
+    gasTreasuryModule: '0x7CcD8F8D02A00161d576Dca26D79e3e292Da3Cfd' as `0x${string}`,
+    trainingRewardsV2: '0x6C5892afBdf60123edd408404347E59F72D4Eb4c' as `0x${string}`,
+    sessionInvoker: '0x46Fc54f90023098655b237E3543609BF8dCB938e' as `0x${string}`,
   },
 } as const;
 
@@ -64,7 +75,9 @@ export const CONTRACT_ADDRESSES = {
 export const DEFAULT_CHAIN_ID = CHAIN_IDS.SEPOLIA;
 
 // Supported chains for the DAO
-export const SUPPORTED_CHAIN_IDS = [CHAIN_IDS.SEPOLIA, CHAIN_IDS.MAINNET] as const;
+// NOTE: Mainnet disabled until contracts are deployed
+// Add CHAIN_IDS.MAINNET to this array after mainnet deployment
+export const SUPPORTED_CHAIN_IDS = [CHAIN_IDS.SEPOLIA] as const;
 
 // ABIs (same across all networks)
 export const ABIS = {
@@ -85,6 +98,10 @@ export const ABIS = {
   stakingPool: StakingPoolABI.abi,
   liquidityManager: LiquidityManagerABI.abi,
   liquidityIncentives: LiquidityIncentivesABI.abi,
+  // IBM SkillsBuild Training
+  uTUT: uTUTABI.abi,
+  trainingRewardsV2: TrainingRewardsV2ABI.abi,
+  sessionKeyRegistry: SessionKeyRegistryABI.abi,
 } as const;
 
 // Helper to get contract config for a specific chain

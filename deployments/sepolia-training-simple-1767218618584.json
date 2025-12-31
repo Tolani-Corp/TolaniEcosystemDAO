@@ -1,0 +1,15 @@
+{
+  "network": "sepolia",
+  "timestamp": "2025-12-31T22:03:38.586Z",
+  "deployer": "0x753b53809360bec8742a235D8B60375a57965099",
+  "contracts": {
+    "uTUT": "0xc9D0D68aC9A4678Fb58CB7AE5c4c6b0B7cf60E38",
+    "TUTConverter": "0x82D131Fbf9aC7629499cC05DA21b7dD317e5748D",
+    "SessionKeyRegistry": "0xF9e6A163852D7B73B8F5A13cAbAe529C5b4c4c27",
+    "GasTreasuryModule": "0x7CcD8F8D02A00161d576Dca26D79e3e292Da3Cfd",
+    "TrainingRewards": "0x6C5892afBdf60123edd408404347E59F72D4Eb4c",
+    "SessionInvoker": "0x46Fc54f90023098655b237E3543609BF8dCB938e"
+  },
+  "tutAddress": "0x6888CE424242B2d4460104Ffc5042E8B1A52F3E6",
+  "contractType": "simple (non-upgradeable)"
+}
