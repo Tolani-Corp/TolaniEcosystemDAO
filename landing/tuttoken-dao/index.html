@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TUT Token DAO | Decentralized Governance - tuttoken.dao</title>
+  <meta name="description" content="TUT Token DAO - Decentralized governance for the Tolani Ecosystem. Participate in proposals, vote on changes, and shape the future.">
+  <meta name="keywords" content="TUT, DAO, Governance, Voting, Proposals, Decentralized, Blockchain, Ethereum">
+  <meta property="og:title" content="TUT Token DAO - Decentralized Governance">
+  <meta property="og:description" content="Participate in governance and shape the Tolani Ecosystem">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://tuttoken.dao">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏛️</text></svg>">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --tut-base-teal: #004D4D;
+      --tut-highlight-teal: #007373;
+      --tut-gold: #E5C64B;
+      --tut-circuit: #00AFAF;
+      --bg-dark: #030712;
+      --text-primary: #f9fafb;
+      --text-secondary: #9ca3af;
+      --dao-purple: #8b5cf6;
+      --dao-blue: #3b82f6;
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Montserrat', system-ui, sans-serif;
+      background: linear-gradient(135deg, var(--bg-dark) 0%, #0f172a 50%, var(--tut-base-teal) 100%);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    
+    .bg-pattern {
+      position: fixed;
+      inset: 0;
+      background-image: 
+        radial-gradient(circle at 20% 50%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(229, 198, 75, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 40% 80%, rgba(59, 130, 246, 0.1) 0%, transparent 45%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; position: relative; z-index: 1; }
+    
+    /* Navigation */
+    nav {
+      padding: 1.5rem 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(139, 92, 246, 0.2);
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--dao-purple);
+      text-decoration: none;
+    }
+    
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--dao-purple), var(--dao-blue));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+    
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+    
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    
+    .nav-links a:hover { color: var(--dao-purple); }
+    
+    .ens-badge {
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(59, 130, 246, 0.1));
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.875rem;
+      color: var(--dao-purple);
+      font-weight: 600;
+    }
+    
+    /* Hero */
+    .hero {
+      padding: 6rem 0;
+      text-align: center;
+    }
+    
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(139, 92, 246, 0.1);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.875rem;
+      color: var(--dao-purple);
+      margin-bottom: 2rem;
+    }
+    
+    .hero h1 {
+      font-size: clamp(2.5rem, 8vw, 4.5rem);
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      line-height: 1.1;
+    }
+    
+    .hero h1 span {
+      background: linear-gradient(135deg, var(--dao-purple), var(--tut-gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .hero p {
+      font-size: 1.25rem;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto 3rem;
+      line-height: 1.7;
+    }
+    
+    .hero-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    
+    .btn {
+      padding: 1rem 2rem;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 1rem;
+      text-decoration: none;
+      transition: all 0.3s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, var(--dao-purple), var(--dao-blue));
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 40px rgba(139, 92, 246, 0.3);
+    }
+    
+    .btn-secondary {
+      background: transparent;
+      border: 2px solid var(--tut-gold);
+      color: var(--tut-gold);
+    }
+    
+    .btn-secondary:hover {
+      background: var(--tut-gold);
+      color: var(--bg-dark);
+    }
+    
+    /* Stats */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      padding: 3rem 0;
+    }
+    
+    .stat-card {
+      background: rgba(17, 24, 39, 0.6);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(139, 92, 246, 0.2);
+      border-radius: 16px;
+      padding: 1.5rem;
+      text-align: center;
+      transition: all 0.3s;
+    }
+    
+    .stat-card:hover {
+      border-color: var(--dao-purple);
+      transform: translateY(-4px);
+    }
+    
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--dao-purple);
+      margin-bottom: 0.5rem;
+    }
+    
+    .stat-label {
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+    }
+    
+    /* ENS Treasury Section */
+    .ens-section {
+      padding: 4rem 0;
+    }
+    
+    .ens-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .ens-card {
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(59, 130, 246, 0.1));
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      border-radius: 20px;
+      padding: 2rem;
+      text-align: center;
+      transition: all 0.3s;
+    }
+    
+    .ens-card:hover {
+      border-color: var(--dao-purple);
+      transform: translateY(-4px);
+    }
+    
+    .ens-card h3 {
+      font-size: 1.25rem;
+      margin-bottom: 0.75rem;
+      color: var(--dao-purple);
+    }
+    
+    .ens-address {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--tut-gold);
+      margin-bottom: 0.75rem;
+      word-break: break-all;
+    }
+    
+    .ens-description {
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      margin-bottom: 1rem;
+    }
+    
+    .copy-btn {
+      background: rgba(229, 198, 75, 0.1);
+      border: 1px solid var(--tut-gold);
+      color: var(--tut-gold);
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.875rem;
+      transition: all 0.2s;
+    }
+    
+    .copy-btn:hover {
+      background: var(--tut-gold);
+      color: var(--bg-dark);
+    }
+    
+    /* Governance Features */
+    .governance {
+      padding: 4rem 0;
+    }
+    
+    .section-title {
+      text-align: center;
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+    
+    .section-title span {
+      color: var(--dao-purple);
+    }
+    
+    .section-subtitle {
+      text-align: center;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto 3rem;
+    }
+    
+    .gov-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .gov-card {
+      background: rgba(17, 24, 39, 0.5);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(75, 85, 99, 0.3);
+      border-radius: 16px;
+      padding: 2rem;
+      transition: all 0.3s;
+    }
+    
+    .gov-card:hover {
+      border-color: var(--dao-purple);
+      transform: translateY(-4px);
+    }
+    
+    .gov-icon {
+      width: 56px;
+      height: 56px;
+      background: linear-gradient(135deg, var(--dao-purple), var(--dao-blue));
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.25rem;
+      font-size: 1.75rem;
+    }
+    
+    .gov-card h3 {
+      font-size: 1.25rem;
+      margin-bottom: 0.75rem;
+      color: var(--text-primary);
+    }
+    
+    .gov-card p {
+      color: var(--text-secondary);
+      line-height: 1.6;
+      font-size: 0.95rem;
+    }
+    
+    /* Proposal Process */
+    .process {
+      padding: 4rem 0;
+    }
+    
+    .process-steps {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      justify-content: center;
+    }
+    
+    .step {
+      flex: 1;
+      min-width: 220px;
+      max-width: 280px;
+      text-align: center;
+    }
+    
+    .step-number {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, var(--dao-purple), var(--dao-blue));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+    
+    .step h3 {
+      margin-bottom: 0.5rem;
+      color: var(--text-primary);
+    }
+    
+    .step p {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+    }
+    
+    /* Voting Power */
+    .voting {
+      padding: 4rem 0;
+    }
+    
+    .voting-card {
+      background: linear-gradient(135deg, rgba(0, 77, 77, 0.3), rgba(139, 92, 246, 0.2));
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      border-radius: 24px;
+      padding: 3rem;
+      text-align: center;
+    }
+    
+    .voting-card h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+    
+    .voting-card h2 span { color: var(--tut-gold); }
+    
+    .voting-card p {
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto 2rem;
+      line-height: 1.7;
+    }
+    
+    .power-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+    
+    .power-item {
+      background: rgba(17, 24, 39, 0.5);
+      border-radius: 12px;
+      padding: 1.25rem;
+    }
+    
+    .power-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--dao-purple);
+    }
+    
+    .power-label {
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      margin-top: 0.25rem;
+    }
+    
+    /* CTA */
+    .cta {
+      padding: 4rem 0;
+      text-align: center;
+    }
+    
+    .cta-card {
+      background: linear-gradient(135deg, var(--dao-purple), var(--dao-blue));
+      border-radius: 24px;
+      padding: 4rem 2rem;
+    }
+    
+    .cta h2 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    .cta p {
+      font-size: 1.125rem;
+      opacity: 0.9;
+      margin-bottom: 2rem;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    /* Footer */
+    footer {
+      padding: 3rem 0;
+      border-top: 1px solid rgba(139, 92, 246, 0.2);
+      text-align: center;
+    }
+    
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+    
+    .footer-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    
+    .footer-links a:hover { color: var(--dao-purple); }
+    
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    .footer-brand span { color: var(--dao-purple); font-weight: 700; }
+    
+    .copyright {
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+    }
+    
+    /* Mobile Nav */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .hero h1 { font-size: 2.5rem; }
+      .ens-grid { grid-template-columns: 1fr; }
+    }
+    
+    /* Animations */
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+    
+    .animate-pulse { animation: pulse 2s ease-in-out infinite; }
+  </style>
+</head>
+<body>
+  <div class="bg-pattern"></div>
+  
+  <div class="container">
+    <!-- Navigation -->
+    <nav>
+      <a href="/" class="logo">
+        <div class="logo-icon">🏛️</div>
+        TUT DAO
+      </a>
+      <ul class="nav-links">
+        <li><a href="#governance">Governance</a></li>
+        <li><a href="#voting">Voting</a></li>
+        <li><a href="#treasury">Treasury</a></li>
+        <li><a href="https://tuttoken.pw">Token</a></li>
+      </ul>
+      <span class="ens-badge">tolanidao.eth (ENS)</span>
+    </nav>
+    
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero-badge animate-pulse">
+        <span>🏛️</span> tolanidao.eth - ENS Governance Portal
+      </div>
+      <h1>Decentralized<br><span>Community Governance</span></h1>
+      <p>Shape the future of the Tolani Ecosystem. Create proposals, vote on changes, and participate in truly decentralized decision-making.</p>
+      <div class="hero-buttons">
+        <a href="https://app.tuttoken.dao/governance" class="btn btn-primary">
+          View Proposals →
+        </a>
+        <a href="#voting" class="btn btn-secondary">
+          Learn About Voting
+        </a>
+      </div>
+    </section>
+    
+    <!-- Stats -->
+    <section class="stats">
+      <div class="stat-card">
+        <div class="stat-value">1B</div>
+        <div class="stat-label">Voting Power Supply</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">4%</div>
+        <div class="stat-label">Quorum Threshold</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">7 Days</div>
+        <div class="stat-label">Voting Period</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">2 Days</div>
+        <div class="stat-label">Timelock Delay</div>
+      </div>
+    </section>
+    
+    <!-- ENS Treasury Section -->
+    <section class="ens-section" id="treasury">
+      <h2 class="section-title">DAO <span>Treasury</span></h2>
+      <p class="section-subtitle">Managed by the community through governance proposals.</p>
+      
+      <div class="ens-grid">
+        <div class="ens-card" style="border-color: var(--tut-gold);">
+          <h3>🏛️ ENS Governance</h3>
+          <div class="ens-address"><a href="https://app.ens.domains/tolanidao.eth" target="_blank" style="color: var(--tut-gold); text-decoration: none;">tolanidao.eth</a></div>
+          <p class="ens-description">Official ENS for Snapshot voting & governance</p>
+          <button class="copy-btn" onclick="copyAddress('tolanidao.eth', this)">📋 Copy ENS</button>
+        </div>
+        <div class="ens-card">
+          <h3>💰 Donations (UD)</h3>
+          <div class="ens-address" style="font-size: 1.25rem;"><a href="https://ud.me/tuttoken.eth" target="_blank" style="color: var(--tut-gold); text-decoration: none;">tuttoken.eth</a></div>
+          <p class="ens-description">Unstoppable Domain for multi-chain donations</p>
+          <button class="copy-btn" onclick="copyAddress('0xA484fC94908c821A18d60312F620B135D1b55235', this)">📋 Copy Address</button>
+        </div>
+        <div class="ens-card">
+          <h3>🏦 Gnosis Safe</h3>
+          <div class="ens-address" style="font-size: 0.85rem;">0xa56e...7677</div>
+          <p class="ens-description">Multi-sig treasury protected by 3/5 signers</p>
+          <button class="copy-btn" onclick="copyAddress('0xa56eb5E3990C740C8c58F02eAD263feF02567677', this)">📋 Copy</button>
+        </div>
+        <div class="ens-card">
+          <h3>📜 Governor</h3>
+          <div class="ens-address" style="font-size: 0.85rem;">0xD360...4607</div>
+          <p class="ens-description">On-chain governance contract on Sepolia</p>
+          <button class="copy-btn" onclick="copyAddress('0xD360F7c69c18dA78461BE5364cBC56C14b584607', this)">📋 Copy</button>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Governance Features -->
+    <section class="governance" id="governance">
+      <h2 class="section-title">Governance <span>Features</span></h2>
+      <p class="section-subtitle">A comprehensive governance system built on OpenZeppelin Governor.</p>
+      
+      <div class="gov-grid">
+        <div class="gov-card">
+          <div class="gov-icon">📝</div>
+          <h3>Create Proposals</h3>
+          <p>Any token holder with sufficient voting power can create proposals for ecosystem changes.</p>
+        </div>
+        <div class="gov-card">
+          <div class="gov-icon">🗳️</div>
+          <h3>On-Chain Voting</h3>
+          <p>All votes are recorded on-chain, ensuring transparency and immutability.</p>
+        </div>
+        <div class="gov-card">
+          <div class="gov-icon">🔄</div>
+          <h3>Vote Delegation</h3>
+          <p>Delegate your voting power to trusted community members or representatives.</p>
+        </div>
+        <div class="gov-card">
+          <div class="gov-icon">⏱️</div>
+          <h3>Timelock Security</h3>
+          <p>2-day timelock on executed proposals allows community review before changes take effect.</p>
+        </div>
+        <div class="gov-card">
+          <div class="gov-icon">💰</div>
+          <h3>Treasury Control</h3>
+          <p>Governance controls treasury allocations, ensuring community-driven fund management.</p>
+        </div>
+        <div class="gov-card">
+          <div class="gov-icon">🛡️</div>
+          <h3>Multi-Sig Backup</h3>
+          <p>Gnosis Safe multi-sig provides additional security layer for critical operations.</p>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Proposal Process -->
+    <section class="process">
+      <h2 class="section-title">Proposal <span>Lifecycle</span></h2>
+      <p class="section-subtitle">From idea to execution in four transparent steps.</p>
+      
+      <div class="process-steps">
+        <div class="step">
+          <div class="step-number">1</div>
+          <h3>Draft</h3>
+          <p>Create and discuss your proposal with the community before submission.</p>
+        </div>
+        <div class="step">
+          <div class="step-number">2</div>
+          <h3>Submit</h3>
+          <p>Submit on-chain with description, targets, and calldata.</p>
+        </div>
+        <div class="step">
+          <div class="step-number">3</div>
+          <h3>Vote</h3>
+          <p>7-day voting period for token holders to cast their votes.</p>
+        </div>
+        <div class="step">
+          <div class="step-number">4</div>
+          <h3>Execute</h3>
+          <p>If passed, proposal executes after 2-day timelock delay.</p>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Voting Power -->
+    <section class="voting" id="voting">
+      <div class="voting-card">
+        <h2>Your <span>Voting Power</span></h2>
+        <p>Every TUT token equals one vote. Stake your tokens to earn rewards while maintaining full voting rights. Delegate to amplify your impact in governance.</p>
+        
+        <div class="hero-buttons">
+          <a href="https://app.tuttoken.dao/delegate" class="btn btn-primary">
+            Delegate Votes →
+          </a>
+          <a href="https://tuttoken.pw" class="btn btn-secondary">
+            Get TUT Tokens
+          </a>
+        </div>
+        
+        <div class="power-grid">
+          <div class="power-item">
+            <div class="power-value">1 TUT</div>
+            <div class="power-label">= 1 Vote</div>
+          </div>
+          <div class="power-item">
+            <div class="power-value">100K</div>
+            <div class="power-label">Min to Propose</div>
+          </div>
+          <div class="power-item">
+            <div class="power-value">40M</div>
+            <div class="power-label">Quorum (4%)</div>
+          </div>
+          <div class="power-item">
+            <div class="power-value">∞</div>
+            <div class="power-label">Delegation</div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- CTA -->
+    <section class="cta">
+      <div class="cta-card">
+        <h2>Ready to Govern?</h2>
+        <p>Connect your wallet and participate in the future of decentralized governance.</p>
+        <div class="hero-buttons">
+          <a href="https://app.tuttoken.dao" class="btn btn-primary" style="background: var(--tut-gold); color: var(--bg-dark);">
+            Launch Governance App →
+          </a>
+          <a href="https://docs.tuttoken.dao" class="btn btn-secondary" style="border-color: white; color: white;">
+            Read Governance Docs
+          </a>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer>
+      <div class="footer-brand">
+        <span>🏛️</span> <span>TUT DAO</span>
+      </div>
+      <div class="footer-links">
+        <a href="https://tuttoken.pw">tuttoken.pw</a>
+        <a href="https://snapshot.org/#/tolanidao.eth">Snapshot</a>
+        <a href="https://app.ens.domains/tolanidao.eth">ENS</a>
+        <a href="https://github.com/Tolani-Corp/TolaniEcosystemDAO">GitHub</a>
+        <a href="https://twitter.com/tuttoken">Twitter</a>
+        <a href="mailto:info@tolanicorp.us">Contact</a>
+      </div>
+      <p class="copyright">© 2025 Tolani Ecosystem DAO. Governance: <a href="https://snapshot.org/#/tolanidao.eth" style="color: var(--dao-purple);">tolanidao.eth</a></p>
+    </footer>
+  </div>
+  
+  <script>
+    function copyAddress(address, btn) {
+      navigator.clipboard.writeText(address).then(() => {
+        const originalText = btn.textContent;
+        btn.textContent = '✓ Copied!';
+        setTimeout(() => {
+          btn.textContent = originalText;
+        }, 2000);
+      });
+    }
+  </script>
+</body>
+</html>

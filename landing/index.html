@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TUT Token - Tolani Utility Token</title>
+    <meta name="description" content="TUT is the native governance and utility token of the Tolani Ecosystem. Stake, vote, earn rewards, and shape the future of decentralized finance.">
+    <meta name="keywords" content="TUT, Tolani, DAO, governance, staking, cryptocurrency, DeFi, blockchain">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="TUT Token - Tolani Utility Token">
+    <meta property="og:description" content="Governance, staking, rewards, and DeFi — all powered by TUT. Join the Tolani Ecosystem.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://tuttoken.pw">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="TUT Token - Tolani Utility Token">
+    <meta name="twitter:description" content="Governance, staking, rewards, and DeFi — all powered by TUT.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%23004D4D' width='100' height='100' rx='20'/><text y='70' x='50' text-anchor='middle' font-size='60' fill='%23E5C64B'>☥</text></svg>">
+    
+    <style>
+        :root {
+            --tut-base-teal: #004D4D;
+            --tut-highlight-teal: #007373;
+            --tut-gold: #E5C64B;
+            --tut-circuit: #00AFAF;
+            --bg-dark: #030712;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(to bottom right, var(--bg-dark), var(--tut-base-teal), var(--bg-dark));
+            color: #f9fafb;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* Navigation */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: rgba(3, 7, 18, 0.9);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0, 115, 115, 0.2);
+        }
+        
+        .nav-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--tut-base-teal), var(--tut-highlight-teal), var(--tut-circuit));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            color: var(--tut-gold);
+            box-shadow: 0 4px 20px rgba(0, 115, 115, 0.3);
+        }
+        
+        .logo-text h1 {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--tut-gold);
+        }
+        
+        .logo-text p {
+            font-size: 0.75rem;
+            color: var(--tut-circuit);
+        }
+        
+        .nav-links {
+            display: none;
+            gap: 2rem;
+        }
+        
+        @media (min-width: 768px) {
+            .nav-links {
+                display: flex;
+            }
+        }
+        
+        .nav-links a {
+            color: #9ca3af;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--tut-gold);
+        }
+        
+        .btn-primary {
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--tut-gold), #c9a93f);
+            color: var(--tut-base-teal);
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn-primary:hover {
+            box-shadow: 0 8px 30px rgba(229, 198, 75, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            background: transparent;
+            border: 2px solid var(--tut-highlight-teal);
+            color: var(--tut-circuit);
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(0, 115, 115, 0.2);
+        }
+        
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 6rem 1.5rem 4rem;
+            position: relative;
+        }
+        
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+        }
+        
+        .hero-bg::before {
+            content: '';
+            position: absolute;
+            top: 25%;
+            left: 25%;
+            width: 400px;
+            height: 400px;
+            background: rgba(0, 115, 115, 0.2);
+            border-radius: 50%;
+            filter: blur(120px);
+        }
+        
+        .hero-bg::after {
+            content: '';
+            position: absolute;
+            bottom: 25%;
+            right: 25%;
+            width: 300px;
+            height: 300px;
+            background: rgba(229, 198, 75, 0.1);
+            border-radius: 50%;
+            filter: blur(100px);
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            max-width: 1280px;
+            text-align: center;
+        }
+        
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            background: rgba(0, 77, 77, 0.4);
+            border: 1px solid rgba(229, 198, 75, 0.3);
+            color: var(--tut-gold);
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 2rem;
+        }
+        
+        .hero h1 {
+            font-size: clamp(2.5rem, 8vw, 4.5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+        }
+        
+        .hero h1 span.gold {
+            color: var(--tut-gold);
+        }
+        
+        .hero h1 span.gradient {
+            background: linear-gradient(90deg, var(--tut-highlight-teal), var(--tut-circuit), var(--tut-gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: #9ca3af;
+            max-width: 768px;
+            margin: 0 auto 2.5rem;
+            line-height: 1.6;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 4rem;
+        }
+        
+        @media (min-width: 640px) {
+            .hero-buttons {
+                flex-direction: row;
+            }
+        }
+        
+        .btn-large {
+            padding: 1rem 2rem;
+            font-size: 1.125rem;
+        }
+        
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        @media (min-width: 768px) {
+            .stats-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+        
+        .stat-card {
+            padding: 1.5rem;
+            border-radius: 16px;
+            background: rgba(0, 77, 77, 0.2);
+            border: 1px solid rgba(0, 115, 115, 0.3);
+            backdrop-filter: blur(10px);
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--tut-gold);
+        }
+        
+        .stat-suffix {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+        
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--tut-circuit);
+            margin-top: 0.25rem;
+        }
+        
+        /* Features Section */
+        .features {
+            padding: 6rem 1.5rem;
+        }
+        
+        .section-container {
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+        
+        .section-header h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--tut-gold);
+            margin-bottom: 1rem;
+        }
+        
+        .section-header p {
+            font-size: 1.125rem;
+            color: #9ca3af;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .features-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+        
+        @media (min-width: 768px) {
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .features-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        .feature-card {
+            padding: 2rem;
+            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(0, 77, 77, 0.2), transparent);
+            border: 1px solid rgba(0, 115, 115, 0.2);
+            transition: all 0.3s;
+        }
+        
+        .feature-card:hover {
+            border-color: rgba(229, 198, 75, 0.3);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 115, 115, 0.1);
+        }
+        
+        .feature-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--tut-highlight-teal), var(--tut-circuit));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+        
+        .feature-card h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.75rem;
+        }
+        
+        .feature-card p {
+            color: #9ca3af;
+            line-height: 1.6;
+        }
+        
+        /* Tokenomics Section */
+        .tokenomics {
+            padding: 6rem 1.5rem;
+            background: rgba(0, 77, 77, 0.1);
+        }
+        
+        .tokenomics-content {
+            display: grid;
+            gap: 3rem;
+            align-items: center;
+        }
+        
+        @media (min-width: 1024px) {
+            .tokenomics-content {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        .chart-container {
+            position: relative;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        .chart-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+        
+        .chart-center .value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--tut-gold);
+        }
+        
+        .chart-center .label {
+            font-size: 0.875rem;
+            color: #9ca3af;
+        }
+        
+        .legend-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-radius: 12px;
+            background: rgba(0, 77, 77, 0.2);
+            border: 1px solid rgba(0, 115, 115, 0.2);
+            margin-bottom: 0.75rem;
+        }
+        
+        .legend-left {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+        }
+        
+        .legend-name {
+            font-weight: 500;
+        }
+        
+        .legend-value {
+            font-weight: 700;
+            color: var(--tut-gold);
+        }
+        
+        /* CTA Section */
+        .cta {
+            padding: 6rem 1.5rem;
+            position: relative;
+        }
+        
+        .cta-bg {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(0, 77, 77, 0.4), rgba(0, 115, 115, 0.2), rgba(0, 175, 175, 0.3));
+        }
+        
+        .cta-content {
+            position: relative;
+            z-index: 10;
+            max-width: 900px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .cta h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+        
+        .cta h2 span {
+            color: var(--tut-gold);
+        }
+        
+        .cta p {
+            font-size: 1.25rem;
+            color: #d1d5db;
+            margin-bottom: 2.5rem;
+        }
+        
+        /* Footer */
+        .footer {
+            padding: 3rem 1.5rem;
+            border-top: 1px solid rgba(0, 115, 115, 0.2);
+        }
+        
+        .footer-content {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: grid;
+            gap: 2rem;
+        }
+        
+        @media (min-width: 768px) {
+            .footer-content {
+                grid-template-columns: 2fr 1fr 1fr;
+            }
+        }
+        
+        .footer-brand p {
+            color: #9ca3af;
+            font-size: 0.875rem;
+            max-width: 400px;
+            margin-top: 1rem;
+            line-height: 1.6;
+        }
+        
+        .footer-links h4 {
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .footer-links ul {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer-links a {
+            color: #9ca3af;
+            text-decoration: none;
+            font-size: 0.875rem;
+            transition: color 0.2s;
+        }
+        
+        .footer-links a:hover {
+            color: var(--tut-gold);
+        }
+        
+        .footer-bottom {
+            max-width: 1280px;
+            margin: 2rem auto 0;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(0, 115, 115, 0.2);
+            text-align: center;
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .animate-in {
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+        
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-container">
+            <div class="logo">
+                <div class="logo-icon">☥</div>
+                <div class="logo-text">
+                    <h1>TUT Token</h1>
+                    <p>Tolani Utility Token</p>
+                </div>
+            </div>
+            <div class="nav-links">
+                <a href="#features">Features</a>
+                <a href="#tokenomics">Tokenomics</a>
+                <a href="https://dao.tuttoken.pw">DAO</a>
+                <a href="https://docs.tuttoken.pw">Docs</a>
+            </div>
+            <a href="https://dao.tuttoken.pw" class="btn-primary">Launch App</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-content">
+            <div class="badge animate-in">
+                ✨ Powering the Tolani Ecosystem
+            </div>
+            <h1 class="animate-in delay-1">
+                The <span class="gold">Tolani</span><br>
+                <span class="gradient">Utility Token</span>
+            </h1>
+            <p class="hero-subtitle animate-in delay-2">
+                Governance, staking, rewards, and DeFi — all powered by TUT. 
+                Join the decentralized ecosystem shaping the future of community-driven finance.
+            </p>
+            <div class="hero-buttons animate-in delay-3">
+                <a href="https://dao.tuttoken.pw" class="btn-primary btn-large">
+                    Enter DAO →
+                </a>
+                <a href="#tokenomics" class="btn-secondary btn-large">
+                    View Tokenomics
+                </a>
+            </div>
+            <div class="stats-grid animate-in delay-4">
+                <div class="stat-card">
+                    <div class="stat-value">1,000,000,000</div>
+                    <div class="stat-suffix">TUT</div>
+                    <div class="stat-label">Total Supply</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">Up to 300%</div>
+                    <div class="stat-suffix"></div>
+                    <div class="stat-label">Staking APY</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">1 TUT</div>
+                    <div class="stat-suffix">= 1 Vote</div>
+                    <div class="stat-label">Governance Power</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">Ethereum</div>
+                    <div class="stat-suffix">+ L2s</div>
+                    <div class="stat-label">Networks</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="section-container">
+            <div class="section-header">
+                <h2>Ecosystem Features</h2>
+                <p>TUT powers a complete decentralized ecosystem with governance, staking, and rewards</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🗳️</div>
+                    <h3>Decentralized Governance</h3>
+                    <p>Participate in DAO decisions. Every TUT holder has a voice in shaping the ecosystem's future.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💰</div>
+                    <h3>Multi-Tier Staking</h3>
+                    <p>Earn rewards through flexible staking tiers. From Flexible to Diamond, choose your commitment level.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🛡️</div>
+                    <h3>Secure & Audited</h3>
+                    <p>Built on battle-tested OpenZeppelin contracts with comprehensive security measures.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📈</div>
+                    <h3>DeFi Integration</h3>
+                    <p>Access liquidity pools, yield farming, and advanced DeFi features within the ecosystem.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📚</div>
+                    <h3>Learn & Earn</h3>
+                    <p>Complete training modules and earn TUT rewards through our educational platform.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Task Bounties</h3>
+                    <p>Contribute to the ecosystem and earn TUT by completing L.O.E tasks and bounties.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tokenomics Section -->
+    <section id="tokenomics" class="tokenomics">
+        <div class="section-container">
+            <div class="section-header">
+                <h2>Tokenomics</h2>
+                <p>Designed for sustainable growth and community empowerment</p>
+            </div>
+            <div class="tokenomics-content">
+                <div class="chart-container">
+                    <svg viewBox="0 0 100 100" style="transform: rotate(-90deg);">
+                        <!-- Training Rewards 15% -->
+                        <circle cx="50" cy="50" r="40" fill="none" stroke="#E5C64B" stroke-width="16" 
+                                stroke-dasharray="37.7 251" stroke-dashoffset="0"/>
+                        <!-- Task Bounties 10% -->
+                        <circle cx="50" cy="50" r="40" fill="none" stroke="#007373" stroke-width="16" 
+                                stroke-dasharray="25.1 251" stroke-dashoffset="-37.7"/>
+                        <!-- Ecosystem Grants 20% -->
+                        <circle cx="50" cy="50" r="40" fill="none" stroke="#00AFAF" stroke-width="16" 
+                                stroke-dasharray="50.2 251" stroke-dashoffset="-62.8"/>
+                        <!-- Community Incentives 15% -->
+                        <circle cx="50" cy="50" r="40" fill="none" stroke="#00CED1" stroke-width="16" 
+                                stroke-dasharray="37.7 251" stroke-dashoffset="-113"/>
+                        <!-- Reserve 10% -->
+                        <circle cx="50" cy="50" r="40" fill="none" stroke="#20B2AA" stroke-width="16" 
+                                stroke-dasharray="25.1 251" stroke-dashoffset="-150.7"/>
+                        <!-- Tolani Foundation 15% -->
+                        <circle cx="50" cy="50" r="40" fill="none" stroke="#004D4D" stroke-width="16" 
+                                stroke-dasharray="37.7 251" stroke-dashoffset="-175.8"/>
+                        <!-- Liquidity & Staking 15% -->
+                        <circle cx="50" cy="50" r="40" fill="none" stroke="#008B8B" stroke-width="16" 
+                                stroke-dasharray="37.7 251" stroke-dashoffset="-213.5"/>
+                    </svg>
+                    <div class="chart-center">
+                        <div class="value">1B</div>
+                        <div class="label">Total Supply</div>
+                    </div>
+                </div>
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="legend-left">
+                            <div class="legend-color" style="background: #E5C64B;"></div>
+                            <span class="legend-name">Training Rewards</span>
+                        </div>
+                        <span class="legend-value">15%</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-left">
+                            <div class="legend-color" style="background: #007373;"></div>
+                            <span class="legend-name">Task Bounties</span>
+                        </div>
+                        <span class="legend-value">10%</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-left">
+                            <div class="legend-color" style="background: #00AFAF;"></div>
+                            <span class="legend-name">Ecosystem Grants</span>
+                        </div>
+                        <span class="legend-value">20%</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-left">
+                            <div class="legend-color" style="background: #00CED1;"></div>
+                            <span class="legend-name">Community Incentives</span>
+                        </div>
+                        <span class="legend-value">15%</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-left">
+                            <div class="legend-color" style="background: #20B2AA;"></div>
+                            <span class="legend-name">Reserve</span>
+                        </div>
+                        <span class="legend-value">10%</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-left">
+                            <div class="legend-color" style="background: #004D4D;"></div>
+                            <span class="legend-name">Tolani Foundation</span>
+                        </div>
+                        <span class="legend-value">15%</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-left">
+                            <div class="legend-color" style="background: #008B8B;"></div>
+                            <span class="legend-name">Liquidity & Staking</span>
+                        </div>
+                        <span class="legend-value">15%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="cta-bg"></div>
+        <div class="cta-content">
+            <h2>Ready to Join the <span>Revolution</span>?</h2>
+            <p>Start participating in governance, earn rewards through staking, and help shape the future of decentralized finance.</p>
+            <div class="hero-buttons">
+                <a href="https://dao.tuttoken.pw" class="btn-primary btn-large">Launch App →</a>
+                <a href="https://docs.tuttoken.pw" class="btn-secondary btn-large">Read Docs</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <div class="logo">
+                    <div class="logo-icon">☥</div>
+                    <div class="logo-text">
+                        <h1>TUT Token</h1>
+                        <p>Tolani Utility Token</p>
+                    </div>
+                </div>
+                <p>TUT is the native governance and utility token of the Tolani Ecosystem, enabling decentralized decision-making, staking rewards, and community incentives.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Ecosystem</h4>
+                <ul>
+                    <li><a href="https://dao.tuttoken.pw">DAO Governance</a></li>
+                    <li><a href="https://dao.tuttoken.pw/staking">Staking</a></li>
+                    <li><a href="https://dao.tuttoken.pw/training">Training</a></li>
+                    <li><a href="https://dao.tuttoken.pw/bounties">Bounties</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Resources</h4>
+                <ul>
+                    <li><a href="https://docs.tuttoken.pw">Documentation</a></li>
+                    <li><a href="https://github.com/Tolani-Corp">GitHub</a></li>
+                    <li><a href="https://sepolia.etherscan.io/token/0x6888CE424242B2d4460104Ffc5042E8B1A52F3E6">Token Contract</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            © 2025 Tolani Foundation. All rights reserved.
+        </div>
+    </footer>
+</body>
+</html>

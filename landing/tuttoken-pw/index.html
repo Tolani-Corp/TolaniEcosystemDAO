@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TUT Token | Tolani Universal Token - tuttoken.pw</title>
+  <meta name="description" content="TUT Token - The governance token powering the Tolani Ecosystem DAO. Stake, vote, and earn rewards in a decentralized future.">
+  <meta name="keywords" content="TUT, Tolani, DAO, DeFi, Governance, Staking, Crypto, Blockchain, Ethereum">
+  <meta property="og:title" content="TUT Token - Tolani Universal Token">
+  <meta property="og:description" content="The governance token powering the Tolani Ecosystem DAO">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://tuttoken.pw">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☥</text></svg>">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --tut-base-teal: #004D4D;
+      --tut-highlight-teal: #007373;
+      --tut-gold: #E5C64B;
+      --tut-circuit: #00AFAF;
+      --bg-dark: #030712;
+      --text-primary: #f9fafb;
+      --text-secondary: #9ca3af;
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Montserrat', system-ui, sans-serif;
+      background: linear-gradient(135deg, var(--bg-dark) 0%, var(--tut-base-teal) 50%, var(--bg-dark) 100%);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    
+    .bg-pattern {
+      position: fixed;
+      inset: 0;
+      background-image: 
+        radial-gradient(circle at 20% 50%, rgba(0, 175, 175, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(229, 198, 75, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 40% 80%, rgba(0, 115, 115, 0.1) 0%, transparent 45%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; position: relative; z-index: 1; }
+    
+    /* Navigation */
+    nav {
+      padding: 1.5rem 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(229, 198, 75, 0.1);
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--tut-gold);
+      text-decoration: none;
+    }
+    
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--tut-gold), #c9a93f);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+    
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+    
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    
+    .nav-links a:hover { color: var(--tut-gold); }
+    
+    .ens-badge {
+      background: rgba(229, 198, 75, 0.1);
+      border: 1px solid rgba(229, 198, 75, 0.3);
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.875rem;
+      color: var(--tut-gold);
+      font-weight: 600;
+    }
+    
+    /* Hero */
+    .hero {
+      padding: 6rem 0;
+      text-align: center;
+    }
+    
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(0, 175, 175, 0.1);
+      border: 1px solid rgba(0, 175, 175, 0.3);
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.875rem;
+      color: var(--tut-circuit);
+      margin-bottom: 2rem;
+    }
+    
+    .hero h1 {
+      font-size: clamp(2.5rem, 8vw, 4.5rem);
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      line-height: 1.1;
+    }
+    
+    .hero h1 span {
+      background: linear-gradient(135deg, var(--tut-gold), var(--tut-circuit));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .hero p {
+      font-size: 1.25rem;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto 3rem;
+      line-height: 1.7;
+    }
+    
+    .hero-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    
+    .btn {
+      padding: 1rem 2rem;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 1rem;
+      text-decoration: none;
+      transition: all 0.3s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, var(--tut-gold), #c9a93f);
+      color: var(--tut-base-teal);
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 40px rgba(229, 198, 75, 0.3);
+    }
+    
+    .btn-secondary {
+      background: transparent;
+      border: 2px solid var(--tut-highlight-teal);
+      color: var(--tut-highlight-teal);
+    }
+    
+    .btn-secondary:hover {
+      background: var(--tut-highlight-teal);
+      color: white;
+    }
+    
+    /* Stats */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      padding: 3rem 0;
+    }
+    
+    .stat-card {
+      background: rgba(17, 24, 39, 0.6);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(75, 85, 99, 0.3);
+      border-radius: 16px;
+      padding: 1.5rem;
+      text-align: center;
+      transition: all 0.3s;
+    }
+    
+    .stat-card:hover {
+      border-color: var(--tut-gold);
+      transform: translateY(-4px);
+    }
+    
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--tut-gold);
+      margin-bottom: 0.5rem;
+    }
+    
+    .stat-label {
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+    }
+    
+    /* ENS Section */
+    .ens-section {
+      padding: 4rem 0;
+      text-align: center;
+    }
+    
+    .ens-card {
+      background: linear-gradient(135deg, rgba(0, 77, 77, 0.4), rgba(0, 115, 115, 0.2));
+      border: 2px solid var(--tut-highlight-teal);
+      border-radius: 24px;
+      padding: 3rem;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+    
+    .ens-card h3 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: var(--tut-circuit);
+    }
+    
+    .ens-address {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--tut-gold);
+      margin-bottom: 0.5rem;
+      word-break: break-all;
+    }
+    
+    .ens-address a {
+      color: var(--tut-gold);
+      text-decoration: none;
+    }
+    
+    .ens-address a:hover {
+      text-decoration: underline;
+    }
+    
+    .ens-description {
+      color: var(--text-secondary);
+      margin-bottom: 1.5rem;
+    }
+    
+    .copy-btn {
+      background: rgba(229, 198, 75, 0.1);
+      border: 1px solid var(--tut-gold);
+      color: var(--tut-gold);
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+    
+    .copy-btn:hover {
+      background: var(--tut-gold);
+      color: var(--tut-base-teal);
+    }
+    
+    /* Features */
+    .features {
+      padding: 4rem 0;
+    }
+    
+    .section-title {
+      text-align: center;
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+    
+    .section-title span {
+      color: var(--tut-gold);
+    }
+    
+    .section-subtitle {
+      text-align: center;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto 3rem;
+    }
+    
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .feature-card {
+      background: rgba(17, 24, 39, 0.5);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(75, 85, 99, 0.3);
+      border-radius: 16px;
+      padding: 2rem;
+      transition: all 0.3s;
+    }
+    
+    .feature-card:hover {
+      border-color: var(--tut-highlight-teal);
+      transform: translateY(-4px);
+    }
+    
+    .feature-icon {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, var(--tut-base-teal), var(--tut-highlight-teal));
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+      font-size: 1.5rem;
+    }
+    
+    .feature-card h3 {
+      font-size: 1.25rem;
+      margin-bottom: 0.75rem;
+      color: var(--text-primary);
+    }
+    
+    .feature-card p {
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+    
+    /* Tokenomics */
+    .tokenomics {
+      padding: 4rem 0;
+    }
+    
+    .tokenomics-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: center;
+    }
+    
+    @media (max-width: 768px) {
+      .tokenomics-content { grid-template-columns: 1fr; }
+    }
+    
+    .tokenomics-chart {
+      display: flex;
+      justify-content: center;
+    }
+    
+    .tokenomics-list {
+      list-style: none;
+    }
+    
+    .tokenomics-list li {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 0;
+      border-bottom: 1px solid rgba(75, 85, 99, 0.3);
+    }
+    
+    .tokenomics-list li:last-child { border-bottom: none; }
+    
+    .allocation-dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+    }
+    
+    .allocation-info {
+      flex: 1;
+    }
+    
+    .allocation-name {
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+    
+    .allocation-percent {
+      color: var(--tut-gold);
+      font-weight: 700;
+    }
+    
+    /* CTA */
+    .cta {
+      padding: 4rem 0;
+      text-align: center;
+    }
+    
+    .cta-card {
+      background: linear-gradient(135deg, var(--tut-base-teal), var(--tut-highlight-teal));
+      border-radius: 24px;
+      padding: 4rem 2rem;
+    }
+    
+    .cta h2 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    .cta p {
+      font-size: 1.125rem;
+      opacity: 0.9;
+      margin-bottom: 2rem;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    /* Footer */
+    footer {
+      padding: 3rem 0;
+      border-top: 1px solid rgba(75, 85, 99, 0.3);
+      text-align: center;
+    }
+    
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+    
+    .footer-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    
+    .footer-links a:hover { color: var(--tut-gold); }
+    
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    .footer-brand span { color: var(--tut-gold); font-weight: 700; }
+    
+    .copyright {
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+    }
+    
+    /* Mobile Nav */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .hero h1 { font-size: 2.5rem; }
+    }
+    
+    /* Animations */
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    
+    .animate-float { animation: float 3s ease-in-out infinite; }
+  </style>
+</head>
+<body>
+  <div class="bg-pattern"></div>
+  
+  <div class="container">
+    <!-- Navigation -->
+    <nav>
+      <a href="/" class="logo">
+        <div class="logo-icon">☥</div>
+        TUT Token
+      </a>
+      <ul class="nav-links">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#tokenomics">Tokenomics</a></li>
+        <li><a href="#ecosystem">Ecosystem</a></li>
+        <li><a href="https://dao.tuttoken.pw">DAO</a></li>
+      </ul>
+      <span class="ens-badge">tuttoken.eth</span>
+    </nav>
+    
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero-badge">
+        <span>🌐</span> tuttoken.pw - Official Portal
+      </div>
+      <h1>The Future of<br><span>Decentralized Governance</span></h1>
+      <p>TUT Token powers the Tolani Ecosystem DAO. Stake your tokens, participate in governance, and earn rewards while building a decentralized future.</p>
+      <div class="hero-buttons">
+        <a href="https://app.tuttoken.pw" class="btn btn-primary">
+          Launch App →
+        </a>
+        <a href="#tokenomics" class="btn btn-secondary">
+          View Tokenomics
+        </a>
+      </div>
+    </section>
+    
+    <!-- Stats -->
+    <section class="stats">
+      <div class="stat-card">
+        <div class="stat-value">1B</div>
+        <div class="stat-label">Total Supply</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">12%</div>
+        <div class="stat-label">Max Staking APY</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">7</div>
+        <div class="stat-label">Allocation Pools</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">4</div>
+        <div class="stat-label">Networks</div>
+      </div>
+    </section>
+    
+    <!-- Domain Section -->
+    <section class="ens-section">
+      <div class="ens-card animate-float">
+        <h3>🔗 Official Web3 Domain</h3>
+        <div class="ens-address"><a href="https://ud.me/tuttoken.eth" target="_blank">tuttoken.eth</a></div>
+        <p class="ens-description">
+          Send ETH, MATIC, or tokens on any chain to our verified domain. 
+          All contributions support ecosystem development.
+        </p>
+        <button class="copy-btn" onclick="copyENS()">
+          📋 Copy Address
+        </button>
+        <p style="margin-top: 1rem; font-size: 0.75rem; color: var(--text-secondary);">
+          Resolves to: 0xA484...5235
+        </p>
+      </div>
+    </section>
+    
+    <!-- Features -->
+    <section class="features" id="features">
+      <h2 class="section-title">Why <span>TUT Token</span>?</h2>
+      <p class="section-subtitle">A comprehensive ecosystem designed for sustainable growth and community governance.</p>
+      
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🗳️</div>
+          <h3>Decentralized Governance</h3>
+          <p>Every TUT holder has a voice. Vote on proposals, delegate voting power, and shape the future of the ecosystem.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">💰</div>
+          <h3>Multi-Tier Staking</h3>
+          <p>Earn rewards through flexible staking tiers. From Flexible to Diamond, choose your commitment level and maximize returns.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🛡️</div>
+          <h3>Secure & Audited</h3>
+          <p>Built on battle-tested OpenZeppelin contracts with comprehensive security measures and multi-sig treasury.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📈</div>
+          <h3>DeFi Integration</h3>
+          <p>Access liquidity pools, yield farming, and advanced DeFi features within the Tolani ecosystem.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📚</div>
+          <h3>Learn & Earn</h3>
+          <p>Complete training modules, earn certifications, and receive TUT rewards for expanding your knowledge.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🎯</div>
+          <h3>Task Bounties</h3>
+          <p>Contribute to the ecosystem through bounties. Complete tasks, build features, and earn TUT tokens.</p>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Tokenomics -->
+    <section class="tokenomics" id="tokenomics">
+      <h2 class="section-title">Token <span>Allocation</span></h2>
+      <p class="section-subtitle">Strategic distribution designed for long-term sustainability and growth.</p>
+      
+      <div class="tokenomics-content">
+        <div class="tokenomics-chart">
+          <svg width="280" height="280" viewBox="0 0 280 280">
+            <circle cx="140" cy="140" r="100" fill="none" stroke="#1f2937" stroke-width="40"/>
+            <!-- Community: 30% -->
+            <circle cx="140" cy="140" r="100" fill="none" stroke="#E5C64B" stroke-width="40" 
+                    stroke-dasharray="188.5 628.3" stroke-dashoffset="0" transform="rotate(-90 140 140)"/>
+            <!-- Treasury: 20% -->
+            <circle cx="140" cy="140" r="100" fill="none" stroke="#007373" stroke-width="40" 
+                    stroke-dasharray="125.7 628.3" stroke-dashoffset="-188.5" transform="rotate(-90 140 140)"/>
+            <!-- Team: 15% -->
+            <circle cx="140" cy="140" r="100" fill="none" stroke="#00AFAF" stroke-width="40" 
+                    stroke-dasharray="94.2 628.3" stroke-dashoffset="-314.2" transform="rotate(-90 140 140)"/>
+            <!-- Staking: 15% -->
+            <circle cx="140" cy="140" r="100" fill="none" stroke="#004D4D" stroke-width="40" 
+                    stroke-dasharray="94.2 628.3" stroke-dashoffset="-408.4" transform="rotate(-90 140 140)"/>
+            <!-- Liquidity: 10% -->
+            <circle cx="140" cy="140" r="100" fill="none" stroke="#c9a93f" stroke-width="40" 
+                    stroke-dasharray="62.8 628.3" stroke-dashoffset="-502.6" transform="rotate(-90 140 140)"/>
+            <!-- Foundation: 5% -->
+            <circle cx="140" cy="140" r="100" fill="none" stroke="#9ca3af" stroke-width="40" 
+                    stroke-dasharray="31.4 628.3" stroke-dashoffset="-565.4" transform="rotate(-90 140 140)"/>
+            <!-- Bounties: 5% -->
+            <circle cx="140" cy="140" r="100" fill="none" stroke="#6b7280" stroke-width="40" 
+                    stroke-dasharray="31.4 628.3" stroke-dashoffset="-596.8" transform="rotate(-90 140 140)"/>
+            <text x="140" y="130" text-anchor="middle" fill="#E5C64B" font-size="24" font-weight="700">1B</text>
+            <text x="140" y="155" text-anchor="middle" fill="#9ca3af" font-size="12">Total Supply</text>
+          </svg>
+        </div>
+        
+        <ul class="tokenomics-list">
+          <li>
+            <span class="allocation-dot" style="background: #E5C64B;"></span>
+            <div class="allocation-info">
+              <div class="allocation-name">Community & Rewards</div>
+              <div class="allocation-percent">30%</div>
+            </div>
+          </li>
+          <li>
+            <span class="allocation-dot" style="background: #007373;"></span>
+            <div class="allocation-info">
+              <div class="allocation-name">Treasury</div>
+              <div class="allocation-percent">20%</div>
+            </div>
+          </li>
+          <li>
+            <span class="allocation-dot" style="background: #00AFAF;"></span>
+            <div class="allocation-info">
+              <div class="allocation-name">Team & Advisors</div>
+              <div class="allocation-percent">15%</div>
+            </div>
+          </li>
+          <li>
+            <span class="allocation-dot" style="background: #004D4D;"></span>
+            <div class="allocation-info">
+              <div class="allocation-name">Staking Rewards</div>
+              <div class="allocation-percent">15%</div>
+            </div>
+          </li>
+          <li>
+            <span class="allocation-dot" style="background: #c9a93f;"></span>
+            <div class="allocation-info">
+              <div class="allocation-name">Liquidity</div>
+              <div class="allocation-percent">10%</div>
+            </div>
+          </li>
+          <li>
+            <span class="allocation-dot" style="background: #9ca3af;"></span>
+            <div class="allocation-info">
+              <div class="allocation-name">Tolani Foundation</div>
+              <div class="allocation-percent">5%</div>
+            </div>
+          </li>
+          <li>
+            <span class="allocation-dot" style="background: #6b7280;"></span>
+            <div class="allocation-info">
+              <div class="allocation-name">Task Bounties</div>
+              <div class="allocation-percent">5%</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </section>
+    
+    <!-- CTA -->
+    <section class="cta">
+      <div class="cta-card">
+        <h2>Ready to Join the Ecosystem?</h2>
+        <p>Connect your wallet and start participating in the Tolani Ecosystem today.</p>
+        <div class="hero-buttons">
+          <a href="https://app.tuttoken.pw" class="btn btn-primary">
+            Launch App →
+          </a>
+          <a href="https://docs.tuttoken.pw" class="btn btn-secondary" style="border-color: white; color: white;">
+            Read Documentation
+          </a>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer>
+      <div class="footer-brand">
+        <span>☥</span> <span>TUT Token</span>
+      </div>
+      <div class="footer-links">
+        <a href="https://tuttoken.dao">tuttoken.dao</a>
+        <a href="https://ud.me/tuttoken.eth">ud.me/tuttoken.eth</a>
+        <a href="https://github.com/Tolani-Corp/TolaniEcosystemDAO">GitHub</a>
+        <a href="https://twitter.com/tuttoken">Twitter</a>
+        <a href="https://discord.gg/tuttoken">Discord</a>
+        <a href="mailto:info@tolanicorp.us">Contact</a>
+      </div>
+      <p class="copyright">© 2025 Tolani Ecosystem DAO. Powered by <a href="https://ud.me/tuttoken.eth" style="color: var(--tut-gold);">tuttoken.eth</a></p>
+    </footer>
+  </div>
+  
+  <script>
+    function copyENS() {
+      navigator.clipboard.writeText('tuttoken.eth').then(() => {
+        const btn = document.querySelector('.copy-btn');
+        btn.textContent = '✓ Copied!';
+        setTimeout(() => {
+          btn.textContent = '📋 Copy Address';
+        }, 2000);
+      });
+    }
+  </script>
+</body>
+</html>
