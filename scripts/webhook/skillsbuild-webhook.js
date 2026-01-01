@@ -82,14 +82,22 @@ const provider = new ethers.JsonRpcProvider(
   process.env.BASE_SEPOLIA_RPC || "https://sepolia.base.org"
 );
 
-const relayer = new ethers.Wallet(
-  process.env.OPS_PRIVATE_KEY || process.env.RELAYER_PRIVATE_KEY,
-  provider
-);
+// Check for OPS private key - allow dev mode without it
+const opsKey = process.env.OPS_PRIVATE_KEY || process.env.RELAYER_PRIVATE_KEY;
+let relayer = null;
+let sessionInvoker = null;
+let sessionRegistry = null;
 
-// Contract instances
-const sessionInvoker = new ethers.Contract(CONTRACTS.SessionInvoker, SESSION_INVOKER_ABI, relayer);
-const sessionRegistry = new ethers.Contract(CONTRACTS.SessionKeyRegistry, SESSION_REGISTRY_ABI, relayer);
+if (opsKey && opsKey.length >= 64) {
+  relayer = new ethers.Wallet(opsKey, provider);
+  // Contract instances
+  sessionInvoker = new ethers.Contract(CONTRACTS.SessionInvoker, SESSION_INVOKER_ABI, relayer);
+  sessionRegistry = new ethers.Contract(CONTRACTS.SessionKeyRegistry, SESSION_REGISTRY_ABI, relayer);
+} else {
+  console.log("⚠️  No OPS_PRIVATE_KEY set - running in READ-ONLY mode");
+  console.log("   Set OPS_PRIVATE_KEY in .env to enable reward processing");
+}
+
 const uTUT = new ethers.Contract(CONTRACTS.uTUT, UTUT_ABI, provider);
 
 // ==========================================
@@ -124,6 +132,12 @@ function verifySignature(payload, signature) {
  */
 async function processCompletion(data) {
   const { walletAddress, courseId, completionId, timestamp } = data;
+  
+  // Check if relayer is configured
+  if (!relayer || !sessionInvoker || !sessionRegistry) {
+    console.log(`\n⚠️  Cannot process - READ-ONLY mode (no OPS_PRIVATE_KEY)`);
+    return { status: "error", message: "Server in read-only mode - set OPS_PRIVATE_KEY" };
+  }
   
   // Check if already processed
   const completionKey = `${walletAddress}-${courseId}-${completionId}`;
@@ -205,12 +219,19 @@ async function processCompletion(data) {
  * Health check
  */
 app.get("/health", async (req, res) => {
-  const relayerBalance = await provider.getBalance(relayer.address);
+  let balance = "0";
+  let relayerAddr = "Not configured";
+  
+  if (relayer) {
+    const relayerBalance = await provider.getBalance(relayer.address);
+    balance = ethers.formatEther(relayerBalance);
+    relayerAddr = relayer.address;
+  }
   
   res.json({
-    status: "healthy",
-    relayer: relayer.address,
-    balance: ethers.formatEther(relayerBalance),
+    status: relayer ? "healthy" : "read-only",
+    relayer: relayerAddr,
+    balance,
     contracts: CONTRACTS,
     processedCount: processedCompletions.size
   });
@@ -338,7 +359,13 @@ app.listen(PORT, () => {
   console.log(`\n📡 Server running on port ${PORT}`);
   console.log(`🔗 Health: http://localhost:${PORT}/health`);
   console.log(`📚 Courses: http://localhost:${PORT}/courses`);
-  console.log(`\n👛 Relayer: ${relayer.address}`);
+  if (relayer) {
+    console.log(`\n👛 Relayer: ${relayer.address}`);
+    console.log(`   Mode: ACTIVE (can process rewards)`);
+  } else {
+    console.log(`\n👛 Relayer: NOT CONFIGURED`);
+    console.log(`   Mode: READ-ONLY (set OPS_PRIVATE_KEY to enable)`);
+  }
   console.log(`\n📋 Contracts:`);
   Object.entries(CONTRACTS).forEach(([name, addr]) => {
     console.log(`   ${name}: ${addr}`);
