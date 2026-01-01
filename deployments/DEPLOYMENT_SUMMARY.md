@@ -48,6 +48,24 @@ ESG:          keccak256("TOLANI_ESG_TRACK_V1")
 
 ---
 
+## 💰 TokenAllocator Pools (Initialized 2025-12-31)
+
+| Pool | Allocation | Limit (TUT) | Status |
+|------|------------|-------------|--------|
+| TRAINING_REWARDS | 10% | 10,000,000 | ✅ Initialized |
+| TASK_BOUNTIES | 15% | 15,000,000 | ✅ Initialized |
+| ECOSYSTEM_GRANTS | 20% | 20,000,000 | ✅ Initialized |
+| COMMUNITY_INCENTIVES | 10% | 10,000,000 | ✅ Initialized |
+| RESERVE | 20% | 20,000,000 | ✅ Initialized |
+| TOLANI_FOUNDATION | 25% | 25,000,000 | ✅ Initialized |
+| **TOTAL** | **100%** | **100,000,000** | ✅ Complete |
+
+### Timelock Operations
+- **GOVERNANCE_ROLE Grant**: [Tx 0x598c941d...](https://sepolia.etherscan.io/tx/0x598c941dd21d928ed29bae4bdbb0d769fba99e9cd18728dfacbbf9af7ba1b7a0)
+- **Pool Initialization**: 6 transactions executed successfully
+
+---
+
 ## 🔢 Token Economics
 
 ### TUT Token (Governance)
