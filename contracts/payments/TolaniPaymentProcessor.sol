@@ -472,4 +472,36 @@ contract TolaniPaymentProcessor is AccessControl, Pausable, ReentrancyGuard {
     function unpause() external onlyRole(DEFAULT_ADMIN_ROLE) {
         _unpause();
     }
+
+    /**
+     * @notice Rescue accidentally sent tokens (not uTUT/TUT)
+     * @dev Only for tokens that aren't part of normal operations
+     */
+    function rescueTokens(
+        address token,
+        address to,
+        uint256 amount
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        if (to == address(0)) revert InvalidAddress();
+        // Don't allow rescuing operational tokens during normal ops
+        // But allow if paused (emergency recovery)
+        if (!paused()) {
+            if (token == address(uTUT) || token == address(TUT)) {
+                revert("Cannot rescue operational tokens while active");
+            }
+        }
+        IERC20(token).transfer(to, amount);
+    }
+
+    /**
+     * @notice Rescue accidentally sent ETH
+     */
+    function rescueETH(address payable to) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        if (to == address(0)) revert InvalidAddress();
+        (bool success, ) = to.call{value: address(this).balance}("");
+        require(success, "ETH transfer failed");
+    }
+
+    // Allow receiving ETH (for potential future use)
+    receive() external payable {}
 }

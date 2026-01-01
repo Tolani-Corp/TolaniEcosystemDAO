@@ -414,4 +414,21 @@ contract MerchantRegistry is AccessControl, Pausable {
     function unpause() external onlyRole(DEFAULT_ADMIN_ROLE) {
         _unpause();
     }
+
+    /**
+     * @notice Rescue accidentally sent tokens
+     * @dev This contract shouldn't hold tokens, but just in case
+     */
+    function rescueTokens(
+        address token,
+        address to,
+        uint256 amount
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        if (to == address(0)) revert InvalidAddress();
+        IERC20(token).transfer(to, amount);
+    }
+}
+
+interface IERC20 {
+    function transfer(address to, uint256 amount) external returns (bool);
 }
