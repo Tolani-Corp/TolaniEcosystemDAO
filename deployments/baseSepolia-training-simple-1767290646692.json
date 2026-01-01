@@ -1,0 +1,16 @@
+{
+  "network": "baseSepolia",
+  "chainId": 84532,
+  "timestamp": "2026-01-01T18:04:06.693Z",
+  "deployer": "0x753b53809360bec8742a235D8B60375a57965099",
+  "contracts": {
+    "uTUT": "0xf4758a12583F424B65CC860A2ff3D3B501cf591C",
+    "TUTConverter": null,
+    "SessionKeyRegistry": "0xD360F7c69c18dA78461BE5364cBC56C14b584607",
+    "GasTreasuryModule": "0xC12035B044c5988E9977E50bA0913AEF4eec28F7",
+    "TrainingRewards": "0x4d8FD67c3BAf949A9f7CfCE7830A9588CA0F13dC",
+    "SessionInvoker": "0x7Eb46955704c7a75c6eA182A8b0E8C1ec2b06867"
+  },
+  "contractType": "simple (non-upgradeable)",
+  "note": "TUTConverter not deployed - deploy separately when TUT is bridged"
+}

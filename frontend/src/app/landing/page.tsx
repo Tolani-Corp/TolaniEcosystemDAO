@@ -1,5 +1,6 @@
 "use client";
 
+import React, { JSX } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import {

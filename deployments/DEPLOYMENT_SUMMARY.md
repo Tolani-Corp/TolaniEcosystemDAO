@@ -129,38 +129,53 @@ ESG:          keccak256("TOLANI_ESG_TRACK_V1")
 
 ---
 
-## 📝 Next Steps
+## � Base L2 Deployment (Completed 2026-01-01)
 
-1. **Base L2 Deployment**: 
-   - Get testnet ETH from https://www.alchemy.com/faucets/base-sepolia
-   - Run: `npx hardhat run scripts/training/deploy-base-simple.js --network baseSepolia`
-2. ~~**TokenAllocator**: Execute Timelock operation to initialize TRAINING_REWARDS pool~~ ✅ Done
-3. **Relayer Setup**: Configure Gelato/Pimlico for gasless transactions
-4. **API Integration**: Connect IBM SkillsBuild webhook to TrainingRewards
-5. **Frontend**: Add training module to DAO dashboard
+| Contract | Address | Basescan | Status |
+|----------|---------|----------|--------|
+| uTUT Token | `0xf4758a12583F424B65CC860A2ff3D3B501cf591C` | [View](https://sepolia.basescan.org/address/0xf4758a12583F424B65CC860A2ff3D3B501cf591C) | ⏳ Pending Verification |
+| SessionKeyRegistry | `0xD360F7c69c18dA78461BE5364cBC56C14b584607` | [View](https://sepolia.basescan.org/address/0xD360F7c69c18dA78461BE5364cBC56C14b584607) | ⏳ Pending Verification |
+| GasTreasuryModule | `0xC12035B044c5988E9977E50bA0913AEF4eec28F7` | [View](https://sepolia.basescan.org/address/0xC12035B044c5988E9977E50bA0913AEF4eec28F7) | ⏳ Pending Verification |
+| TrainingRewards | `0x4d8FD67c3BAf949A9f7CfCE7830A9588CA0F13dC` | [View](https://sepolia.basescan.org/address/0x4d8FD67c3BAf949A9f7CfCE7830A9588CA0F13dC) | ⏳ Pending Verification |
+| SessionInvoker | `0x7Eb46955704c7a75c6eA182A8b0E8C1ec2b06867` | [View](https://sepolia.basescan.org/address/0x7Eb46955704c7a75c6eA182A8b0E8C1ec2b06867) | ⏳ Pending Verification |
+
+### Base L2 Training Campaigns
+| Campaign | ID | Reward | Budget |
+|----------|-----|--------|--------|
+| Tolani Construction Tech Track | `TOLANI_CONSTRUCTION_TECH_V1` | 2,000 uTUT | 500,000 uTUT |
+| Tolani AI & Cloud Track | `TOLANI_AI_CLOUD_V1` | 4,000 uTUT | 1,000,000 uTUT |
+| Tolani ESG Track | `TOLANI_ESG_TRACK_V1` | 1,500 uTUT | 400,000 uTUT |
+
+### Verification Commands (Requires BASESCAN_API_KEY)
+```bash
+# Add to .env: BASESCAN_API_KEY=your_basescan_api_key
+# Get free key at: https://basescan.org/myapikey
+
+npx hardhat verify --network baseSepolia 0xf4758a12583F424B65CC860A2ff3D3B501cf591C "0x753b53809360bec8742a235D8B60375a57965099" "12500000000000000000"
+npx hardhat verify --network baseSepolia 0xD360F7c69c18dA78461BE5364cBC56C14b584607 "0x753b53809360bec8742a235D8B60375a57965099"
+npx hardhat verify --network baseSepolia 0xC12035B044c5988E9977E50bA0913AEF4eec28F7 "0x753b53809360bec8742a235D8B60375a57965099"
+npx hardhat verify --network baseSepolia 0x4d8FD67c3BAf949A9f7CfCE7830A9588CA0F13dC "0x753b53809360bec8742a235D8B60375a57965099" "0xf4758a12583F424B65CC860A2ff3D3B501cf591C" "0xD360F7c69c18dA78461BE5364cBC56C14b584607"
+npx hardhat verify --network baseSepolia 0x7Eb46955704c7a75c6eA182A8b0E8C1ec2b06867 "0x753b53809360bec8742a235D8B60375a57965099" "0xD360F7c69c18dA78461BE5364cBC56C14b584607" "0x4d8FD67c3BAf949A9f7CfCE7830A9588CA0F13dC" "0xC12035B044c5988E9977E50bA0913AEF4eec28F7"
+```
 
 ---
 
-## 🔗 Base L2 Deployment (Pending)
+## 📝 Next Steps
 
-### Prerequisites
-```bash
-# 1. Get Base Sepolia testnet ETH (requires 0.001 ETH on mainnet)
-# Visit: https://www.alchemy.com/faucets/base-sepolia
-# Wallet: 0x753b53809360bec8742a235D8B60375a57965099
-
-# 2. Deploy contracts
-npx hardhat run scripts/training/deploy-base-simple.js --network baseSepolia
-```
-
-### Deployment Script
-- **Simple Contracts**: `scripts/training/deploy-base-simple.js`
-- **Upgradeable (UUPS)**: `scripts/training/deploy-upgradeable.js`
+1. ~~**Base L2 Deployment**~~ ✅ Completed!
+2. ~~**TokenAllocator**: Execute Timelock operation to initialize TRAINING_REWARDS pool~~ ✅ Done
+3. **Contract Verification**: Add BASESCAN_API_KEY to .env and verify Base contracts
+4. **Relayer Setup**: Configure Gelato/Pimlico for gasless transactions
+5. **TUT Bridge**: Deploy TUTConverterSimple when TUT is bridged to Base
+6. **API Integration**: Connect IBM SkillsBuild webhook to TrainingRewards
+7. **Frontend**: Add training module to DAO dashboard
 
 ---
 
 ## 🛠️ Deployer
 
 - **Address**: `0x753b53809360bec8742a235D8B60375a57965099`
-- **Network**: Sepolia
-- **Date**: December 31, 2025
+- **Networks**: Sepolia (L1), Base Sepolia (L2)
+- **Dates**: 
+  - Sepolia: December 31, 2025
+  - Base Sepolia: January 1, 2026

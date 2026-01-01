@@ -30,9 +30,6 @@
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>
-    
-    <!-- Circular text path -->
-    <path id="textCircle" d="M 256,256 m -175,0 a 175,175 0 1,1 350,0 a 175,175 0 1,1 -350,0"/>
   </defs>
   
   <!-- Outer glow ring (animated) -->
@@ -51,6 +48,11 @@
   <circle cx="256" cy="256" r="220" fill="none" stroke="#E5C64B" stroke-width="2" opacity="0.6" stroke-dasharray="10 5">
     <animateTransform attributeName="transform" type="rotate" values="0 256 256;360 256 256" dur="60s" repeatCount="indefinite"/>
   </circle>
+  
+  <!-- Circular text path -->
+  <defs>
+    <path id="textCircle" d="M 256,256 m -175,0 a 175,175 0 1,1 350,0 a 175,175 0 1,1 -350,0"/>
+  </defs>
   
   <!-- TOLANI UTILITY TOKEN text around edge -->
   <text fill="#E5C64B" font-family="Montserrat, Arial, sans-serif" font-size="28" font-weight="600" letter-spacing="8" filter="url(#glow)">

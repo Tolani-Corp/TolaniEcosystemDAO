@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="coinBody" cx="30%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#006666"/>
+      <stop offset="100%" stop-color="#004D4D"/>
+    </radialGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E5C64B"/>
+      <stop offset="100%" stop-color="#c9a93f"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Outer gold ring -->
+  <circle cx="16" cy="16" r="15.5" fill="url(#goldGrad)"/>
+  
+  <!-- Main teal coin body -->
+  <circle cx="16" cy="16" r="14" fill="url(#coinBody)"/>
+  
+  <!-- TUT. text -->
+  <text x="16" y="19" text-anchor="middle" font-family="Arial, sans-serif" font-size="7" font-weight="700" fill="#E5C64B">TUT.</text>
+</svg>
