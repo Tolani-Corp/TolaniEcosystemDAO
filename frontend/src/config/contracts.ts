@@ -26,6 +26,8 @@ export const CHAIN_IDS = {
   SEPOLIA: 11155111,
   POLYGON: 137,
   ARBITRUM: 42161,
+  BASE_SEPOLIA: 84532, // Base Sepolia L2 Testnet
+  BASE: 8453, // Base Mainnet
 } as const;
 
 // Contract addresses by network
@@ -69,6 +71,29 @@ export const CONTRACT_ADDRESSES = {
     trainingRewardsV2: '0x6C5892afBdf60123edd408404347E59F72D4Eb4c' as `0x${string}`,
     sessionInvoker: '0x46Fc54f90023098655b237E3543609BF8dCB938e' as `0x${string}`,
   },
+  // Base Sepolia L2 Testnet - IBM SkillsBuild Training (Jan 2025)
+  // Low-cost L2 for training rewards with meta-transactions
+  [CHAIN_IDS.BASE_SEPOLIA]: {
+    // Core Training Contracts
+    uTUT: '0xf4758a12583F424B65CC860A2ff3D3B501cf591C' as `0x${string}`,
+    sessionKeyRegistry: '0xD360F7c69c18dA78461BE5364cBC56C14b584607' as `0x${string}`,
+    gasTreasuryModule: '0xC12035B044c5988E9977E50bA0913AEF4eec28F7' as `0x${string}`,
+    trainingRewardsV2: '0x4d8FD67c3BAf949A9f7CfCE7830A9588CA0F13dC' as `0x${string}`,
+    sessionInvoker: '0x7Eb46955704c7a75c6eA182A8b0E8C1ec2b06867' as `0x${string}`,
+    // TUT Bridge / Converter
+    mockBridgedTUT: '0x05AbCD77f178cF43E561091f263Eaa66353Dce87' as `0x${string}`,
+    tutConverter: '0xCFce25C0eF67e51E8Fe85Dcba7F4501d5BeE84b2' as `0x${string}`,
+    // Placeholder addresses for L1 contracts (not deployed on L2)
+    governor: '0x0000000000000000000000000000000000000000' as `0x${string}`,
+    timelock: '0x0000000000000000000000000000000000000000' as `0x${string}`,
+    treasury: '0x0000000000000000000000000000000000000000' as `0x${string}`,
+    token: '0x0000000000000000000000000000000000000000' as `0x${string}`,
+    escrow: '0x0000000000000000000000000000000000000000' as `0x${string}`,
+    payroll: '0x0000000000000000000000000000000000000000' as `0x${string}`,
+    compliance: '0x0000000000000000000000000000000000000000' as `0x${string}`,
+    esg: '0x0000000000000000000000000000000000000000' as `0x${string}`,
+    trainingRewards: '0x4d8FD67c3BAf949A9f7CfCE7830A9588CA0F13dC' as `0x${string}`, // Alias for trainingRewardsV2
+  },
 } as const;
 
 // Default chain (change to MAINNET for production)
@@ -77,7 +102,7 @@ export const DEFAULT_CHAIN_ID = CHAIN_IDS.SEPOLIA;
 // Supported chains for the DAO
 // NOTE: Mainnet disabled until contracts are deployed
 // Add CHAIN_IDS.MAINNET to this array after mainnet deployment
-export const SUPPORTED_CHAIN_IDS = [CHAIN_IDS.SEPOLIA] as const;
+export const SUPPORTED_CHAIN_IDS = [CHAIN_IDS.SEPOLIA, CHAIN_IDS.BASE_SEPOLIA] as const;
 
 // ABIs (same across all networks)
 export const ABIS = {
@@ -165,6 +190,10 @@ export function getChainName(chainId: number): string {
       return 'Polygon';
     case CHAIN_IDS.ARBITRUM:
       return 'Arbitrum One';
+    case CHAIN_IDS.BASE_SEPOLIA:
+      return 'Base Sepolia';
+    case CHAIN_IDS.BASE:
+      return 'Base';
     default:
       return 'Unknown Network';
   }

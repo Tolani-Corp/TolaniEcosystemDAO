@@ -1,13 +1,13 @@
 "use client";
 
 import { http, createConfig } from "wagmi";
-import { mainnet, sepolia, polygon, polygonMumbai, arbitrum } from "wagmi/chains";
+import { mainnet, sepolia, polygon, polygonMumbai, arbitrum, baseSepolia, base } from "wagmi/chains";
 import { injected, walletConnect, coinbaseWallet } from "wagmi/connectors";
 
 const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || "";
 
 export const config = createConfig({
-  chains: [mainnet, sepolia, polygon, polygonMumbai, arbitrum],
+  chains: [mainnet, sepolia, polygon, polygonMumbai, arbitrum, baseSepolia, base],
   connectors: [
     injected(),
     walletConnect({ projectId }),
@@ -19,6 +19,8 @@ export const config = createConfig({
     [polygon.id]: http(),
     [polygonMumbai.id]: http(),
     [arbitrum.id]: http(),
+    [baseSepolia.id]: http(),
+    [base.id]: http(),
   },
 });
 

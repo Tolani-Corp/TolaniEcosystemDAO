@@ -1,0 +1,10 @@
+{
+  "network": "baseSepolia",
+  "chainId": 84532,
+  "timestamp": "2026-01-01T20:59:57.982Z",
+  "contracts": {
+    "MockBridgedTUT": "0x05AbCD77f178cF43E561091f263Eaa66353Dce87",
+    "TUTConverter": "0xCFce25C0eF67e51E8Fe85Dcba7F4501d5BeE84b2",
+    "uTUT": "0xf4758a12583F424B65CC860A2ff3D3B501cf591C"
+  }
+}

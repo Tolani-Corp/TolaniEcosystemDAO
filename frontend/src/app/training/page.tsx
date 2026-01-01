@@ -174,6 +174,21 @@ export default function TrainingPage() {
             Complete training courses to earn TUT tokens and become a knowledgeable member of the Tolani Ecosystem DAO.
             Each course rewards you with TUT upon completion.
           </p>
+          <div className="flex items-center justify-center gap-4 mt-4">
+            <a 
+              href="/training/skillsbuild"
+              className="text-sm text-purple-400 hover:text-purple-300"
+            >
+              IBM SkillsBuild (Sepolia)
+            </a>
+            <span className="text-gray-600">|</span>
+            <a 
+              href="/training/base"
+              className="text-sm text-blue-400 hover:text-blue-300 flex items-center gap-1"
+            >
+              ⚡ Base L2 Training (Low Fees)
+            </a>
+          </div>
         </motion.div>
 
         {/* Stats */}
