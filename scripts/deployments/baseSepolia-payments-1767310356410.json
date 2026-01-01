@@ -1,0 +1,16 @@
+{
+  "network": "baseSepolia",
+  "chainId": 84532,
+  "timestamp": "2026-01-01T23:32:36.409Z",
+  "deployer": "0x753b53809360bec8742a235D8B60375a57965099",
+  "contracts": {
+    "MerchantRegistry": "0x17904f65220771fDBAbca6eCcDdAf42345C9571d",
+    "PaymentProcessor": "0x43c1B7C2D9d362369851D3a0996e4222ca9b7ef2",
+    "TestMerchantId": "0x0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "existingContracts": {
+    "uTUT": "0xf4758a12583F424B65CC860A2ff3D3B501cf591C",
+    "MockBridgedTUT": "0x05AbCD77f178cF43E561091f263Eaa66353Dce87",
+    "Treasury": "0xC12035B044c5988E9977E50bA0913AEF4eec28F7"
+  }
+}
