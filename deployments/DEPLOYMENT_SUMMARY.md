@@ -131,11 +131,31 @@ ESG:          keccak256("TOLANI_ESG_TRACK_V1")
 
 ## 📝 Next Steps
 
-1. **Base L2 Deployment**: Deploy upgradeable contracts to production
-2. **TokenAllocator**: Execute Timelock operation to initialize TRAINING_REWARDS pool
+1. **Base L2 Deployment**: 
+   - Get testnet ETH from https://www.alchemy.com/faucets/base-sepolia
+   - Run: `npx hardhat run scripts/training/deploy-base-simple.js --network baseSepolia`
+2. ~~**TokenAllocator**: Execute Timelock operation to initialize TRAINING_REWARDS pool~~ ✅ Done
 3. **Relayer Setup**: Configure Gelato/Pimlico for gasless transactions
 4. **API Integration**: Connect IBM SkillsBuild webhook to TrainingRewards
 5. **Frontend**: Add training module to DAO dashboard
+
+---
+
+## 🔗 Base L2 Deployment (Pending)
+
+### Prerequisites
+```bash
+# 1. Get Base Sepolia testnet ETH (requires 0.001 ETH on mainnet)
+# Visit: https://www.alchemy.com/faucets/base-sepolia
+# Wallet: 0x753b53809360bec8742a235D8B60375a57965099
+
+# 2. Deploy contracts
+npx hardhat run scripts/training/deploy-base-simple.js --network baseSepolia
+```
+
+### Deployment Script
+- **Simple Contracts**: `scripts/training/deploy-base-simple.js`
+- **Upgradeable (UUPS)**: `scripts/training/deploy-upgradeable.js`
 
 ---
 
