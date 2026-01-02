@@ -85,6 +85,18 @@ module.exports = {
       accounts: [TESTNET_KEY],
       chainId: 84532,
     },
+    // World Chain (Tolani Foundation)
+    worldchain: {
+      url: process.env.WORLDCHAIN_RPC_URL || "https://worldchain-mainnet.g.alchemy.com/public",
+      accounts: [MAINNET_KEY],
+      chainId: 480,
+      gasPrice: "auto",
+    },
+    worldchainSepolia: {
+      url: process.env.WORLDCHAIN_SEPOLIA_RPC_URL || "https://worldchain-sepolia.g.alchemy.com/public",
+      accounts: [TESTNET_KEY],
+      chainId: 4801,
+    },
   },
   sourcify: {
     enabled: true,
@@ -107,6 +119,22 @@ module.exports = {
         urls: {
           apiURL: "https://api.etherscan.io/v2/api?chainid=84532",
           browserURL: "https://sepolia.basescan.org",
+        },
+      },
+      {
+        network: "worldchain",
+        chainId: 480,
+        urls: {
+          apiURL: "https://api.worldscan.org/api",
+          browserURL: "https://worldscan.org",
+        },
+      },
+      {
+        network: "worldchainSepolia",
+        chainId: 4801,
+        urls: {
+          apiURL: "https://api-sepolia.worldscan.org/api",
+          browserURL: "https://sepolia.worldscan.org",
         },
       },
     ],
