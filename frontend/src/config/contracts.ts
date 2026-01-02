@@ -32,12 +32,13 @@ export const CHAIN_IDS = {
 
 // Contract addresses by network
 export const CONTRACT_ADDRESSES = {
-  // Ethereum Mainnet (update after mainnet deployment)
+  // Ethereum Mainnet - L1 TUT Token (Jan 2, 2026)
+  // TUT is the canonical token on L1, bridged to Base via Optimism Standard Bridge
   [CHAIN_IDS.MAINNET]: {
+    token: '0x90e9d7189D605a824C2481Fe88A1d9A7DDFAF71D' as `0x${string}`, // TUT Proxy
     governor: '0x0000000000000000000000000000000000000000' as `0x${string}`,
     timelock: '0x0000000000000000000000000000000000000000' as `0x${string}`,
     treasury: '0x0000000000000000000000000000000000000000' as `0x${string}`,
-    token: '0x0000000000000000000000000000000000000000' as `0x${string}`,
     escrow: '0x0000000000000000000000000000000000000000' as `0x${string}`,
     payroll: '0x0000000000000000000000000000000000000000' as `0x${string}`,
     compliance: '0x0000000000000000000000000000000000000000' as `0x${string}`,
@@ -94,15 +95,37 @@ export const CONTRACT_ADDRESSES = {
     esg: '0x0000000000000000000000000000000000000000' as `0x${string}`,
     trainingRewards: '0x4d8FD67c3BAf949A9f7CfCE7830A9588CA0F13dC' as `0x${string}`, // Alias for trainingRewardsV2
   },
+  // Base Mainnet - Production (Jan 2, 2026)
+  // Full ecosystem with TUT bridged from Ethereum L1
+  [CHAIN_IDS.BASE]: {
+    // Core Token (bridged from Ethereum via Optimism Standard Bridge)
+    token: '0xAf7e938741a720508897Bf3a13538f6713A337A4' as `0x${string}`,
+    // Governance
+    governor: '0xeEd65936FaEDb315c598F8b1aF796289BCE2B7f6' as `0x${string}`,
+    timelock: '0xb23f0662511ec0ee8d3760e3158a5Ab01551d52d' as `0x${string}`,
+    treasury: '0x3FaB09377944144eB991DB2a5ADf2C96A5e8587c' as `0x${string}`,
+    // Training System
+    uTUT: '0x6D3205ba4066260ca4B94F9221c46b95B1eedcD4' as `0x${string}`,
+    sessionKeyRegistry: '0x73e8fDfE1EEd5f6fbE47Ef9bCEaD76da78516025' as `0x${string}`,
+    tutConverter: '0xF064C89198Ce3c595bf60ac0b6A12045CB49ebeD' as `0x${string}`,
+    trainingRewards: '0x1fec9c4dB67b6d3531171936C13760E2a61415D7' as `0x${string}`,
+    trainingRewardsV2: '0x1fec9c4dB67b6d3531171936C13760E2a61415D7' as `0x${string}`,
+    // DeFi
+    stakingPool: '0x21Fc5CD8606e19961F38E26fd7286f7e647eFf04' as `0x${string}`,
+    // Placeholder for L1-only contracts
+    escrow: '0x0000000000000000000000000000000000000000' as `0x${string}`,
+    payroll: '0x0000000000000000000000000000000000000000' as `0x${string}`,
+    compliance: '0x0000000000000000000000000000000000000000' as `0x${string}`,
+    esg: '0x0000000000000000000000000000000000000000' as `0x${string}`,
+  },
 } as const;
 
-// Default chain (change to MAINNET for production)
-export const DEFAULT_CHAIN_ID = CHAIN_IDS.SEPOLIA;
+// Default chain - Base Mainnet for production
+export const DEFAULT_CHAIN_ID = CHAIN_IDS.BASE;
 
 // Supported chains for the DAO
-// NOTE: Mainnet disabled until contracts are deployed
-// Add CHAIN_IDS.MAINNET to this array after mainnet deployment
-export const SUPPORTED_CHAIN_IDS = [CHAIN_IDS.SEPOLIA, CHAIN_IDS.BASE_SEPOLIA] as const;
+// Base Mainnet is now the production network
+export const SUPPORTED_CHAIN_IDS = [CHAIN_IDS.BASE, CHAIN_IDS.SEPOLIA, CHAIN_IDS.BASE_SEPOLIA] as const;
 
 // ABIs (same across all networks)
 export const ABIS = {
