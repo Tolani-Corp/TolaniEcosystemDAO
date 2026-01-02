@@ -100,27 +100,29 @@ async function main() {
 
     try {
         // ========================================
-        // Deploy TUTTokenSmartV2 (UUPS Proxy)
+        // Deploy TUTTokenSmart (UUPS Proxy)
         // ========================================
         console.log("-".repeat(50));
-        console.log("📦 Deploying TUTTokenSmartV2 (UUPS Upgradeable)...\n");
+        console.log("📦 Deploying TUTTokenSmart (UUPS Upgradeable)...\n");
 
-        const TUTToken = await ethers.getContractFactory("TUTTokenSmartV2");
+        const TUTToken = await ethers.getContractFactory("TUTTokenSmart");
         
         // Deploy as upgradeable proxy
+        // Constructor takes: trustedForwarder
+        // Initialize takes: owner, initialSupply, cap, forwarder
+        // Note: name & symbol are hardcoded constants in the contract
         const tutToken = await upgrades.deployProxy(
             TUTToken,
             [
-                CONFIG.name,
-                CONFIG.symbol,
-                CONFIG.initialSupply,
-                CONFIG.cap,
-                deployer.address,  // Initial owner
-                trustedForwarder   // ERC2771 forwarder
+                deployer.address,    // owner - receives all roles
+                CONFIG.initialSupply, // initialSupply
+                CONFIG.cap,           // cap (max supply)
+                trustedForwarder      // forwarder (must match constructor)
             ],
             { 
                 initializer: "initialize",
-                kind: "uups"
+                kind: "uups",
+                constructorArgs: [trustedForwarder]  // Constructor arg for ERC2771
             }
         );
         

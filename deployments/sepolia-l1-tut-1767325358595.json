@@ -1,0 +1,21 @@
+{
+  "network": "sepolia",
+  "chainId": 11155111,
+  "timestamp": "2026-01-02T03:42:38.595Z",
+  "deployer": "0x753b53809360bec8742a235D8B60375a57965099",
+  "contracts": {
+    "TUTTokenProxy": "0xDA460231C53Fe2EC9F4E47FA58387FF7DeD1680B",
+    "TUTTokenImplementation": "0x4B225FDE4Db14A147AEb748d8045179E302Cd5B4"
+  },
+  "config": {
+    "name": "Tolani Utility Token",
+    "symbol": "TUT",
+    "initialSupply": "100000000000000000000000000",
+    "cap": "100000000000000000000000000",
+    "trustedForwarder": "0xd8253782c45a12053594b9deB72d8e8aB2Fca54c"
+  },
+  "baseBridge": {
+    "l1StandardBridge": "0xfd0Bf71F60660E2f608ed56e1659C450eB113120",
+    "l1CrossDomainMessenger": "0x58Cc85b8D04EA49cC6DBd3CbFFd00B4B8D6cb3ef"
+  }
+}
