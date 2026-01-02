@@ -4,9 +4,11 @@
  * Deploys all Tolani Ecosystem contracts to Base Mainnet.
  * 
  * Prerequisites:
- *   1. Fund deployer wallet with ~0.1 ETH on Base
- *   2. Set BASE_MAINNET_RPC_URL in .env
- *   3. Create Gnosis Safe for admin
+ *   1. Deploy TUT on Ethereum L1 first: npx hardhat run scripts/deployments/deploy-l1-tut.js --network mainnet
+ *   2. Bridge TUT to Base via https://bridge.base.org
+ *   3. Set BASE_TUT_ADDRESS in .env (the bridged TUT address on Base)
+ *   4. Fund deployer wallet with ~0.1 ETH on Base
+ *   5. Create Gnosis Safe for admin
  * 
  * Usage:
  *   npx hardhat run scripts/deployments/deploy-mainnet.js --network base
@@ -15,6 +17,10 @@
 const { ethers } = require("hardhat");
 const fs = require("fs");
 const path = require("path");
+
+// IMPORTANT: Set this after bridging TUT from L1
+// This is the address of TUT on Base (L2) after bridging
+const BRIDGED_TUT_ADDRESS = process.env.BASE_TUT_ADDRESS || "";
 
 // Uniswap V3 addresses on Base Mainnet
 const UNISWAP_V3_BASE = {
@@ -48,6 +54,20 @@ async function main() {
     console.log("\n" + "=".repeat(70));
     console.log("  TOLANI ECOSYSTEM - BASE MAINNET DEPLOYMENT");
     console.log("=".repeat(70) + "\n");
+
+    // Check for bridged TUT address
+    if (!BRIDGED_TUT_ADDRESS) {
+        console.log("❌ ERROR: BASE_TUT_ADDRESS not set in .env\n");
+        console.log("You must first:");
+        console.log("1. Deploy TUT on Ethereum L1:");
+        console.log("   npx hardhat run scripts/deployments/deploy-l1-tut.js --network mainnet\n");
+        console.log("2. Bridge TUT to Base via https://bridge.base.org\n");
+        console.log("3. Add the bridged address to .env:");
+        console.log("   BASE_TUT_ADDRESS=0x...(bridged TUT address on Base)\n");
+        return;
+    }
+
+    console.log(`📦 Using Bridged TUT: ${BRIDGED_TUT_ADDRESS}\n`);
 
     const [deployer] = await ethers.getSigners();
     const network = await ethers.provider.getNetwork();
@@ -98,14 +118,15 @@ async function main() {
         deployed.uTUT = await uTUT.getAddress();
         console.log(`   ✅ uTUT: ${deployed.uTUT}`);
 
-        // For mainnet, we'll use bridged TUT from L1
-        // For now, deploy MockBridgedTUT as placeholder
-        console.log("\n1.2 Deploying TUT Token (Bridged)...");
-        const TUT = await ethers.getContractFactory("MockBridgedTUT");
-        const tut = await TUT.deploy(deployer.address);
-        await tut.waitForDeployment();
-        deployed.TUT = await tut.getAddress();
-        console.log(`   ✅ TUT: ${deployed.TUT}`);
+        // Use bridged TUT from L1 (already deployed and bridged)
+        console.log("\n1.2 Using Bridged TUT Token from L1...");
+        deployed.TUT = BRIDGED_TUT_ADDRESS;
+        console.log(`   ✅ TUT (Bridged): ${deployed.TUT}`);
+        
+        // Verify TUT is accessible
+        const tutToken = await ethers.getContractAt("IERC20", deployed.TUT);
+        const tutSupply = await tutToken.totalSupply();
+        console.log(`   📊 TUT Total Supply: ${ethers.formatUnits(tutSupply, 18)} TUT`);
 
         // ========================================
         // PHASE 2: Training System
