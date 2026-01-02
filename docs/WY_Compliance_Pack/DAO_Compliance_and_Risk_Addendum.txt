@@ -1,0 +1,478 @@
+================================================================================
+          TOLANI ECOSYSTEM DAO LLC - ATTACHMENT C
+             COMPLIANCE AND RISK ADDENDUM
+================================================================================
+
+                Wyoming DAO LLC Compliance Posture
+                Effective: January 2026
+
+================================================================================
+                         TABLE OF CONTENTS
+================================================================================
+
+SECTION 1   - REGULATORY FRAMEWORK
+SECTION 2   - WYOMING DAO LLC COMPLIANCE
+SECTION 3   - FEDERAL COMPLIANCE CONSIDERATIONS
+SECTION 4   - SECURITIES LAW ANALYSIS
+SECTION 5   - TAX COMPLIANCE
+SECTION 6   - AML/KYC FRAMEWORK
+SECTION 7   - DATA PRIVACY AND PROTECTION
+SECTION 8   - INTERNATIONAL CONSIDERATIONS
+SECTION 9   - RISK REGISTER
+SECTION 10  - COMPLIANCE MONITORING
+
+================================================================================
+                  SECTION 1: REGULATORY FRAMEWORK
+================================================================================
+
+1.1 - Applicable Laws and Regulations
+
+Tolani Ecosystem DAO LLC operates under the following regulatory framework:
+
+STATE LEVEL:
+- Wyoming Limited Liability Company Act (W.S. 17-29-101 et seq.)
+- Wyoming DAO Supplement (W.S. 17-31-101 et seq.)
+- Wyoming Digital Assets Laws (W.S. 34-29-101 et seq.)
+- Wyoming Money Transmitter Act exemptions
+
+FEDERAL LEVEL:
+- Securities Act of 1933 (as applicable)
+- Securities Exchange Act of 1934 (as applicable)
+- Bank Secrecy Act / AML requirements
+- Internal Revenue Code
+- OFAC sanctions regulations
+
+INDUSTRY STANDARDS:
+- OpenZeppelin security standards
+- Ethereum ERC standards
+- DeFi best practices
+
+1.2 - Regulatory Classification
+
+The DAO maintains the following regulatory positions:
+
+| Aspect                | Classification              | Basis                    |
+|----------------------|-----------------------------|-----------------------------|
+| Entity Type          | LLC (DAO Supplement)        | W.S. 17-31-104             |
+| Token (TUT)          | Utility Token               | Functional utility analysis |
+| Token (uTUT)         | Non-transferable utility    | Educational credential      |
+| DeFi Operations      | Protocol operations         | Smart contract automation   |
+| Money Transmission   | Exempt                      | Wyoming digital asset law   |
+
+================================================================================
+               SECTION 2: WYOMING DAO LLC COMPLIANCE
+================================================================================
+
+2.1 - Formation Requirements (W.S. 17-31-104)
+
+✓ Articles of Organization filed with Wyoming Secretary of State
+✓ Operating Agreement adopted by members
+✓ DAO type designated as "Algorithmically Managed"
+✓ Statement of rights provided to members
+✓ Public identifier disclosed (TUT contract address)
+
+2.2 - Ongoing Requirements (W.S. 17-31-106)
+
+✓ Registered agent maintained in Wyoming
+✓ Annual report filed with Secretary of State
+✓ Smart contract source code publicly available
+✓ Governance procedures documented and disclosed
+✓ Member communication channels established
+
+2.3 - Smart Contract Compliance (W.S. 17-31-105)
+
+✓ Smart contracts may govern DAO operations
+✓ Contract addresses publicly disclosed
+✓ Upgrade mechanisms documented
+✓ Conflict resolution procedures established
+✓ Member rights enforceable through smart contracts
+
+2.4 - Dissolution Provisions (W.S. 17-31-114)
+
+The Operating Agreement provides for:
+- Voluntary dissolution by supermajority vote
+- Wind-up procedures compliant with Wyoming law
+- Asset distribution to members
+- Articles of Dissolution filing
+
+================================================================================
+              SECTION 3: FEDERAL COMPLIANCE CONSIDERATIONS
+================================================================================
+
+3.1 - Commodity Futures Trading Commission (CFTC)
+
+POSITION: The DAO does not operate as a commodity exchange or derivatives 
+platform. Staking and liquidity provision are protocol features, not 
+derivatives instruments.
+
+SAFEGUARDS:
+- No futures, options, or swaps offered
+- No leveraged trading facilities
+- No commodity pool operations
+- Clear disclosure of DeFi risks
+
+3.2 - Office of the Comptroller of the Currency (OCC)
+
+POSITION: The DAO does not conduct banking activities requiring OCC oversight.
+
+SAFEGUARDS:
+- No deposit-taking
+- No lending to public
+- No payment processing for third parties
+- Wyoming digital asset exemptions utilized
+
+3.3 - Consumer Financial Protection Bureau (CFPB)
+
+POSITION: The DAO's educational focus and token utility do not trigger 
+consumer financial product regulations.
+
+SAFEGUARDS:
+- Clear disclosures of token risks
+- No consumer lending
+- No debt collection activities
+- Educational mission emphasis
+
+================================================================================
+                SECTION 4: SECURITIES LAW ANALYSIS
+================================================================================
+
+4.1 - TUT Token Analysis
+
+The DAO has analyzed the TUT token under the Howey test:
+
+INVESTMENT OF MONEY: ✓ Present
+- Token acquisition requires value exchange
+
+COMMON ENTERPRISE: Analysis supports NOT present
+- Decentralized governance reduces commonality
+- Member returns not pooled
+
+EXPECTATION OF PROFIT: Analysis supports NOT primary
+- Token designed for governance utility
+- Staking rewards are protocol incentives, not investments
+- Educational access is primary utility
+
+DERIVED FROM EFFORTS OF OTHERS: Analysis supports NOT present
+- Decentralized management
+- Algorithmic operations
+- No promoter with ongoing duties
+
+CONCLUSION: Based on analysis, TUT is designed and operated as a utility 
+token. However, this analysis should be reviewed by legal counsel and may 
+change based on regulatory developments.
+
+4.2 - uTUT Token Analysis
+
+The uTUT token is:
+- Non-transferable (soulbound)
+- Earned through educational completion
+- Redeemable only for ecosystem benefits
+- Not tradeable on secondary markets
+
+CONCLUSION: uTUT does not meet the definition of a security as it lacks 
+transferability and investment characteristics.
+
+4.3 - Risk Mitigation
+
+To maintain utility token status:
+(a) Do not promote TUT as an investment opportunity
+(b) Emphasize governance and utility functions
+(c) Avoid guarantees of profit or returns
+(d) Maintain decentralized governance
+(e) Continue building ecosystem utility
+(f) Monitor regulatory guidance and adapt
+
+4.4 - Securities Disclaimer
+
+IMPORTANT: Neither TUT nor uTUT have been registered with the Securities 
+and Exchange Commission (SEC) or any state securities regulatory authority. 
+The DAO has made a good faith determination that these tokens are utility 
+tokens and not securities. This determination may be challenged by 
+regulators. Token holders should not acquire tokens with an expectation of 
+profit based on the efforts of others.
+
+================================================================================
+                     SECTION 5: TAX COMPLIANCE
+================================================================================
+
+5.1 - DAO Tax Status
+
+The DAO intends to be taxed as a partnership for U.S. federal income tax 
+purposes. As a Wyoming LLC without corporate election:
+
+- Pass-through taxation applies
+- Members report their share of income/losses
+- DAO files informational returns (Form 1065)
+- Schedule K-1 issued to members (if required)
+
+5.2 - Token Taxation
+
+Members should be aware of potential tax implications:
+
+TOKEN ACQUISITION:
+- No immediate tax event for token purchases
+- Cost basis established at acquisition
+
+TOKEN STAKING REWARDS:
+- Potentially taxable as ordinary income when received
+- Fair market value at receipt is taxable amount
+
+TOKEN DISPOSITIONS:
+- Capital gain/loss treatment for sales
+- Short-term vs. long-term rates apply
+
+GOVERNANCE PARTICIPATION:
+- No tax event for voting or delegation
+
+5.3 - DAO Reporting Obligations
+
+The DAO shall:
+(a) Maintain records of all financial transactions
+(b) File required federal and state tax returns
+(c) Issue 1099 forms to contractors (>$600)
+(d) Comply with reporting requirements as they develop
+(e) Engage qualified tax professionals
+
+5.4 - Tax Disclaimer
+
+This document does not constitute tax advice. Members should consult their 
+own tax advisors regarding the tax consequences of token ownership and DAO 
+participation.
+
+================================================================================
+                    SECTION 6: AML/KYC FRAMEWORK
+================================================================================
+
+6.1 - Risk-Based Approach
+
+The DAO implements a risk-based AML/KYC framework:
+
+LOW RISK ACTIVITIES:
+- Governance voting
+- Training program participation
+- Small-value transactions (<$3,000)
+- Smart contract interactions
+
+MEDIUM RISK ACTIVITIES:
+- Treasury disbursements
+- Grant allocations
+- Contractor payments
+
+HIGH RISK ACTIVITIES:
+- Large value transactions (>$10,000)
+- Fiat on/off ramp operations
+- Third-party payments
+
+6.2 - KYC Requirements
+
+KYC REQUIRED FOR:
+- Gnosis Safe signers
+- Treasury payment recipients (>$600)
+- Grant recipients
+- Contractors and service providers
+- Fiat banking operations
+
+KYC NOT REQUIRED FOR:
+- General token holders
+- Governance participants
+- Training program completers
+- Small-value transactions
+
+6.3 - Sanctions Compliance
+
+The DAO shall:
+(a) Screen addresses against OFAC sanctions lists
+(b) Block transactions to/from sanctioned addresses
+(c) Use blockchain analytics for compliance monitoring
+(d) Report suspicious activities as required
+(e) Maintain sanctions screening documentation
+
+6.4 - Suspicious Activity Monitoring
+
+Red flags requiring additional review:
+(a) Unusual transaction patterns
+(b) Transactions with mixing services
+(c) Rapid movement of large values
+(d) Known exploit-related addresses
+(e) Jurisdictional concerns
+
+================================================================================
+                SECTION 7: DATA PRIVACY AND PROTECTION
+================================================================================
+
+7.1 - Data Collection Principles
+
+The DAO collects only data necessary for:
+(a) Governance operations
+(b) Regulatory compliance
+(c) Program administration
+(d) Security monitoring
+
+7.2 - On-Chain vs. Off-Chain Data
+
+ON-CHAIN (Public by design):
+- Wallet addresses
+- Transaction history
+- Voting records
+- Token balances
+
+OFF-CHAIN (Protected):
+- KYC documentation
+- Personal identifiers
+- Contact information
+- Financial details
+
+7.3 - Privacy Protections
+
+The DAO implements:
+(a) Encryption of sensitive off-chain data
+(b) Access controls and audit trails
+(c) Data retention limits
+(d) Secure disposal procedures
+(e) Incident response procedures
+
+7.4 - GDPR Considerations
+
+For EU-based participants:
+- Right to access personal data
+- Right to rectification
+- Right to erasure (where technically feasible)
+- Data portability rights
+- Privacy by design principles
+
+================================================================================
+              SECTION 8: INTERNATIONAL CONSIDERATIONS
+================================================================================
+
+8.1 - Jurisdictional Limitations
+
+The DAO may restrict services in jurisdictions where:
+(a) Cryptocurrency is prohibited
+(b) DAO structures are not recognized
+(c) Sanctions prohibit engagement
+(d) Regulatory requirements cannot be met
+
+8.2 - Restricted Jurisdictions
+
+The following jurisdictions are restricted:
+- OFAC sanctioned countries (Iran, North Korea, Cuba, Syria, etc.)
+- Countries with cryptocurrency bans
+- Other jurisdictions as identified by legal review
+
+8.3 - Cross-Border Considerations
+
+For international operations:
+(a) Comply with local laws where services provided
+(b) Consider tax treaty implications
+(c) Respect data localization requirements
+(d) Monitor regulatory developments globally
+
+================================================================================
+                     SECTION 9: RISK REGISTER
+================================================================================
+
+9.1 - Legal and Regulatory Risks
+
+| Risk                          | Likelihood | Impact | Mitigation            |
+|------------------------------|------------|--------|------------------------|
+| Securities classification    | Medium     | High   | Utility design, counsel|
+| AML enforcement             | Low        | High   | Compliance program     |
+| Tax audit                   | Medium     | Medium | Documentation, filing  |
+| Wyoming law changes         | Low        | Medium | Monitor, adapt         |
+| Federal regulation          | Medium     | High   | Legal counsel, monitor |
+
+9.2 - Operational Risks
+
+| Risk                          | Likelihood | Impact | Mitigation            |
+|------------------------------|------------|--------|------------------------|
+| Smart contract exploit      | Low        | High   | Audits, insurance      |
+| Key compromise              | Low        | High   | Multi-sig, hardware    |
+| Protocol failure            | Low        | Medium | Diversification        |
+| Governance attack           | Low        | Medium | Quorum, timelock       |
+| Market volatility           | High       | Medium | Reserves, diversify    |
+
+9.3 - Reputational Risks
+
+| Risk                          | Likelihood | Impact | Mitigation            |
+|------------------------------|------------|--------|------------------------|
+| Negative publicity          | Medium     | Medium | Transparency, PR       |
+| Member disputes             | Medium     | Low    | Governance, arbitration|
+| Partner failure             | Low        | Medium | Due diligence          |
+| Competitor action           | Medium     | Low    | Innovation, community  |
+
+================================================================================
+                  SECTION 10: COMPLIANCE MONITORING
+================================================================================
+
+10.1 - Compliance Calendar
+
+MONTHLY:
+- Sanctions list screening update
+- Transaction monitoring review
+- Incident review
+
+QUARTERLY:
+- Regulatory development review
+- Compliance training (if staff)
+- Risk assessment update
+- Legal counsel consultation
+
+ANNUALLY:
+- Comprehensive compliance audit
+- Policy review and updates
+- External legal review
+- Regulatory strategy planning
+
+10.2 - Compliance Responsibilities
+
+GNOSIS SAFE SIGNERS:
+- Verify transaction compliance before signing
+- Report suspicious activities
+- Maintain security practices
+- Participate in compliance training
+
+GOVERNANCE PARTICIPANTS:
+- Understand compliance framework
+- Vote in good faith
+- Report concerns through proper channels
+
+10.3 - Incident Response
+
+For compliance incidents:
+1. Identify and contain the issue
+2. Assess regulatory implications
+3. Engage legal counsel as needed
+4. Document all actions
+5. Report to appropriate authorities (if required)
+6. Implement corrective measures
+7. Update policies as needed
+
+10.4 - Regulatory Engagement
+
+The DAO shall:
+(a) Monitor regulatory developments proactively
+(b) Engage with regulators constructively when appropriate
+(c) Participate in industry advocacy
+(d) Respond promptly to regulatory inquiries
+(e) Maintain legal counsel relationships
+
+================================================================================
+                          DOCUMENT CONTROL
+================================================================================
+
+Document: Compliance and Risk Addendum (Attachment C)
+Version: 1.0
+Effective Date: January 2026
+Last Updated: January 2, 2026
+
+Review Schedule: Quarterly and upon material regulatory developments
+Compliance Owner: DAO Governance / Legal Counsel
+
+DISCLAIMER: This document provides a compliance framework but does not 
+constitute legal advice. The DAO should engage qualified legal counsel 
+for specific compliance questions and regulatory matters. Regulatory 
+requirements may change, and this framework should be updated accordingly.
+
+================================================================================
+                           END OF DOCUMENT
+================================================================================

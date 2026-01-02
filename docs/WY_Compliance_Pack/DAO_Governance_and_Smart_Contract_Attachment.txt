@@ -1,0 +1,317 @@
+================================================================================
+          TOLANI ECOSYSTEM DAO LLC - ATTACHMENT A
+          GOVERNANCE AND SMART CONTRACT DISCLOSURE
+================================================================================
+
+                    Prepared pursuant to
+                    W.S. 17-31-104 (Statement of Rights)
+                    W.S. 17-31-105 (Smart Contracts)
+                    W.S. 17-31-106 (Articles of Organization)
+
+================================================================================
+                         STATUTORY COMPLIANCE
+================================================================================
+
+This disclosure is made in compliance with the Wyoming Decentralized Autonomous 
+Organization Supplement Act requirements for the public disclosure of governance 
+and smart contract mechanisms.
+
+================================================================================
+                     SECTION 1: DAO CLASSIFICATION
+================================================================================
+
+1.1 - DAO Type
+
+Pursuant to W.S. 17-31-104(e), Tolani Ecosystem DAO LLC operates as an 
+ALGORITHMICALLY MANAGED DAO, where:
+
+✓ The underlying smart contracts are capable of automatically executing 
+  governance decisions
+✓ Smart contracts can be updated through on-chain governance votes
+✓ The DAO's activities are primarily governed by algorithmic decision-making
+
+1.2 - Legal Structure
+
+| Attribute               | Value                                      |
+|------------------------|---------------------------------------------|
+| Legal Name             | Tolani Ecosystem DAO LLC                    |
+| Jurisdiction           | State of Wyoming, United States             |
+| Formation Date         | January 2026                                |
+| Entity Type            | Decentralized Autonomous Organization LLC   |
+| Duration               | Perpetual                                   |
+| Registered Agent       | [Wyoming Registered Agent Details]          |
+
+================================================================================
+                   SECTION 2: GOVERNANCE TOKEN DISCLOSURE
+================================================================================
+
+2.1 - Primary Governance Token (TUT)
+
+| Property              | Value                                        |
+|----------------------|----------------------------------------------|
+| Token Name           | Tolani Utility Token                         |
+| Symbol               | TUT                                          |
+| Standard             | ERC-20 (with ERC-20Votes extension)          |
+| Decimals             | 18                                           |
+| Maximum Supply       | 100,000,000 TUT                              |
+| Upgradeable          | Yes (UUPS Proxy Pattern)                     |
+
+ETHEREUM MAINNET DEPLOYMENT:
+| Contract             | Address                                      |
+|---------------------|----------------------------------------------|
+| TUT Proxy           | 0x90e9d7189D605a824C2481Fe88A1d9A7DDFAF71D   |
+| TUT Implementation  | 0x66CF392d1627404311Ee126292C4c949BCCb3025   |
+| Etherscan           | https://etherscan.io/token/0x90e9d7189D605a824C2481Fe88A1d9A7DDFAF71D |
+
+BASE MAINNET DEPLOYMENT:
+| Contract             | Address                                      |
+|---------------------|----------------------------------------------|
+| TUT (L2 Bridge)     | 0xAf7e938741a720508897Bf3a13538f6713A337A4   |
+| BaseScan            | https://basescan.org/token/0xAf7e938741a720508897Bf3a13538f6713A337A4 |
+
+2.2 - Utility Token (uTUT)
+
+| Property              | Value                                        |
+|----------------------|----------------------------------------------|
+| Token Name           | Utility TUT (Training Rewards)               |
+| Symbol               | uTUT                                         |
+| Standard             | ERC-20                                       |
+| Decimals             | 6                                            |
+| Transferable         | No (Soulbound to recipient)                  |
+| Purpose              | Educational achievement rewards              |
+
+2.3 - Token Rights and Limitations
+
+TUT TOKEN HOLDER RIGHTS:
+(a) Vote on governance proposals proportional to holdings
+(b) Delegate voting power to any Ethereum address
+(c) Submit proposals (if meeting threshold of 100,000 TUT)
+(d) Receive protocol distributions if approved by governance
+(e) Participate in staking and DeFi ecosystem
+(f) Access DAO-funded educational programs
+
+TUT TOKEN LIMITATIONS:
+(a) No guarantee of profit or return on investment
+(b) No right to dividends unless approved by governance
+(c) No management rights outside of governance voting
+(d) Subject to market volatility and liquidity risks
+(e) Token value may decline to zero
+
+================================================================================
+               SECTION 3: SMART CONTRACT ARCHITECTURE
+================================================================================
+
+3.1 - Core Governance Contracts
+
+TOLANIGOVERNOR (OpenZeppelin Governor)
+- Purpose: Manages on-chain proposal lifecycle and voting
+- Standards: OpenZeppelin Governor with extensions
+- Key Functions:
+  * propose() - Submit governance proposals
+  * castVote() - Cast vote on active proposals
+  * execute() - Execute approved proposals
+  * queue() - Queue proposals for timelock execution
+
+TOLANITIMELOCK (TimelockController)
+- Purpose: Enforces delay between approval and execution
+- Delay Period: 48 hours (172,800 seconds)
+- Key Functions:
+  * schedule() - Schedule operation for execution
+  * execute() - Execute after delay
+  * cancel() - Cancel scheduled operation (admin only)
+
+3.2 - Token Contracts
+
+TOLANITOKEN (TUT)
+- Pattern: UUPS Upgradeable Proxy
+- Standards: ERC-20, ERC-20Votes, ERC-20Permit
+- Key Functions:
+  * transfer() - Standard ERC-20 transfer
+  * delegate() - Delegate voting power
+  * getPastVotes() - Historical vote checkpoints
+
+UTUTSIMPLE (uTUT)
+- Pattern: Non-upgradeable
+- Standards: ERC-20 (Non-transferable)
+- Key Functions:
+  * mint() - Award training rewards (admin only)
+  * burn() - Redeem tokens (admin only)
+
+3.3 - Treasury Contracts
+
+TOLANITREASURY
+- Purpose: Manages DAO on-chain treasury
+- Controls: Multi-signature + Governance
+- Key Functions:
+  * executeTransaction() - Execute approved transfers
+  * setAllocation() - Update allocation categories
+
+GNOSIS SAFE
+- Address: 0xa56eb5E3990C740C8c58F02eAD263feF02567677
+- Threshold: 3-of-5 signatures required
+- Purpose: Emergency controls and off-chain asset management
+
+3.4 - DeFi Contracts
+
+TOLANISTAKING
+- Purpose: TUT staking for rewards
+- Key Functions:
+  * stake() - Deposit TUT tokens
+  * unstake() - Withdraw staked tokens
+  * claimRewards() - Claim accumulated rewards
+
+TOLANILPSTAKING
+- Purpose: Liquidity provider incentives
+- Integration: Uniswap V3 LP positions
+- Key Functions:
+  * depositLP() - Stake LP tokens
+  * withdrawLP() - Unstake LP tokens
+
+================================================================================
+                   SECTION 4: GOVERNANCE PARAMETERS
+================================================================================
+
+4.1 - Voting Configuration
+
+| Parameter            | Value                  | Description              |
+|---------------------|------------------------|--------------------------|
+| Voting Delay        | 7,200 blocks (~1 day)  | Delay before voting      |
+| Voting Period       | 50,400 blocks (~7 days)| Duration of voting       |
+| Proposal Threshold  | 100,000 TUT            | Minimum to propose       |
+| Quorum              | 4%                     | Required participation   |
+| Approval            | >50%                   | Simple majority          |
+| Timelock            | 48 hours               | Execution delay          |
+
+4.2 - Proposal Types
+
+STANDARD PROPOSAL:
+- Changes to protocol parameters
+- Treasury disbursements under $100,000
+- Contract upgrades (with audit)
+- Policy amendments
+
+CRITICAL PROPOSAL:
+- Changes requiring >$100,000 treasury movement
+- Multi-sig threshold changes
+- Protocol emergency pauses
+- Additional 7-day community review recommended
+
+4.3 - Emergency Powers
+
+The Gnosis Safe multi-sig retains emergency powers:
+- Pause protocols in case of exploit (2-of-5 required)
+- Execute emergency upgrades (3-of-5 required)
+- All emergency actions subject to post-hoc governance review
+
+================================================================================
+              SECTION 5: SMART CONTRACT SECURITY
+================================================================================
+
+5.1 - Security Measures
+
+(a) AUDIT STATUS:
+    - Core contracts: [Audit pending - to be completed before mainnet]
+    - OpenZeppelin dependencies: Audited by OpenZeppelin
+    - Proxy pattern: Standard UUPS (audited)
+
+(b) ACCESS CONTROL:
+    - Role-based permissions (OpenZeppelin AccessControl)
+    - Time-locked administrative functions
+    - Multi-signature requirements for critical operations
+
+(c) UPGRADE MECHANISMS:
+    - UUPS proxy pattern for TUT token
+    - Governance-controlled upgrade process
+    - Implementation address verified on-chain
+
+5.2 - Known Risks and Limitations
+
+SMART CONTRACT RISKS:
+(a) Code bugs: Despite audits, undiscovered bugs may exist
+(b) Upgrade risks: Future upgrades may introduce vulnerabilities
+(c) Dependency risks: OpenZeppelin or other dependencies may have issues
+(d) Oracle risks: External data dependencies may be manipulated
+
+GOVERNANCE RISKS:
+(a) Voter apathy: Low participation may enable minority control
+(b) Vote buying: Token accumulation may concentrate power
+(c) Proposal spam: Malicious proposals may require filtering
+(d) Flash loan attacks: Vote manipulation via borrowed tokens
+
+ECONOMIC RISKS:
+(a) Token price volatility: Market forces may impact value
+(b) Liquidity risks: Insufficient liquidity may affect trading
+(c) Impermanent loss: LP providers may experience losses
+(d) Smart contract exploits: Funds may be lost to attacks
+
+5.3 - Bug Bounty Program
+
+The DAO maintains a bug bounty program for responsible disclosure:
+- Critical vulnerabilities: Up to $50,000 TUT
+- High severity: Up to $25,000 TUT
+- Medium severity: Up to $10,000 TUT
+- Low severity: Up to $2,500 TUT
+
+Report vulnerabilities to: security@tolani.dao
+
+================================================================================
+                   SECTION 6: STATUTORY DISCLOSURES
+================================================================================
+
+6.1 - W.S. 17-31-104 Compliance (Statement of Rights)
+
+Pursuant to W.S. 17-31-104, this document discloses:
+✓ The rights of members (Article 3.2 of Operating Agreement)
+✓ The voting mechanism (Section 4 above)
+✓ The proposal process (Section 4.2 above)
+✓ Token holder rights and limitations (Section 2.3 above)
+
+6.2 - W.S. 17-31-105 Compliance (Smart Contracts)
+
+Pursuant to W.S. 17-31-105:
+✓ Smart contracts may execute decisions autonomously
+✓ Contract addresses publicly disclosed (Section 3)
+✓ Upgrade mechanisms disclosed (Section 3.1)
+✓ The smart contracts are the agreement when in conflict with this document
+  for operational matters
+
+6.3 - W.S. 17-31-106 Compliance (Articles of Organization)
+
+Pursuant to W.S. 17-31-106(b):
+✓ Public identifier: 0x90e9d7189D605a824C2481Fe88A1d9A7DDFAF71D
+✓ Smart contract source code available at:
+  - GitHub: https://github.com/tolani-ecosystem/contracts
+  - Etherscan: Verified source code at contract addresses
+  - BaseScan: Verified source code at contract addresses
+
+================================================================================
+                        SECTION 7: AMENDMENTS
+================================================================================
+
+This disclosure document may be amended through the standard governance process:
+
+1. Proposal submitted to TolaniGovernor
+2. 7-day voting period
+3. 4% quorum and >50% approval required
+4. 48-hour timelock before execution
+5. Updated document published to official channels
+
+All amendments are recorded on-chain and linked to governance proposal IDs.
+
+================================================================================
+                           DOCUMENT CONTROL
+================================================================================
+
+Document: Governance and Smart Contract Disclosure (Attachment A)
+Version: 1.0
+Effective Date: January 2026
+Last Updated: January 2, 2026
+
+Prepared in compliance with:
+- W.S. 17-31-104 (Statement of Rights)
+- W.S. 17-31-105 (Smart Contracts)
+- W.S. 17-31-106 (Articles of Organization)
+
+================================================================================
+                           END OF DOCUMENT
+================================================================================

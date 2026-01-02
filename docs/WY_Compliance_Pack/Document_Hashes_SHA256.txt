@@ -1,0 +1,67 @@
+================================================================================
+          TOLANI ECOSYSTEM DAO LLC - DOCUMENT HASHES
+                    Cryptographic Integrity Verification
+================================================================================
+
+Generated: January 2, 2026
+Algorithm: SHA-256
+
+================================================================================
+                         DOCUMENT HASHES
+================================================================================
+
+Tolani_Ecosystem_DAO_Operating_Agreement_v1.0.txt:
+0CA2BE9F2629E68A57757BE277A68E07AEAEA85AC517A3C05D24F65AFF2B3C0D
+
+DAO_Governance_and_Smart_Contract_Attachment.txt:
+B21070465A538C9CA2E963D2EDBA1FA07B054C0478EBD4F844B5CB1136502627
+
+DAO_Treasury_Policy.txt:
+418E93E497F4140932916FB57FFB456A7E59D6FFC78C79C8FCEB3CB43FE27C50
+
+DAO_Compliance_and_Risk_Addendum.txt:
+C1213DBBD28FB2DF631B1229DD11F13BF04D3681B705C0F71988B7E21FF93B42
+
+================================================================================
+                      VERIFICATION INSTRUCTIONS
+================================================================================
+
+To verify document integrity:
+
+WINDOWS (PowerShell):
+  Get-FileHash <filename> -Algorithm SHA256
+
+LINUX/MAC:
+  sha256sum <filename>
+
+ONLINE:
+  Upload to any SHA-256 hash calculator
+
+If the hash matches, the document has not been altered since creation.
+
+================================================================================
+                         DOCUMENT CHAIN
+================================================================================
+
+These documents are part of the Tolani Ecosystem DAO LLC Wyoming Compliance 
+Pack v1.0 and are intended to be:
+
+1. Filed with Wyoming Secretary of State (Operating Agreement reference)
+2. Published on IPFS for immutable storage
+3. Referenced in on-chain governance
+4. Made available on the DAO's public documentation
+
+================================================================================
+                      ON-CHAIN ATTESTATION
+================================================================================
+
+These document hashes may be attested on-chain via governance proposal
+for permanent, verifiable record of the DAO's legal framework.
+
+Attestation Transaction: [To be recorded]
+Block Number: [To be recorded]
+IPFS CID: [To be pinned]
+
+================================================================================
+                           END OF DOCUMENT
+================================================================================

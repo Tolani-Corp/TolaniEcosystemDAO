@@ -41,5 +41,9 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/Tolani-Corp/TolaniToken"
+  },
+  "dependencies": {
+    "@eth-optimism/viem": "^0.4.14",
+    "viem": "^2.43.4"
   }
 }

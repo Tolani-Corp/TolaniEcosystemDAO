@@ -1,0 +1,567 @@
+================================================================================
+          TOLANI ECOSYSTEM DAO LLC - OPERATING AGREEMENT
+                        Version 1.0
+                   Effective: January 2026
+================================================================================
+
+                    WYOMING DECENTRALIZED AUTONOMOUS
+                    ORGANIZATION LIMITED LIABILITY COMPANY
+                    OPERATING AGREEMENT
+
+                    Formed pursuant to the
+                    Wyoming Decentralized Autonomous Organization
+                    Supplement Act (W.S. 17-31-101 et seq.)
+
+================================================================================
+                         TABLE OF CONTENTS
+================================================================================
+
+ARTICLE I      - ORGANIZATION AND PURPOSE
+ARTICLE II     - DEFINITIONS
+ARTICLE III    - MEMBERSHIP AND TUT TOKENS
+ARTICLE IV     - GOVERNANCE AND VOTING
+ARTICLE V      - MANAGEMENT AND ALGORITHMICALLY MANAGED
+ARTICLE VI     - CAPITAL CONTRIBUTIONS AND DISTRIBUTIONS
+ARTICLE VII    - TREASURY MANAGEMENT
+ARTICLE VIII   - SMART CONTRACT GOVERNANCE
+ARTICLE IX     - LIABILITY AND INDEMNIFICATION
+ARTICLE X      - AMENDMENTS
+ARTICLE XI     - DISSOLUTION
+ARTICLE XII    - DISPUTE RESOLUTION
+ARTICLE XIII   - MISCELLANEOUS PROVISIONS
+
+================================================================================
+                    ARTICLE I - ORGANIZATION AND PURPOSE
+================================================================================
+
+Section 1.1 - Formation
+
+Tolani Ecosystem DAO LLC (the "DAO" or "Company") is a Wyoming Decentralized 
+Autonomous Organization Limited Liability Company formed pursuant to the 
+Wyoming Limited Liability Company Act (W.S. 17-29-101 et seq.) and the 
+Wyoming Decentralized Autonomous Organization Supplement (W.S. 17-31-101 
+et seq.).
+
+Section 1.2 - Name
+
+The name of the Company is "Tolani Ecosystem DAO LLC" and may also be referred 
+to as "Tolani DAO" or the "Tolani Ecosystem."
+
+Section 1.3 - Principal Office
+
+The principal office of the Company is located in the State of Wyoming. The 
+registered agent and office are as designated in the Articles of Organization 
+filed with the Wyoming Secretary of State.
+
+Section 1.4 - Purpose
+
+The Company is organized for the following purposes:
+
+(a) To operate a decentralized educational technology platform providing 
+    workforce development, technical training, and skills certification 
+    programs aligned with the United Nations Sustainable Development Goals;
+
+(b) To issue, manage, and govern the TUT (Tolani Utility Token) governance 
+    token and associated utility tokens (uTUT) for training rewards;
+
+(c) To facilitate decentralized finance (DeFi) operations including token 
+    staking, liquidity provision, and yield optimization for ecosystem 
+    sustainability;
+
+(d) To fund and support educational initiatives, particularly in underserved 
+    communities, through decentralized treasury management;
+
+(e) To engage in any lawful activity for which a Wyoming DAO LLC may be 
+    organized.
+
+Section 1.5 - Duration
+
+The Company shall have perpetual existence unless dissolved pursuant to 
+Article XI of this Agreement or applicable law.
+
+Section 1.6 - DAO Type Classification
+
+Pursuant to W.S. 17-31-104(e), this DAO is classified as:
+
+☑ ALGORITHMICALLY MANAGED DAO - The Company is managed by smart contracts 
+  deployed on blockchain networks, subject to governance token holder voting 
+  as described in Article IV.
+
+================================================================================
+                         ARTICLE II - DEFINITIONS
+================================================================================
+
+Section 2.1 - Defined Terms
+
+"Blockchain" means the Ethereum and Base network public distributed ledgers 
+where the DAO's smart contracts and tokens are deployed.
+
+"Gnosis Safe" means the multi-signature smart contract wallet at address 
+0xa56eb5E3990C740C8c58F02eAD263feF02567677 used for treasury management.
+
+"Governor Contract" means the TolaniGovernor smart contract that manages 
+on-chain voting and proposal execution.
+
+"Member" means any holder of TUT governance tokens.
+
+"Proposal" means a formal on-chain governance action submitted to the 
+Governor Contract for voting.
+
+"Quorum" means the minimum percentage of voting power required for a 
+valid governance vote, set at 4% of total token supply.
+
+"Smart Contract" means self-executing code deployed on the Blockchain 
+that automatically enforces the rules defined in its programming.
+
+"TUT Token" means the ERC-20 governance token of the DAO with contract 
+address 0x90e9d7189D605a824C2481Fe88A1d9A7DDFAF71D on Ethereum Mainnet 
+and 0xAf7e938741a720508897Bf3a13538f6713A337A4 on Base.
+
+"uTUT Token" means the non-transferable utility token awarded to Members 
+who complete training programs.
+
+"Timelock" means the TolaniTimelock smart contract that enforces a delay 
+period between proposal approval and execution.
+
+"Voting Period" means the duration during which Members may cast votes 
+on a Proposal, currently set at 7 days (approximately 50,400 blocks).
+
+================================================================================
+                 ARTICLE III - MEMBERSHIP AND TUT TOKENS
+================================================================================
+
+Section 3.1 - Membership Qualification
+
+Membership in the DAO is acquired by obtaining TUT governance tokens through 
+any lawful means, including:
+
+(a) Participation in token distribution events;
+(b) Purchase on secondary markets;
+(c) Receipt through governance-approved allocations;
+(d) Earning through ecosystem participation and staking.
+
+Section 3.2 - Membership Rights
+
+Each Member holding TUT tokens shall have the right to:
+
+(a) Participate in governance voting in proportion to their token holdings;
+(b) Submit Proposals to the Governor Contract (subject to proposal threshold);
+(c) Delegate voting power to another address;
+(d) Receive distributions approved by governance;
+(e) Access DAO-funded educational resources and training programs.
+
+Section 3.3 - Membership Responsibilities
+
+Each Member agrees to:
+
+(a) Exercise voting rights in good faith for the benefit of the DAO;
+(b) Comply with applicable laws and regulations;
+(c) Not engage in activities that harm the DAO or its reputation;
+(d) Respect the outcomes of legitimate governance votes.
+
+Section 3.4 - Token Supply and Distribution
+
+The TUT token has a maximum supply of 100,000,000 (one hundred million) tokens 
+with 18 decimal places. The initial allocation is as follows:
+
+| Allocation Category        | Percentage | Amount (TUT)    |
+|---------------------------|------------|-----------------|
+| DAO Treasury              | 40%        | 40,000,000      |
+| Team & Advisors (Vested)  | 20%        | 20,000,000      |
+| Ecosystem Development     | 15%        | 15,000,000      |
+| Community Rewards         | 15%        | 15,000,000      |
+| Liquidity Provision       | 10%        | 10,000,000      |
+
+Section 3.5 - No Personal Liability
+
+No Member shall be personally liable for any debt, obligation, or liability 
+of the DAO solely by reason of being a Member.
+
+================================================================================
+                   ARTICLE IV - GOVERNANCE AND VOTING
+================================================================================
+
+Section 4.1 - Governance Framework
+
+The DAO operates under a hybrid governance model combining:
+
+(a) On-chain governance through the TolaniGovernor smart contract;
+(b) Off-chain discussion and signaling through community forums;
+(c) Multi-signature treasury controls through Gnosis Safe.
+
+Section 4.2 - Voting Power
+
+Voting power is determined by:
+
+(a) The number of TUT tokens held by a Member at the time of proposal creation;
+(b) Tokens must be self-delegated or delegated to vote;
+(c) One (1) TUT token equals one (1) vote.
+
+Section 4.3 - Proposal Process
+
+Proposals follow this process:
+
+1. DISCUSSION PHASE: Community discussion on governance forums (recommended 
+   minimum 3 days);
+
+2. PROPOSAL SUBMISSION: Any Member meeting the proposal threshold may submit 
+   a Proposal to the Governor Contract;
+
+3. VOTING DELAY: A 1-day delay between proposal submission and voting start;
+
+4. VOTING PERIOD: Members vote For, Against, or Abstain during the 7-day 
+   voting period;
+
+5. TIMELOCK: Approved proposals enter a 48-hour timelock before execution;
+
+6. EXECUTION: Proposals are executed automatically or by any Member calling 
+   the execute function.
+
+Section 4.4 - Voting Thresholds
+
+| Parameter              | Value                        |
+|-----------------------|------------------------------|
+| Proposal Threshold    | 100,000 TUT (0.1% of supply) |
+| Quorum                | 4% of total voting power     |
+| Approval Threshold    | Simple majority (>50%)       |
+| Voting Delay          | 1 day (~7,200 blocks)        |
+| Voting Period         | 7 days (~50,400 blocks)      |
+| Timelock Delay        | 48 hours                     |
+
+Section 4.5 - Vote Types
+
+Members may cast votes as follows:
+
+(a) FOR - Support the proposal;
+(b) AGAINST - Oppose the proposal;
+(c) ABSTAIN - Counted for quorum but not for/against.
+
+Section 4.6 - Delegation
+
+Members may delegate their voting power to any Ethereum address. Delegation 
+does not transfer token ownership and may be revoked at any time.
+
+================================================================================
+              ARTICLE V - MANAGEMENT AND ALGORITHMICALLY MANAGED
+================================================================================
+
+Section 5.1 - Management Structure
+
+Pursuant to W.S. 17-31-104(e), this DAO is algorithmically managed, meaning:
+
+(a) The underlying smart contracts are capable of updating, modifying, or 
+    otherwise upgrading themselves through governance votes;
+
+(b) Day-to-day operations are executed by smart contracts without human 
+    intervention;
+
+(c) Material changes require governance approval through the Governor Contract.
+
+Section 5.2 - Smart Contract Addresses
+
+The canonical smart contracts governing the DAO are:
+
+ETHEREUM MAINNET:
+| Contract              | Address                                      |
+|----------------------|----------------------------------------------|
+| TUT Token (Proxy)    | 0x90e9d7189D605a824C2481Fe88A1d9A7DDFAF71D   |
+| TUT Implementation   | 0x66CF392d1627404311Ee126292C4c949BCCb3025   |
+
+BASE MAINNET:
+| Contract              | Address                                      |
+|----------------------|----------------------------------------------|
+| TUT Token (L2)       | 0xAf7e938741a720508897Bf3a13538f6713A337A4   |
+| TolaniGovernor       | [To be deployed after bridge finalization]   |
+| TolaniTimelock       | [To be deployed after bridge finalization]   |
+| TolaniTreasury       | [To be deployed after bridge finalization]   |
+| Gnosis Safe          | 0xa56eb5E3990C740C8c58F02eAD263feF02567677   |
+
+Section 5.3 - Administrative Safeguards
+
+The following multi-signature safeguards apply:
+
+(a) Treasury disbursements over $10,000 USD equivalent require 3-of-5 
+    Gnosis Safe signatures;
+
+(b) Smart contract upgrades require governance approval AND multi-sig 
+    execution;
+
+(c) Emergency pause functionality requires 2-of-5 signatures.
+
+Section 5.4 - Registered Agent
+
+The DAO maintains a registered agent in Wyoming as required by W.S. 17-31-106. 
+The registered agent may:
+
+(a) Receive service of process on behalf of the DAO;
+(b) Provide notice to Members as required by law;
+(c) Execute ministerial duties as directed by governance.
+
+================================================================================
+              ARTICLE VI - CAPITAL CONTRIBUTIONS AND DISTRIBUTIONS
+================================================================================
+
+Section 6.1 - Capital Contributions
+
+Members are not required to make capital contributions beyond their initial 
+token acquisition. Additional capital may be raised through:
+
+(a) Token sales approved by governance;
+(b) Protocol revenue (transaction fees, staking rewards);
+(c) Grants and donations;
+(d) DeFi yield generation.
+
+Section 6.2 - Distributions
+
+Distributions to Members, if any, shall be:
+
+(a) Approved by governance vote;
+(b) Distributed pro-rata based on TUT token holdings;
+(c) Subject to treasury sustainability requirements;
+(d) Compliant with applicable tax and securities laws.
+
+Section 6.3 - Profit and Loss Allocation
+
+The DAO operates primarily for ecosystem development and educational purposes. 
+Any net income shall be:
+
+(a) First, allocated to treasury reserves;
+(b) Second, allocated to ecosystem development;
+(c) Third, distributed to Members as approved by governance.
+
+================================================================================
+                    ARTICLE VII - TREASURY MANAGEMENT
+================================================================================
+
+Section 7.1 - Treasury Composition
+
+The DAO Treasury consists of:
+
+(a) On-chain assets held in smart contracts and the Gnosis Safe;
+(b) Fiat currency held in traditional banking accounts;
+(c) Digital assets across multiple blockchain networks.
+
+Section 7.2 - Treasury Controls
+
+Treasury operations are subject to the DAO Treasury Policy document, including:
+
+(a) Spending approval thresholds;
+(b) Multi-signature requirements;
+(c) Investment guidelines;
+(d) Audit requirements.
+
+Section 7.3 - Authorized Expenditures
+
+The Treasury may fund:
+
+(a) Educational program development and delivery;
+(b) Technology infrastructure and development;
+(c) Marketing and community growth;
+(d) Legal and compliance costs;
+(e) Operational expenses;
+(f) Grant programs for ecosystem projects.
+
+================================================================================
+                  ARTICLE VIII - SMART CONTRACT GOVERNANCE
+================================================================================
+
+Section 8.1 - Smart Contract Authority
+
+Pursuant to W.S. 17-31-105, the smart contracts listed in Section 5.2 shall 
+have the authority to:
+
+(a) Execute approved governance proposals;
+(b) Manage token distributions and transfers;
+(c) Enforce time-locked operations;
+(d) Facilitate voting and delegation.
+
+Section 8.2 - Smart Contract Amendments
+
+Any amendment to core smart contracts requires:
+
+(a) A governance proposal with detailed specification;
+(b) Independent security audit for material changes;
+(c) Approval by governance vote meeting quorum;
+(d) Execution through the Timelock contract.
+
+Section 8.3 - Conflict Resolution
+
+In the event of conflict between this Operating Agreement and smart contract 
+code:
+
+(a) For operational matters, smart contract code shall control;
+(b) For legal interpretation, this Operating Agreement shall control;
+(c) Governance may vote to reconcile conflicts through amendments.
+
+Section 8.4 - Public Identifier
+
+Pursuant to W.S. 17-31-106(b), the DAO's publicly available identifier is 
+the TUT token contract address on Ethereum Mainnet:
+0x90e9d7189D605a824C2481Fe88A1d9A7DDFAF71D
+
+================================================================================
+                  ARTICLE IX - LIABILITY AND INDEMNIFICATION
+================================================================================
+
+Section 9.1 - Limited Liability
+
+To the fullest extent permitted by Wyoming law:
+
+(a) No Member shall be liable for the debts, obligations, or liabilities 
+    of the DAO;
+
+(b) No Member shall be liable for the actions of other Members;
+
+(c) The DAO's liability shall be limited to its assets.
+
+Section 9.2 - Indemnification
+
+The DAO shall indemnify any Member, manager, or agent against claims arising 
+from good faith actions taken on behalf of the DAO, to the extent permitted 
+by law and approved by governance.
+
+Section 9.3 - Insurance
+
+The DAO may maintain insurance coverage as approved by governance, including:
+
+(a) Smart contract security insurance;
+(b) Directors and officers liability insurance;
+(c) Cyber liability insurance.
+
+================================================================================
+                         ARTICLE X - AMENDMENTS
+================================================================================
+
+Section 10.1 - Amendment Process
+
+This Operating Agreement may be amended by:
+
+(a) A governance proposal submitted to the Governor Contract;
+(b) Approval by majority vote meeting quorum requirements;
+(c) Execution through the standard timelock process;
+(d) Publication of amended agreement.
+
+Section 10.2 - Notice
+
+All amendments shall be:
+
+(a) Published on the DAO's official website and documentation;
+(b) Announced through official communication channels;
+(c) Recorded with a blockchain transaction hash for verifiability.
+
+================================================================================
+                        ARTICLE XI - DISSOLUTION
+================================================================================
+
+Section 11.1 - Voluntary Dissolution
+
+The DAO may be dissolved by:
+
+(a) A governance proposal for dissolution;
+(b) Approval by supermajority (66%) of voting power;
+(c) Compliance with W.S. 17-31-114 and 17-29-802;
+(d) Distribution of remaining assets to Members pro-rata.
+
+Section 11.2 - Winding Up
+
+Upon dissolution:
+
+(a) All debts and obligations shall be satisfied;
+(b) Remaining assets shall be distributed to Members;
+(c) Smart contracts shall be retired or paused;
+(d) Articles of Dissolution shall be filed with Wyoming Secretary of State.
+
+================================================================================
+                     ARTICLE XII - DISPUTE RESOLUTION
+================================================================================
+
+Section 12.1 - Internal Resolution
+
+Disputes among Members shall first attempt resolution through:
+
+(a) Direct communication between parties;
+(b) Community mediation through governance forums;
+(c) Binding arbitration if mediation fails.
+
+Section 12.2 - Arbitration
+
+Disputes not resolved internally shall be submitted to binding arbitration:
+
+(a) Administered by the American Arbitration Association;
+(b) Under the Commercial Arbitration Rules;
+(c) Conducted in the State of Wyoming;
+(d) With judgment entered in any court of competent jurisdiction.
+
+Section 12.3 - Governing Law
+
+This Agreement shall be governed by the laws of the State of Wyoming, 
+specifically the Wyoming LLC Act (W.S. 17-29-101 et seq.) and the 
+Wyoming DAO Supplement (W.S. 17-31-101 et seq.).
+
+================================================================================
+                   ARTICLE XIII - MISCELLANEOUS PROVISIONS
+================================================================================
+
+Section 13.1 - Entire Agreement
+
+This Operating Agreement, together with the Articles of Organization and 
+referenced attachments, constitutes the entire agreement among the Members.
+
+Section 13.2 - Severability
+
+If any provision is found invalid, the remaining provisions shall continue 
+in full force and effect.
+
+Section 13.3 - Waiver
+
+No waiver of any provision shall be effective unless in writing and approved 
+by governance vote.
+
+Section 13.4 - Notices
+
+Official notices to Members shall be provided through:
+
+(a) On-chain governance notifications;
+(b) Official DAO website and documentation;
+(c) Official social media and communication channels.
+
+Section 13.5 - Counterparts
+
+This Agreement may be executed in counterparts, each constituting an original. 
+Digital signatures and blockchain-recorded attestations are valid signatures.
+
+================================================================================
+                            ATTACHMENTS
+================================================================================
+
+The following documents are incorporated by reference:
+
+ATTACHMENT A: DAO Governance and Smart Contract Disclosure
+ATTACHMENT B: DAO Treasury Policy
+ATTACHMENT C: DAO Compliance and Risk Addendum
+ATTACHMENT D: Token Distribution Schedule
+
+================================================================================
+                         EXECUTION AND ADOPTION
+================================================================================
+
+This Operating Agreement is adopted by governance ratification vote.
+
+Proposal Hash: [To be recorded upon governance approval]
+Block Number: [To be recorded upon governance approval]
+Transaction Hash: [To be recorded upon governance approval]
+
+================================================================================
+                              END OF DOCUMENT
+================================================================================
+
+Document Version: 1.0
+Last Updated: January 2026
+Document Hash: [SHA-256 hash to be computed upon finalization]
+
+For verification, this document and all attachments are published at:
+- IPFS: [To be pinned]
+- GitHub: https://github.com/tolani-ecosystem/dao-legal
+- DAO Website: https://tolani.dao/legal
+
+================================================================================

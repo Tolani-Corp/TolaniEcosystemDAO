@@ -122,7 +122,10 @@ async function main() {
             { 
                 initializer: "initialize",
                 kind: "uups",
-                constructorArgs: [trustedForwarder]  // Constructor arg for ERC2771
+                constructorArgs: [trustedForwarder],  // Constructor arg for ERC2771
+                txOverrides: {
+                    gasLimit: 5000000  // Explicit gas limit for L1
+                }
             }
         );
         

@@ -1,0 +1,21 @@
+{
+  "network": "mainnet",
+  "chainId": 1,
+  "timestamp": "2026-01-02T06:08:42.476Z",
+  "deployer": "0xAdBcb3Ba539b741c386d28705858Af699856B928",
+  "contracts": {
+    "TUTTokenProxy": "0x90e9d7189D605a824C2481Fe88A1d9A7DDFAF71D",
+    "TUTTokenImplementation": "0x66CF392d1627404311Ee126292C4c949BCCb3025"
+  },
+  "config": {
+    "name": "Tolani Utility Token",
+    "symbol": "TUT",
+    "initialSupply": "100000000000000000000000000",
+    "cap": "100000000000000000000000000",
+    "trustedForwarder": "0xd8253782c45a12053594b9deB72d8e8aB2Fca54c"
+  },
+  "baseBridge": {
+    "l1StandardBridge": "0x3154Cf16ccdb4C6d922629664174b904d80F2C35",
+    "l1CrossDomainMessenger": "0x866E82a600A1414e583f7F13623F1aC5d58b0Afa"
+  }
+}

@@ -8,7 +8,9 @@ try {
   // Package not installed - upgradeable deployments won't work
 }
 
-const PRIVATE_KEY = process.env.PRIVATE_KEY || "0x0000000000000000000000000000000000000000000000000000000000000001";
+// Testnet uses CUSTODY key, Mainnet uses DEPLOYER key
+const TESTNET_KEY = process.env.PRIVATE_KEY || process.env.PRIVATE_KEY_CUSTODY || "0x0000000000000000000000000000000000000000000000000000000000000001";
+const MAINNET_KEY = process.env.PRIVATE_KEY_DEPLOYER || TESTNET_KEY;
 
 /** @type {import("hardhat/config").HardhatUserConfig} */
 module.exports = {
@@ -47,40 +49,40 @@ module.exports = {
     },
     mainnet: {
       url: process.env.MAINNET_RPC_URL || "https://eth.llamarpc.com",
-      accounts: [PRIVATE_KEY],
+      accounts: [MAINNET_KEY],
       chainId: 1,
       gasPrice: "auto",
     },
     sepolia: {
       url: process.env.SEPOLIA_RPC_URL || "",
-      accounts: [PRIVATE_KEY],
+      accounts: [TESTNET_KEY],
       chainId: 11155111,
     },
     polygon: {
       url: process.env.POLYGON_RPC_URL || "",
-      accounts: [PRIVATE_KEY],
+      accounts: [MAINNET_KEY],
       chainId: 137,
     },
     polygonMumbai: {
       url: process.env.POLYGON_MUMBAI_RPC_URL || "",
-      accounts: [PRIVATE_KEY],
+      accounts: [TESTNET_KEY],
       chainId: 80001,
     },
     arbitrum: {
       url: process.env.ARBITRUM_RPC_URL || "",
-      accounts: [PRIVATE_KEY],
+      accounts: [MAINNET_KEY],
       chainId: 42161,
     },
     // Base L2 Networks
     base: {
       url: process.env.BASE_RPC_URL || "https://mainnet.base.org",
-      accounts: [PRIVATE_KEY],
+      accounts: [MAINNET_KEY],
       chainId: 8453,
       gasPrice: "auto",
     },
     baseSepolia: {
       url: process.env.BASE_SEPOLIA_RPC_URL || "https://sepolia.base.org",
-      accounts: [PRIVATE_KEY],
+      accounts: [TESTNET_KEY],
       chainId: 84532,
     },
   },
