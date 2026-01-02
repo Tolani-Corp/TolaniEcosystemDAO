@@ -1,5 +1,87 @@
 # Tolani Ecosystem DAO - Deployment Summary
 
+## 🌐 Production Networks
+
+### Base Mainnet (Primary - L2)
+**Chain ID:** 8453  
+**Explorer:** https://basescan.org  
+**Deployed:** January 2, 2026
+
+| Contract | Address | Verified |
+|----------|---------|----------|
+| **TUT Token (L2)** | `0xAf7e938741a720508897Bf3a13538f6713A337A4` | ✅ |
+| **Governor** | `0xeEd65936FaEDb315c598F8b1aF796289BCE2B7f6` | ✅ |
+| **Timelock** | `0xb23f0662511ec0ee8d3760e3158a5Ab01551d52d` | ✅ |
+| **Treasury** | `0x3FaB09377944144eB991DB2a5ADf2C96A5e8587c` | ✅ |
+| **uTUT** | `0x6D3205ba4066260ca4B94F9221c46b95B1eedcD4` | ✅ |
+| **SessionKeyRegistry** | `0x73e8fDfE1EEd5f6fbE47Ef9bCEaD76da78516025` | ✅ |
+| **TUTConverter** | `0xF064C89198Ce3c595bf60ac0b6A12045CB49ebeD` | ✅ |
+| **TrainingRewards** | `0x1fec9c4dB67b6d3531171936C13760E2a61415D7` | ✅ |
+| **StakingPool** | `0x21Fc5CD8606e19961F38E26fd7286f7e647eFf04` | ✅ |
+
+### Ethereum Mainnet (L1 - Token Origin)
+**Chain ID:** 1  
+**Explorer:** https://etherscan.io  
+**Deployed:** January 2, 2026
+
+| Contract | Address | Verified |
+|----------|---------|----------|
+| **TUT Proxy** | `0x90e9d7189D605a824C2481Fe88A1d9A7DDFAF71D` | ✅ |
+| **TUT Implementation** | `0x66CF392d1627404311Ee126292C4c949BCCb3025` | ✅ |
+
+---
+
+## 🔗 Token Bridge
+
+TUT is the canonical governance token on Ethereum L1, bridged to Base L2 via the **Optimism Standard Bridge**.
+
+- **Bridged Amount:** 10,000,000 TUT
+- **Bridge Contract:** Base Standard Bridge
+- **L1 → L2 Time:** ~2 minutes (instant finality)
+- **L2 → L1 Time:** 7 days (challenge period)
+
+---
+
+## 👛 Key Wallets
+
+| Role | Address | Network |
+|------|---------|---------|
+| **Gnosis Safe (Multisig)** | `0xa56eb5E3990C740C8c58F02eAD263feF02567677` | Base |
+| **Deployer** | `0xAdBcb3Ba539b741c386d28705858Af699856B928` | Both |
+
+---
+
+## ⚙️ Configuration
+
+### Roles Configured
+- ✅ `TrainingRewards` has `MINTER_ROLE` on `uTUT`
+- ✅ `Governor` has `PROPOSER_ROLE` on `Timelock`
+- ✅ Anyone can execute on `Timelock` (EXECUTOR_ROLE = address(0))
+- ✅ Gnosis Safe has `DEFAULT_ADMIN_ROLE` on `uTUT`
+
+### Governance Parameters
+- **Voting Delay:** 1 day
+- **Voting Period:** 1 week  
+- **Proposal Threshold:** 100,000 TUT
+- **Quorum:** 4% of total supply
+- **Timelock Delay:** 24 hours
+
+---
+
+## 📁 Deployment Files
+
+- `deployments/base-mainnet-ecosystem.json` - Full Base Mainnet deployment
+- `deployments/mainnet-l1-tut-*.json` - Ethereum L1 TUT deployment
+
+---
+
+## 🔐 Legal Entity
+
+**Tolani Ecosystem DAO LLC**  
+- **Jurisdiction:** Wyoming, USA
+- **Type:** Decentralized Autonomous Organization (DAO LLC)
+- **Documents:** `docs/WY_Compliance_Pack/`
+
 ## 🌐 Network: Sepolia Testnet
 
 ---
