@@ -101,7 +101,7 @@ npx hardhat run scripts/verify-pre-mainnet.js --network baseSepolia
 ### Security
 - [ ] External audit (recommended)
 - [ ] Bug bounty program setup
-- [ ] Multi-sig wallet (Gnosis Safe) setup
+- [x] Multi-sig wallet script created (scripts/deployments/transfer-to-multisig.js)
 - [ ] Transfer admin roles to multi-sig
 
 ### Infrastructure
@@ -116,9 +116,20 @@ npx hardhat run scripts/verify-pre-mainnet.js --network baseSepolia
 - [ ] Update environment variables
 
 ### Documentation
+- [x] Canonical token documentation (docs/CANONICAL_TOKEN.md)
 - [ ] API documentation
 - [ ] Integration guide for merchants
 - [ ] User guide for payments
+
+---
+
+## 🛠️ Deployment Scripts
+
+| Script | Purpose | Command |
+|--------|---------|---------|
+| `estimate-mainnet-gas.js` | Gas cost estimates | `node scripts/deployments/estimate-mainnet-gas.js` |
+| `deploy-mainnet.js` | Full mainnet deployment | `npx hardhat run scripts/deployments/deploy-mainnet.js --network base` |
+| `transfer-to-multisig.js` | Transfer admin to Safe | `npx hardhat run scripts/deployments/transfer-to-multisig.js --network base` |
 
 ---
 
