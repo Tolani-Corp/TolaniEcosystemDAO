@@ -1,0 +1,33 @@
+{
+  "network": "base",
+  "chainId": 8453,
+  "timestamp": "2026-01-02T04:15:56.727Z",
+  "deployer": "0x753b53809360bec8742a235D8B60375a57965099",
+  "contracts": {
+    "uTUT": "0xcDeFb36E3b3059FF5012346775AFfcC075C30F4D",
+    "TUT": "0x2b3b2a6036099b144b0c5fb95a26b775785b3360",
+    "SessionKeyRegistry": "0xBf1e6A5A1b508894b4f3F79C048Eaef85C571EC3",
+    "TUTConverter": "0x3eb0812F3170625aAb0E3D0C875986C15926a5E3",
+    "TrainingRewards": "0x05b5Cc6741220cAe3fFf39753B036EBe2a54F1b5",
+    "Treasury": "0x1620C31940e50F4177B6635F0F235D66Fc6637eC",
+    "MerchantRegistry": "0xE9A1Dd9f175c28C954F961A5eec07D116F1359F3",
+    "PaymentProcessor": "0x51E2c780A513b9C9A76344d376711f603294a2f7",
+    "StakingPool": "0xcc0ebc29DAbF7A229e421E42b6BBc7c25004895C",
+    "LiquidityIncentives": "0xaeF98B923e1C0a1F015BF995543008fAbFf8d7e6",
+    "LiquidityManager": "0x206FC589e25C79a5188a94865be74307950F78be"
+  },
+  "uniswapV3": {
+    "positionManager": "0x03a520b32C04BF3bEEf7BEb72E919cf822Ed34f1",
+    "factory": "0x33128a8fC17869897dcE68Ed026d694621f6FDfD",
+    "swapRouter": "0x2626664c2603336E57B271c5C0b26F421741e481"
+  },
+  "config": {
+    "uTutMintCap": "100000000000000",
+    "campaigns": [
+      "TOLANI_CONSTRUCTION_TECH_V1",
+      "TOLANI_AI_CLOUD_V1",
+      "TOLANI_ESG_TRACK_V1"
+    ],
+    "lpIncentiveDuration": 7776000
+  }
+}

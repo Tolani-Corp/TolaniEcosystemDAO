@@ -35,11 +35,11 @@ const CONFIG = {
     tutInitialSupply: ethers.parseUnits("100000000", 18), // 100M TUT
     uTutMintCap: ethers.parseUnits("100000000", 6),       // 100M uTUT
     
-    // Training campaigns
+    // Training campaigns (uTUT has 6 decimals)
     campaigns: [
-        { id: "TOLANI_CONSTRUCTION_TECH_V1", reward: ethers.parseUnits("2000", 6), budget: ethers.parseUnits("500000", 6) },
-        { id: "TOLANI_AI_CLOUD_V1", reward: ethers.parseUnits("4000", 6), budget: ethers.parseUnits("1000000", 6) },
-        { id: "TOLANI_ESG_TRACK_V1", reward: ethers.parseUnits("1500", 6), budget: ethers.parseUnits("400000", 6) }
+        { id: "TOLANI_CONSTRUCTION_TECH_V1", name: "Construction Tech Fundamentals", reward: ethers.parseUnits("2000", 6), budget: ethers.parseUnits("500000", 6) },
+        { id: "TOLANI_AI_CLOUD_V1", name: "AI & Cloud Computing", reward: ethers.parseUnits("4000", 6), budget: ethers.parseUnits("1000000", 6) },
+        { id: "TOLANI_ESG_TRACK_V1", name: "ESG & Sustainability", reward: ethers.parseUnits("1500", 6), budget: ethers.parseUnits("400000", 6) }
     ],
     
     // DeFi settings
@@ -79,25 +79,32 @@ async function main() {
     const balance = await ethers.provider.getBalance(deployer.address);
     console.log(`   Balance: ${ethers.formatEther(balance)} ETH\n`);
 
-    // Safety check
-    if (network.chainId !== 8453n) {
-        console.log("❌ ERROR: This script is for Base Mainnet (chainId: 8453)");
-        console.log(`   Current network chainId: ${network.chainId}`);
-        console.log("\n   To deploy to testnet, use: npx hardhat run scripts/deploy.js --network baseSepolia");
-        return;
-    }
-
-    if (balance < ethers.parseEther("0.05")) {
-        console.log("❌ ERROR: Insufficient balance. Need at least 0.05 ETH for deployment.");
-        return;
-    }
-
-    // Confirmation prompt
-    console.log("⚠️  WARNING: You are about to deploy to BASE MAINNET (production)");
-    console.log("   This will cost real ETH and create live contracts.\n");
-    console.log("   Press Ctrl+C within 10 seconds to cancel...\n");
+    // Network check - allow both Base Mainnet and Base Sepolia
+    const isMainnet = network.chainId === 8453n;
+    const isTestnet = network.chainId === 84532n;
     
-    await new Promise(resolve => setTimeout(resolve, 10000));
+    if (!isMainnet && !isTestnet) {
+        console.log("❌ ERROR: This script is for Base networks only");
+        console.log(`   Current network chainId: ${network.chainId}`);
+        console.log("   Supported: Base Mainnet (8453) or Base Sepolia (84532)");
+        return;
+    }
+
+    const minBalance = isMainnet ? "0.05" : "0.01";
+    if (balance < ethers.parseEther(minBalance)) {
+        console.log(`❌ ERROR: Insufficient balance. Need at least ${minBalance} ETH for deployment.`);
+        return;
+    }
+
+    // Confirmation prompt for mainnet only
+    if (isMainnet) {
+        console.log("⚠️  WARNING: You are about to deploy to BASE MAINNET (production)");
+        console.log("   This will cost real ETH and create live contracts.\n");
+        console.log("   Press Ctrl+C within 10 seconds to cancel...\n");
+        await new Promise(resolve => setTimeout(resolve, 10000));
+    } else {
+        console.log("🧪 Deploying to Base Sepolia Testnet...\n");
+    }
 
     const deployed = {};
     const startTime = Date.now();
@@ -123,8 +130,8 @@ async function main() {
         deployed.TUT = BRIDGED_TUT_ADDRESS;
         console.log(`   ✅ TUT (Bridged): ${deployed.TUT}`);
         
-        // Verify TUT is accessible
-        const tutToken = await ethers.getContractAt("IERC20", deployed.TUT);
+        // Verify TUT is accessible using fully qualified name
+        const tutToken = await ethers.getContractAt("@openzeppelin/contracts/token/ERC20/IERC20.sol:IERC20", deployed.TUT);
         const tutSupply = await tutToken.totalSupply();
         console.log(`   📊 TUT Total Supply: ${ethers.formatUnits(tutSupply, 18)} TUT`);
 
@@ -135,34 +142,51 @@ async function main() {
         console.log("📦 PHASE 2: Training System");
         console.log("=".repeat(50));
 
+        // Session Key Registry (required for TrainingRewards)
+        console.log("\n2.1 Deploying SessionKeyRegistry...");
+        const SessionRegistry = await ethers.getContractFactory("SessionKeyRegistrySimple");
+        const sessionRegistry = await SessionRegistry.deploy(deployer.address);
+        await sessionRegistry.waitForDeployment();
+        deployed.SessionKeyRegistry = await sessionRegistry.getAddress();
+        console.log(`   ✅ SessionKeyRegistry: ${deployed.SessionKeyRegistry}`);
+
         // TUT Converter
-        console.log("\n2.1 Deploying TUTConverter...");
+        console.log("\n2.2 Deploying TUTConverter...");
         const Converter = await ethers.getContractFactory("TUTConverterSimple");
-        const converter = await Converter.deploy(deployed.TUT, deployed.uTUT, deployer.address);
+        const converter = await Converter.deploy(deployer.address, deployed.TUT, deployed.uTUT);
         await converter.waitForDeployment();
         deployed.TUTConverter = await converter.getAddress();
         console.log(`   ✅ TUTConverter: ${deployed.TUTConverter}`);
 
         // Training Rewards
-        console.log("\n2.2 Deploying TrainingRewards...");
+        console.log("\n2.3 Deploying TrainingRewards...");
         const Training = await ethers.getContractFactory("TrainingRewardsSimple");
-        const training = await Training.deploy(deployer.address, deployed.uTUT);
+        const training = await Training.deploy(deployer.address, deployed.uTUT, deployed.SessionKeyRegistry);
         await training.waitForDeployment();
         deployed.TrainingRewards = await training.getAddress();
         console.log(`   ✅ TrainingRewards: ${deployed.TrainingRewards}`);
 
         // Grant MINTER_ROLE to TrainingRewards
-        console.log("\n2.3 Configuring roles...");
+        console.log("\n2.4 Configuring roles...");
         const MINTER_ROLE = ethers.keccak256(ethers.toUtf8Bytes("MINTER_ROLE"));
         await (await uTUT.grantRole(MINTER_ROLE, deployed.TrainingRewards)).wait();
         console.log("   ✅ MINTER_ROLE granted to TrainingRewards");
 
         // Create campaigns
-        console.log("\n2.4 Creating training campaigns...");
+        console.log("\n2.5 Creating training campaigns...");
+        const now = Math.floor(Date.now() / 1000);
+        const oneYear = 365 * 24 * 60 * 60;
         for (const campaign of CONFIG.campaigns) {
             const campaignId = ethers.keccak256(ethers.toUtf8Bytes(campaign.id));
-            await (await training.createCampaign(campaignId, campaign.reward, campaign.budget)).wait();
-            console.log(`   ✅ ${campaign.id}`);
+            await (await training.createCampaign(
+                campaignId,
+                campaign.name,
+                campaign.reward,
+                campaign.budget,
+                now,           // startTime
+                now + oneYear  // endTime (1 year)
+            )).wait();
+            console.log(`   ✅ ${campaign.name}`);
         }
 
         // ========================================
@@ -175,7 +199,7 @@ async function main() {
         // Treasury
         console.log("\n3.1 Deploying Treasury...");
         const Treasury = await ethers.getContractFactory("TolaniTreasury");
-        const treasury = await Treasury.deploy();
+        const treasury = await Treasury.deploy(deployer.address);
         await treasury.waitForDeployment();
         deployed.Treasury = await treasury.getAddress();
         console.log(`   ✅ Treasury: ${deployed.Treasury}`);
@@ -193,6 +217,7 @@ async function main() {
         const Processor = await ethers.getContractFactory("TolaniPaymentProcessor");
         const processor = await Processor.deploy(
             deployed.uTUT,
+            deployed.TUT,
             deployed.MerchantRegistry,
             deployed.Treasury,
             deployer.address
