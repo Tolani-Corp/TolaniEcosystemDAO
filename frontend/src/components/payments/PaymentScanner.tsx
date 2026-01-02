@@ -2,10 +2,14 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt, useSignTypedData } from 'wagmi';
-import { parseEther, formatEther, maxUint256 } from 'viem';
+import { parseUnits, formatUnits, formatEther, maxUint256 } from 'viem';
 
 // Contract addresses on Base Sepolia
-const PAYMENT_PROCESSOR = '0x43c1B7C2D9d362369851D3a0996e4222ca9b7ef2';
+const PAYMENT_PROCESSOR = '0x6A0e297A0116dDeaaa5d1F8a8f6372cC8a7843e1';
+
+// Token decimals
+const UTUT_DECIMALS = 6;
+const TUT_DECIMALS = 18;
 const MERCHANT_REGISTRY = '0x17904f65220771fDBAbca6eCcDdAf42345C9571d';
 const UTUT_ADDRESS = '0xf4758a12583F424B65CC860A2ff3D3B501cf591C';
 const TUT_ADDRESS = '0x05AbCD77f178cF43E561091f263Eaa66353Dce87';
@@ -303,11 +307,16 @@ export default function PaymentScanner() {
     
     if (!amount || !mId) return;
     
+    // Parse amount based on selected token (uTUT = 6 decimals, TUT = 18 decimals)
+    const parsedAmount = useUTUT 
+      ? parseUnits(amount, UTUT_DECIMALS)
+      : parseUnits(amount, TUT_DECIMALS);
+    
     directPay({
       address: PAYMENT_PROCESSOR,
       abi: PAYMENT_PROCESSOR_ABI,
       functionName: 'pay',
-      args: [mId, parseEther(amount), useUTUT]
+      args: [mId, parsedAmount, useUTUT]
     });
   };
   
@@ -393,10 +402,10 @@ export default function PaymentScanner() {
   const fee = amount ? Number(amount) * feeRate : 0;
   const total = amount ? Number(amount) : 0;
   
-  // Check if approval needed
+  // Check if approval needed (compare using proper decimals)
   const needsApproval = uTUTAllowance !== undefined && 
     amount && 
-    uTUTAllowance < parseEther(amount);
+    uTUTAllowance < parseUnits(amount, UTUT_DECIMALS);
   
   if (!isConnected) {
     return (
@@ -420,7 +429,7 @@ export default function PaymentScanner() {
           <div className="flex justify-between text-sm">
             <span className="text-gray-400">uTUT Balance:</span>
             <span className="font-semibold">
-              {uTUTBalance ? formatEther(uTUTBalance) : '0'} uTUT
+              {uTUTBalance ? formatUnits(uTUTBalance, UTUT_DECIMALS) : '0'} uTUT
             </span>
           </div>
           <div className="flex justify-between text-sm mt-1">

@@ -160,15 +160,57 @@ npx hardhat verify --network baseSepolia 0x7Eb46955704c7a75c6eA182A8b0E8C1ec2b06
 
 ---
 
+## � DeFi Contracts (Base Sepolia - Deployed 2026-01-02)
+
+| Contract | Address | Basescan | Status |
+|----------|---------|----------|--------|
+| StakingPool | `0x829C9F2EAA45Eb587a6A683087b796A74B2826F7` | [View](https://sepolia.basescan.org/address/0x829C9F2EAA45Eb587a6A683087b796A74B2826F7#code) | ✅ Verified |
+| LiquidityIncentives | `0xFe7FEf4E4604478Ce49BbCC1231460E3E5869E53` | [View](https://sepolia.basescan.org/address/0xFe7FEf4E4604478Ce49BbCC1231460E3E5869E53#code) | ✅ Verified |
+| LiquidityManager | N/A | - | ⏸️ Mainnet Only |
+
+### StakingPool Tiers
+| Tier | Lock Period | Multiplier | Min Stake |
+|------|-------------|------------|-----------|
+| FLEXIBLE | None | 1.0x | 100 TUT |
+| BRONZE | 30 days | 1.25x | 1,000 TUT |
+| SILVER | 90 days | 1.5x | 10,000 TUT |
+| GOLD | 180 days | 2.0x | 50,000 TUT |
+| DIAMOND | 365 days | 3.0x | 100,000 TUT |
+
+### LiquidityIncentives Config
+- **Reward Token**: TUT
+- **Reward Rate**: 1 TUT/sec
+- **Duration**: 30 days
+- **Initial Funding**: 10,000 TUT
+
+---
+
+## 💳 Payment System (Base Sepolia)
+
+| Contract | Address | Basescan | Status |
+|----------|---------|----------|--------|
+| MerchantRegistry | `0x17904f65220771fDBAbca6eCcDdAf42345C9571d` | [View](https://sepolia.basescan.org/address/0x17904f65220771fDBAbca6eCcDdAf42345C9571d) | ✅ Deployed |
+| PaymentProcessor v2 | `0x6A0e297A0116dDeaaa5d1F8a8f6372cC8a7843e1` | [View](https://sepolia.basescan.org/address/0x6A0e297A0116dDeaaa5d1F8a8f6372cC8a7843e1) | ✅ Deployed |
+
+### Payment Features
+- ✅ Merchant registration & approval
+- ✅ Payment processing (uTUT)
+- ✅ Fee distribution (1% platform, configurable merchant)
+- ✅ **Merchant-initiated refunds** (v2)
+- ✅ **Partial refunds** (v2)
+
+---
+
 ## 📝 Next Steps
 
 1. ~~**Base L2 Deployment**~~ ✅ Completed!
 2. ~~**TokenAllocator**: Execute Timelock operation to initialize TRAINING_REWARDS pool~~ ✅ Done
-3. **Contract Verification**: Add BASESCAN_API_KEY to .env and verify Base contracts
-4. **Relayer Setup**: Configure Gelato/Pimlico for gasless transactions
-5. **TUT Bridge**: Deploy TUTConverterSimple when TUT is bridged to Base
+3. ~~**DeFi Contracts**: Deploy StakingPool & LiquidityIncentives~~ ✅ Done
+4. ~~**Contract Verification**: Verify DeFi contracts on Basescan~~ ✅ Done
+5. **Relayer Setup**: Configure Gelato/Pimlico for gasless transactions
 6. **API Integration**: Connect IBM SkillsBuild webhook to TrainingRewards
-7. **Frontend**: Add training module to DAO dashboard
+7. **Frontend**: Add DeFi staking UI to dashboard
+8. **Mainnet Prep**: Multi-sig setup, gas estimates, audit review
 
 ---
 

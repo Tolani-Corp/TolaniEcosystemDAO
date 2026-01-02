@@ -10,22 +10,24 @@ import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts/utils/cryptography/MessageHashUtils.sol";
 
 interface IMerchantRegistry {
-    function getMerchant(bytes32 merchantId) external view returns (
-        string memory name,
-        string memory businessId,
-        uint8 category,
-        address payoutAddress,
-        address owner,
-        uint256 feeRate,
-        bool acceptsUTUT,
-        bool acceptsTUT,
-        uint8 status,
-        uint256 totalVolume,
-        uint256 totalTransactions,
-        uint256 registeredAt,
-        uint256 lastTransactionAt,
-        string memory metadataURI
-    );
+    struct Merchant {
+        string name;
+        string businessId;
+        uint8 category;
+        address payoutAddress;
+        address owner;
+        uint256 feeRate;
+        bool acceptsUTUT;
+        bool acceptsTUT;
+        uint8 status;
+        uint256 totalVolume;
+        uint256 totalTransactions;
+        uint256 registeredAt;
+        uint256 lastTransactionAt;
+        string metadataURI;
+    }
+    
+    function getMerchant(bytes32 merchantId) external view returns (Merchant memory);
     
     function canAcceptPayment(
         bytes32 merchantId,
@@ -57,6 +59,7 @@ contract TolaniPaymentProcessor is AccessControl, Pausable, ReentrancyGuard {
     enum PaymentStatus {
         Completed,
         Refunded,
+        PartialRefund,
         Disputed
     }
 
@@ -72,6 +75,7 @@ contract TolaniPaymentProcessor is AccessControl, Pausable, ReentrancyGuard {
         PaymentStatus status;
         bytes32 orderId;
         string memo;
+        uint256 refundedAmount;  // Track partial refunds
     }
 
     struct DailyLimit {
@@ -118,6 +122,14 @@ contract TolaniPaymentProcessor is AccessControl, Pausable, ReentrancyGuard {
         uint256 amount
     );
     
+    event MerchantRefund(
+        bytes32 indexed paymentId,
+        bytes32 indexed merchantId,
+        address indexed refundedTo,
+        uint256 refundAmount,
+        bool isPartial
+    );
+    
     event GaslessPayment(
         bytes32 indexed paymentId,
         address indexed payer,
@@ -139,6 +151,9 @@ contract TolaniPaymentProcessor is AccessControl, Pausable, ReentrancyGuard {
     error PaymentAlreadyProcessed();
     error RefundFailed();
     error InsufficientBalance();
+    error NotMerchantOwner();
+    error RefundExceedsRemaining();
+    error AlreadyFullyRefunded();
 
     /* ========== CONSTRUCTOR ========== */
     constructor(
@@ -275,12 +290,8 @@ contract TolaniPaymentProcessor is AccessControl, Pausable, ReentrancyGuard {
         }
         
         // Get merchant payout address
-        (
-            ,, // name, businessId
-            , // category
-            address payoutAddress,
-            ,,,,,,,,,
-        ) = merchantRegistry.getMerchant(merchantId);
+        IMerchantRegistry.Merchant memory merchant = merchantRegistry.getMerchant(merchantId);
+        address payoutAddress = merchant.payoutAddress;
         
         // Calculate fee
         uint256 feeRate = merchantRegistry.getEffectiveFeeRate(merchantId);
@@ -314,7 +325,8 @@ contract TolaniPaymentProcessor is AccessControl, Pausable, ReentrancyGuard {
             timestamp: block.timestamp,
             status: PaymentStatus.Completed,
             orderId: orderId,
-            memo: memo
+            memo: memo,
+            refundedAmount: 0
         });
         
         paymentIds.push(paymentId);
@@ -351,32 +363,92 @@ contract TolaniPaymentProcessor is AccessControl, Pausable, ReentrancyGuard {
     /* ========== REFUND FUNCTIONS ========== */
 
     /**
-     * @notice Refund a payment (operator/merchant only)
+     * @notice Merchant-initiated refund (full or partial)
+     * @dev Merchant pushes tokens back to the payer. No pre-approval needed.
+     * @param paymentId Payment to refund
+     * @param refundAmount Amount to refund (0 = full refund)
+     */
+    function merchantRefund(
+        bytes32 paymentId, 
+        uint256 refundAmount
+    ) external nonReentrant {
+        Payment storage payment = payments[paymentId];
+        if (payment.timestamp == 0) revert PaymentNotFound();
+        if (payment.status == PaymentStatus.Refunded) revert AlreadyFullyRefunded();
+        
+        // Verify caller is the merchant owner
+        IMerchantRegistry.Merchant memory merchant = merchantRegistry.getMerchant(payment.merchantId);
+        if (msg.sender != merchant.owner && msg.sender != merchant.payoutAddress) {
+            revert NotMerchantOwner();
+        }
+        
+        // Calculate remaining refundable amount
+        uint256 remainingRefundable = payment.merchantAmount - payment.refundedAmount;
+        if (remainingRefundable == 0) revert AlreadyFullyRefunded();
+        
+        // If refundAmount is 0 or exceeds remaining, do full refund of remaining
+        uint256 actualRefund = (refundAmount == 0 || refundAmount > remainingRefundable) 
+            ? remainingRefundable 
+            : refundAmount;
+        
+        // Update payment state
+        payment.refundedAmount += actualRefund;
+        bool isFullRefund = (payment.refundedAmount >= payment.merchantAmount);
+        payment.status = isFullRefund ? PaymentStatus.Refunded : PaymentStatus.PartialRefund;
+        
+        // Merchant transfers tokens back to payer
+        IERC20(payment.token).safeTransferFrom(msg.sender, payment.payer, actualRefund);
+        
+        emit MerchantRefund(
+            paymentId, 
+            payment.merchantId, 
+            payment.payer, 
+            actualRefund, 
+            !isFullRefund
+        );
+    }
+
+    /**
+     * @notice Operator-initiated full refund (admin override)
+     * @dev Requires merchant to have approved this contract. Use merchantRefund() instead when possible.
      * @param paymentId Payment to refund
      */
     function refund(bytes32 paymentId) external nonReentrant onlyRole(OPERATOR_ROLE) {
         Payment storage payment = payments[paymentId];
         if (payment.timestamp == 0) revert PaymentNotFound();
-        if (payment.status != PaymentStatus.Completed) revert RefundFailed();
+        if (payment.status == PaymentStatus.Refunded) revert AlreadyFullyRefunded();
         
-        // Get merchant details to verify caller is authorized
-        (
-            ,,,
-            address payoutAddress,
-            address owner,
-            ,,,,,,,, 
-        ) = merchantRegistry.getMerchant(payment.merchantId);
+        // Get merchant details
+        IMerchantRegistry.Merchant memory merchant = merchantRegistry.getMerchant(payment.merchantId);
+        address payoutAddress = merchant.payoutAddress;
         
-        // Mark as refunded
+        // Calculate remaining to refund
+        uint256 remainingMerchant = payment.merchantAmount - payment.refundedAmount;
+        
+        // Mark as fully refunded
+        payment.refundedAmount = payment.merchantAmount;
         payment.status = PaymentStatus.Refunded;
         
         // Transfer back to payer (from merchant + fee collector)
-        IERC20(payment.token).safeTransferFrom(payoutAddress, payment.payer, payment.merchantAmount);
+        if (remainingMerchant > 0) {
+            IERC20(payment.token).safeTransferFrom(payoutAddress, payment.payer, remainingMerchant);
+        }
         if (payment.fee > 0) {
             IERC20(payment.token).safeTransferFrom(feeCollector, payment.payer, payment.fee);
         }
         
         emit PaymentRefunded(paymentId, payment.payer, payment.amount);
+    }
+
+    /**
+     * @notice Get remaining refundable amount for a payment
+     * @param paymentId Payment to check
+     * @return remaining Amount that can still be refunded
+     */
+    function getRefundableAmount(bytes32 paymentId) external view returns (uint256 remaining) {
+        Payment storage payment = payments[paymentId];
+        if (payment.status == PaymentStatus.Refunded) return 0;
+        return payment.merchantAmount - payment.refundedAmount;
     }
 
     /* ========== VIEW FUNCTIONS ========== */

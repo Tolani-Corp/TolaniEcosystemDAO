@@ -19,6 +19,7 @@ ignition/deployments/
 .env
 .env.local
 .env.*.local
+!.env.template
 
 # IDE
 .idea/

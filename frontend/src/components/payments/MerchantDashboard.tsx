@@ -2,13 +2,16 @@
 
 import { useState, useEffect } from 'react';
 import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
-import { parseEther, formatEther, isAddress, keccak256, encodePacked } from 'viem';
+import { formatUnits, isAddress, keccak256, encodePacked } from 'viem';
 import { QRCodeSVG } from 'qrcode.react';
 
 // Contract addresses on Base Sepolia
 const MERCHANT_REGISTRY = '0x17904f65220771fDBAbca6eCcDdAf42345C9571d';
-const PAYMENT_PROCESSOR = '0x43c1B7C2D9d362369851D3a0996e4222ca9b7ef2';
+const PAYMENT_PROCESSOR = '0x6A0e297A0116dDeaaa5d1F8a8f6372cC8a7843e1';
 const UTUT_ADDRESS = '0xf4758a12583F424B65CC860A2ff3D3B501cf591C';
+
+// Token decimals
+const UTUT_DECIMALS = 6;
 
 // Relayer endpoint
 const RELAYER_URL = process.env.NEXT_PUBLIC_RELAYER_URL || 'http://localhost:3001';
@@ -429,7 +432,7 @@ export default function MerchantDashboard() {
               <div className="bg-gray-800 rounded-xl p-6">
                 <p className="text-gray-400 text-sm">Total Volume</p>
                 <p className="text-2xl font-bold">
-                  {formatEther(merchantData.totalVolume)} uTUT
+                  {formatUnits(merchantData.totalVolume, UTUT_DECIMALS)} uTUT
                 </p>
               </div>
               
