@@ -1,0 +1,75 @@
+{
+  "network": "base",
+  "chainId": 8453,
+  "timestamp": "2025-07-01T00:00:00.000Z",
+  "deployer": "0xAdBcb3Ba539b741c386d28705858Af699856B928",
+  "gnosisSafe": "0xa56eb5E3990C740C8c58F02eAD263feF02567677",
+  "contracts": {
+    "TUT": {
+      "address": "0xAf7e938741a720508897Bf3a13538f6713A337A4",
+      "type": "OptimismMintableERC20",
+      "description": "TUT Token bridged from Ethereum Mainnet via Base Standard Bridge"
+    },
+    "uTUT": {
+      "address": "0x6D3205ba4066260ca4B94F9221c46b95B1eedcD4",
+      "type": "uTUTSimple",
+      "description": "Non-transferable points for training/engagement"
+    },
+    "SessionKeyRegistry": {
+      "address": "0x73e8fDfE1EEd5f6fbE47Ef9bCEaD76da78516025",
+      "type": "SessionKeyRegistry",
+      "description": "Account abstraction session key management"
+    },
+    "TUTConverter": {
+      "address": "0xF064C89198Ce3c595bf60ac0b6A12045CB49ebeD",
+      "type": "TUTConverterV1 (UUPS Proxy)",
+      "description": "Converts uTUT points to TUT tokens"
+    },
+    "TrainingRewards": {
+      "address": "0x1fec9c4dB67b6d3531171936C13760E2a61415D7",
+      "type": "TrainingRewardsSimple",
+      "description": "IBM SkillsBuild integration - mints uTUT for training completion"
+    },
+    "Timelock": {
+      "address": "0xb23f0662511ec0ee8d3760e3158a5Ab01551d52d",
+      "type": "TolaniEcosystemTimelock",
+      "description": "24-hour delay for governance execution"
+    },
+    "Governor": {
+      "address": "0xeEd65936FaEDb315c598F8b1aF796289BCE2B7f6",
+      "type": "TolaniEcosystemGovernor",
+      "description": "OpenZeppelin Governor with TUT voting"
+    },
+    "Treasury": {
+      "address": "0x3FaB09377944144eB991DB2a5ADf2C96A5e8587c",
+      "type": "TolaniTreasury",
+      "description": "DAO treasury controlled by Timelock"
+    },
+    "Staking": {
+      "address": "0x21Fc5CD8606e19961F38E26fd7286f7e647eFf04",
+      "type": "StakingPool",
+      "description": "Stake TUT to earn TUT rewards"
+    }
+  },
+  "configuration": {
+    "uTUT": {
+      "MINTER_ROLE": "Granted to TrainingRewards",
+      "DEFAULT_ADMIN_ROLE": "Granted to Gnosis Safe"
+    },
+    "Timelock": {
+      "PROPOSER_ROLE": "Granted to Governor",
+      "EXECUTOR_ROLE": "Open to anyone (address(0))"
+    }
+  },
+  "links": {
+    "TUT": "https://basescan.org/token/0xAf7e938741a720508897Bf3a13538f6713A337A4",
+    "Governor": "https://basescan.org/address/0xeEd65936FaEDb315c598F8b1aF796289BCE2B7f6",
+    "Treasury": "https://basescan.org/address/0x3FaB09377944144eB991DB2a5ADf2C96A5e8587c",
+    "Safe": "https://app.safe.global/home?safe=base:0xa56eb5E3990C740C8c58F02eAD263feF02567677"
+  },
+  "l1Bridge": {
+    "ethereumTUT": "0x90e9d7189D605a824C2481Fe88A1d9A7DDFAF71D",
+    "bridgedAmount": "10000000000000000000000000",
+    "bridgedAmountFormatted": "10,000,000 TUT"
+  }
+}
