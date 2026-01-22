@@ -1,0 +1,83 @@
+{
+  "version": "1.0",
+  "chainId": "8453",
+  "createdAt": 1737590400000,
+  "meta": {
+    "name": "Tolani Labs - Setup TrainingRewards (Batch 2)",
+    "description": "Grant REWARDER_ROLE and create IBM SkillsBuild campaigns",
+    "txBuilderVersion": "1.16.3",
+    "createdFromSafeAddress": "0x57dd8B744fd527c4cbd983d2878a29c5116ab855"
+  },
+  "transactions": [
+    {
+      "to": "0x24D8bE6650DBb2e4F15FcCE540b1f417A48B3526",
+      "value": "0",
+      "data": "0x2f2ff15dbeec13769b5f410b0584f69811bfd923818456d5edcf426b0e31cf90eed7a3f60000000000000000000000003203009fc71927c8484645b3df17863d1ef3a21a",
+      "contractMethod": {
+        "name": "grantRole",
+        "inputs": [
+          { "name": "role", "type": "bytes32" },
+          { "name": "account", "type": "address" }
+        ]
+      },
+      "contractInputsValues": {
+        "role": "0xbeec13769b5f410b0584f69811bfd923818456d5edcf426b0e31cf90eed7a3f6",
+        "account": "0x3203009FC71927c8484645B3dF17863d1eF3A21a"
+      }
+    },
+    {
+      "to": "0x24D8bE6650DBb2e4F15FcCE540b1f417A48B3526",
+      "value": "0",
+      "data": "0x3020580b000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000320000000000000000000000000000000000000000000000000000000000018a6a0000000000000000000000000000000000000000000000000000000000000002149424d20536b696c6c734275696c64202d2047656e6572616c20436f757273657300000000000000000000000000000000000000000000000000000000000000",
+      "contractMethod": {
+        "name": "createCampaign",
+        "inputs": [
+          { "name": "name", "type": "string" },
+          { "name": "rewardPerCompletion", "type": "uint256" },
+          { "name": "maxBudget", "type": "uint256" }
+        ]
+      },
+      "contractInputsValues": {
+        "name": "IBM SkillsBuild - General Courses",
+        "rewardPerCompletion": "50",
+        "maxBudget": "100000"
+      }
+    },
+    {
+      "to": "0x24D8bE6650DBb2e4F15FcCE540b1f417A48B3526",
+      "value": "0",
+      "data": "0x3020580b00000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000064000000000000000000000000000000000000000000000000000000000000c350000000000000000000000000000000000000000000000000000000000000002349424d20536b696c6c734275696c64202d2041492026204461746120536369656e63650000000000000000000000000000000000000000000000000000000000",
+      "contractMethod": {
+        "name": "createCampaign",
+        "inputs": [
+          { "name": "name", "type": "string" },
+          { "name": "rewardPerCompletion", "type": "uint256" },
+          { "name": "maxBudget", "type": "uint256" }
+        ]
+      },
+      "contractInputsValues": {
+        "name": "IBM SkillsBuild - AI & Data Science",
+        "rewardPerCompletion": "100",
+        "maxBudget": "50000"
+      }
+    },
+    {
+      "to": "0x24D8bE6650DBb2e4F15FcCE540b1f417A48B3526",
+      "value": "0",
+      "data": "0x3020580b000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000004b000000000000000000000000000000000000000000000000000000000000c350000000000000000000000000000000000000000000000000000000000000001f49424d20536b696c6c734275696c64202d204379626572736563757269747900",
+      "contractMethod": {
+        "name": "createCampaign",
+        "inputs": [
+          { "name": "name", "type": "string" },
+          { "name": "rewardPerCompletion", "type": "uint256" },
+          { "name": "maxBudget", "type": "uint256" }
+        ]
+      },
+      "contractInputsValues": {
+        "name": "IBM SkillsBuild - Cybersecurity",
+        "rewardPerCompletion": "75",
+        "maxBudget": "50000"
+      }
+    }
+  ]
+}

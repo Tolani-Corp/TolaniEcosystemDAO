@@ -11,6 +11,7 @@ try {
 // Testnet uses CUSTODY key, Mainnet uses DEPLOYER key
 const TESTNET_KEY = process.env.PRIVATE_KEY || process.env.PRIVATE_KEY_CUSTODY || "0x0000000000000000000000000000000000000000000000000000000000000001";
 const MAINNET_KEY = process.env.PRIVATE_KEY_DEPLOYER || TESTNET_KEY;
+const RELAYER_KEY = process.env.RELAYER_PRIVATE_KEY || MAINNET_KEY;
 
 /** @type {import("hardhat/config").HardhatUserConfig} */
 module.exports = {
@@ -76,7 +77,7 @@ module.exports = {
     // Base L2 Networks
     base: {
       url: process.env.BASE_RPC_URL || "https://mainnet.base.org",
-      accounts: [MAINNET_KEY],
+      accounts: [MAINNET_KEY, RELAYER_KEY],
       chainId: 8453,
       gasPrice: "auto",
     },
