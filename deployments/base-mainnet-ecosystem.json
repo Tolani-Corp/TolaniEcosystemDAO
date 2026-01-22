@@ -3,7 +3,7 @@
   "chainId": 8453,
   "timestamp": "2025-07-01T00:00:00.000Z",
   "deployer": "0xAdBcb3Ba539b741c386d28705858Af699856B928",
-  "gnosisSafe": "0xa56eb5E3990C740C8c58F02eAD263feF02567677",
+  "gnosisSafe": "0x57dd8B744fd527c4cbd983d2878a29c5116ab855",
   "contracts": {
     "TUT": {
       "address": "0xAf7e938741a720508897Bf3a13538f6713A337A4",
@@ -26,9 +26,9 @@
       "description": "Converts uTUT points to TUT tokens"
     },
     "TrainingRewards": {
-      "address": "0x1fec9c4dB67b6d3531171936C13760E2a61415D7",
+      "address": "0x24D8bE6650DBb2e4F15FcCE540b1f417A48B3526",
       "type": "TrainingRewardsSimple",
-      "description": "IBM SkillsBuild integration - mints uTUT for training completion"
+      "description": "IBM SkillsBuild integration - mints uTUT for training completion (redeployed 2026-01-22)"
     },
     "Timelock": {
       "address": "0xb23f0662511ec0ee8d3760e3158a5Ab01551d52d",

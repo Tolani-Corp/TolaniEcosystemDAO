@@ -1,0 +1,16 @@
+{
+  "network": "base",
+  "chainId": 8453,
+  "timestamp": "2026-01-22T19:33:46.591Z",
+  "deployer": "0xAdBcb3Ba539b741c386d28705858Af699856B928",
+  "safe": "0x57dd8B744fd527c4cbd983d2878a29c5116ab855",
+  "contracts": {
+    "TrainingRewardsSimple": "0x24D8bE6650DBb2e4F15FcCE540b1f417A48B3526"
+  },
+  "roles": {
+    "REWARDER_ROLE": "0xbeec13769b5f410b0584f69811bfd923818456d5edcf426b0e31cf90eed7a3f6",
+    "CAMPAIGN_MANAGER_ROLE": "0x5022544358ee0bece556b72ae8983c7f24341bd5b9483ce8a19bff5efbb2de92",
+    "MINTER_ROLE": "0x9f2df0fed2c77648de5860a4cc508cd0818c85b8b8a1ab4ceeef8d981c8956a6"
+  },
+  "relayer": "0x3203009FC71927c8484645B3dF17863d1eF3A21a"
+}
