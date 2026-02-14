@@ -2,20 +2,25 @@
 @tailwind components;
 @tailwind utilities;
 
-/* TUT Token Branding Colors */
 :root {
-  /* TUT Official Brand Colors */
-  --tut-base-teal: #004D4D;
-  --tut-highlight-teal: #007373;
-  --tut-gold: #E5C64B;
-  --tut-circuit: #00AFAF;
-  
-  /* Applied Theme */
-  --background: #030712;
-  --foreground: #f9fafb;
-  --accent-primary: var(--tut-gold);
-  --accent-secondary: var(--tut-highlight-teal);
-  --accent-glow: var(--tut-circuit);
+  /* TUT Brand Colors (OKLCH Enhanced) */
+  --tut-base-teal: oklch(0.35 0.08 190);
+  --tut-highlight-teal: oklch(0.48 0.12 190);
+  --tut-gold: oklch(0.80 0.16 95);
+  --tut-circuit: oklch(0.65 0.18 190);
+
+  /* System Colors (Dark by Default) */
+  --bg-page: oklch(0.12 0.02 190);
+  /* Deep Teal-Black */
+  --bg-surface: oklch(0.16 0.03 190);
+  --bg-surface-hover: oklch(0.20 0.04 190);
+  --text-primary: oklch(0.98 0.01 190);
+  --text-secondary: oklch(0.70 0.05 190);
+  --border-subtle: oklch(0.25 0.04 190);
+
+  /* Gradients */
+  --gradient-tut: linear-gradient(135deg, var(--tut-base-teal), var(--tut-highlight-teal));
+  --gradient-gold: linear-gradient(135deg, var(--tut-gold), oklch(0.70 0.14 85));
 }
 
 html {
@@ -23,149 +28,40 @@ html {
 }
 
 body {
-  background: linear-gradient(to bottom right, #030712, var(--tut-base-teal), #030712);
-  color: var(--foreground);
+  background-color: var(--bg-page);
+  color: var(--text-primary);
   font-family: 'Montserrat', 'Inter', system-ui, sans-serif;
   min-height: 100vh;
 }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: #1f2937;
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #4b5563;
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #6b7280;
-}
-
-/* Selection - TUT Gold */
-::selection {
-  background: rgba(229, 198, 75, 0.3);
-  color: #fff;
-}
-
-/* Focus styles - TUT Teal */
-*:focus-visible {
-  outline: 2px solid var(--tut-highlight-teal);
-  outline-offset: 2px;
-}
-
-/* Animations */
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 20px rgba(0, 175, 175, 0.3); }
-  50% { box-shadow: 0 0 40px rgba(229, 198, 75, 0.5); }
-}
-
-.animate-fade-in {
-  animation: fadeIn 0.3s ease-out;
-}
-
-.animate-slide-up {
-  animation: slideUp 0.3s ease-out;
-}
-
-.animate-pulse-glow {
-  animation: pulse-glow 2s infinite;
-}
-
 /* Glass effect utilities */
 .glass {
-  background: rgba(17, 24, 39, 0.5);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(75, 85, 99, 0.3);
+  background: rgba(17, 24, 39, 0.4);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border-subtle);
 }
 
 .glass-hover:hover {
-  background: rgba(17, 24, 39, 0.7);
+  background: rgba(17, 24, 39, 0.6);
   border-color: var(--tut-highlight-teal);
 }
 
-/* TUT Brand Utilities */
-.text-tut-gold {
-  color: var(--tut-gold);
+/* Angular.dev style Surface Cards */
+.surface-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 0.75rem;
+  transition: transform 0.2s ease, border-color 0.2s ease;
 }
 
-.text-tut-teal {
-  color: var(--tut-highlight-teal);
-}
-
-.bg-tut-teal {
-  background-color: var(--tut-base-teal);
-}
-
-.bg-tut-gold {
-  background-color: var(--tut-gold);
-}
-
-.border-tut-gold {
+.surface-card:hover {
+  transform: translateY(-2px);
   border-color: var(--tut-gold);
 }
 
-.border-tut-teal {
-  border-color: var(--tut-highlight-teal);
-}
-
-/* TUT Gradient Backgrounds */
-.bg-tut-gradient {
-  background: linear-gradient(135deg, var(--tut-base-teal), var(--tut-highlight-teal));
-}
-
-.bg-tut-gold-gradient {
-  background: linear-gradient(135deg, var(--tut-gold), #c9a93f);
-}
-
-/* TUT Glow Effects */
-.glow-tut-gold {
-  box-shadow: 0 0 20px rgba(229, 198, 75, 0.4);
-}
-
-.glow-tut-teal {
-  box-shadow: 0 0 20px rgba(0, 175, 175, 0.4);
-}
-
-/* TUT Button Styles */
-.btn-tut-primary {
-  background: linear-gradient(135deg, var(--tut-gold), #c9a93f);
-  color: var(--tut-base-teal);
-  font-weight: 600;
-  transition: all 0.2s ease;
-}
-
-.btn-tut-primary:hover {
-  box-shadow: 0 0 20px rgba(229, 198, 75, 0.5);
-  transform: translateY(-1px);
-}
-
-.btn-tut-secondary {
-  background: transparent;
-  border: 2px solid var(--tut-highlight-teal);
-  color: var(--tut-highlight-teal);
-  font-weight: 600;
-  transition: all 0.2s ease;
-}
-
-.btn-tut-secondary:hover {
-  background: var(--tut-highlight-teal);
-  color: white;
+.text-gradient-gold {
+  background: var(--gradient-gold);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
