@@ -4,10 +4,9 @@ const { ethers } = require("hardhat");
 /**
  * Tests for the Tolani Ecosystem DAO
  * 
- * This DAO is designed to manage the TUT token ecosystem from:
- * https://github.com/Tolani-Corp/TolaniToken
- * 
- * For testing, we use a MockGovernanceToken that mimics TUT's ERC20Votes interface.
+ * This DAO is designed to manage the canonical TUT token implementation from
+ * this repository. For governance-focused tests, we use TUTTokenReference so
+ * the Governor exercises the same ERC20Votes surface without proxy complexity.
  */
 describe("Tolani Ecosystem DAO", function () {
   let token, timelock, governor, treasury;
@@ -19,9 +18,13 @@ describe("Tolani Ecosystem DAO", function () {
   beforeEach(async function () {
     [owner, voter1, voter2, voter3] = await ethers.getSigners();
 
-    // Deploy Mock Token (simulating TUT token for testing)
-    const MockToken = await ethers.getContractFactory("MockGovernanceToken");
-    token = await MockToken.deploy();
+    // Deploy TUT reference token (non-upgradeable governance reference)
+    const TUTToken = await ethers.getContractFactory("TUTTokenReference");
+    token = await TUTToken.deploy(
+      owner.address,
+      ethers.parseEther("50000000"),
+      ethers.parseEther("100000000")
+    );
     await token.waitForDeployment();
 
     // Deploy Timelock
@@ -69,15 +72,17 @@ describe("Tolani Ecosystem DAO", function () {
     await token.delegate(owner.address);
   });
 
-  describe("MockGovernanceToken (TUT Simulator)", function () {
+  describe("TUTTokenReference", function () {
     it("Should have correct name and symbol", async function () {
-      expect(await token.name()).to.equal("Mock TUT Token");
-      expect(await token.symbol()).to.equal("mTUT");
+      expect(await token.name()).to.equal("Tolani Utility Token");
+      expect(await token.symbol()).to.equal("TUT");
     });
 
     it("Should have correct max supply", async function () {
-      const maxSupply = ethers.parseEther("100000000"); // 100M
-      expect(await token.totalSupply()).to.equal(maxSupply);
+      const initialSupply = ethers.parseEther("50000000"); // 50M minted at deployment
+      const maxCap = ethers.parseEther("100000000"); // 100M cap
+      expect(await token.totalSupply()).to.equal(initialSupply);
+      expect(await token.cap()).to.equal(maxCap);
     });
 
     it("Should allow delegation", async function () {

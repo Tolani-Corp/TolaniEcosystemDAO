@@ -8,7 +8,7 @@ require("dotenv").config();
  * so that the DAO can control the TUT token.
  * 
  * Prerequisites:
- * - TUT token deployed (from TolaniToken repo)
+ * - TUT token deployed (canonical deployment from this repository)
  * - DAO contracts deployed (Timelock, Governor, Treasury)
  * - Caller has DEFAULT_ADMIN_ROLE on TUT token
  * 

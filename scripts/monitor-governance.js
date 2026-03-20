@@ -12,7 +12,7 @@ async function main() {
   const treasuryAddress = process.env.TREASURY_ADDRESS || "0xBA83421da27c435f5F8eB8E6f5cFFe555aF3d669";
 
   const Governor = await hre.ethers.getContractAt("TolaniEcosystemGovernor", governorAddress);
-  const Token = await hre.ethers.getContractAt("MockGovernanceToken", tokenAddress);
+  const Token = await hre.ethers.getContractAt("ITUTToken", tokenAddress);
   const Timelock = await hre.ethers.getContractAt("TolaniEcosystemTimelock", timelockAddress);
 
   const currentBlock = await hre.ethers.provider.getBlockNumber();
@@ -49,8 +49,8 @@ async function main() {
   const yourVotes = await Token.getVotes(signer.address);
   const delegates = await Token.delegates(signer.address);
 
-  console.log("Total Supply:", hre.ethers.formatEther(totalSupply), "mTUT");
-  console.log("Your Balance:", hre.ethers.formatEther(yourBalance), "mTUT");
+  console.log("Total Supply:", hre.ethers.formatEther(totalSupply), "TUT");
+  console.log("Your Balance:", hre.ethers.formatEther(yourBalance), "TUT");
   console.log("Your Voting Power:", hre.ethers.formatEther(yourVotes), "votes");
   console.log("Delegated To:", delegates === signer.address ? "Self ✅" : delegates);
   console.log("% of Total Supply:", ((Number(yourVotes) / Number(totalSupply)) * 100).toFixed(2) + "%");
@@ -68,7 +68,7 @@ async function main() {
 
   console.log("Treasury Address:", treasuryAddress);
   console.log("Treasury ETH:", hre.ethers.formatEther(treasuryEthBalance), "ETH");
-  console.log("Treasury Tokens:", hre.ethers.formatEther(treasuryTokenBalance), "mTUT");
+  console.log("Treasury Tokens:", hre.ethers.formatEther(treasuryTokenBalance), "TUT");
   console.log("Timelock ETH:", hre.ethers.formatEther(timelockEthBalance), "ETH");
   console.log("");
 

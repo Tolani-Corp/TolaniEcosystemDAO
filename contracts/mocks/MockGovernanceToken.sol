@@ -8,10 +8,9 @@ import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Votes.sol";
 /**
  * @title MockGovernanceToken
  * @dev Mock ERC20 governance token for local testing only
- * @notice DO NOT USE IN PRODUCTION - Use the real TUT token from TolaniToken repo
- * 
- * For production, deploy the TUT token from:
- * https://github.com/Tolani-Corp/TolaniToken
+ * @notice DO NOT USE IN PRODUCTION - this is a legacy fallback for isolated tests
+ *
+ * For production, deploy the canonical TUT token from this repository.
  */
 contract MockGovernanceToken is ERC20, ERC20Permit, ERC20Votes {
     uint256 public constant MAX_SUPPLY = 100_000_000 * 10**18; // 100 million tokens

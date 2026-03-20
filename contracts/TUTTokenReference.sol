@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
-// TUTTokenSmart - Non-Upgradeable Reference (for DAO integration testing)
-// NOTE: The production upgradeable version should be in the TolaniToken repository
+// TUTTokenReference - Non-upgradeable governance reference for DAO integration testing.
+// NOTE: The production upgradeable version lives in this repository as
+// contracts/token/TUTToken.sol backed by TUTTokenSmartV2.sol.
 pragma solidity ^0.8.24;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
@@ -15,7 +16,7 @@ import "@openzeppelin/contracts/utils/Nonces.sol";
 /// @title TUTTokenReference
 /// @author Tolani Corp
 /// @notice Reference implementation of TUT with all smart features (non-upgradeable)
-/// @dev For testing DAO integration - production should use upgradeable version from TolaniToken repo
+/// @dev For testing DAO integration - production should use the upgradeable canonical version from this repository
 contract TUTTokenReference is
     ERC20,
     ERC20Capped,

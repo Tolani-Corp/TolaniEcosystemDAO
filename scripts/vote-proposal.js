@@ -64,7 +64,7 @@ async function main() {
   // Get voting power
   const snapshot = await Governor.proposalSnapshot(proposalId);
   const tokenAddress = process.env.TUT_TOKEN_ADDRESS || "0x6D07D1dC1750B9d939e1b503d7fa6Faa803e2eFb";
-  const Token = await hre.ethers.getContractAt("MockGovernanceToken", tokenAddress);
+  const Token = await hre.ethers.getContractAt("ITUTToken", tokenAddress);
   const votingPower = await Token.getPastVotes(signer.address, snapshot);
   
   console.log("Your Voting Power:", hre.ethers.formatEther(votingPower), "votes");

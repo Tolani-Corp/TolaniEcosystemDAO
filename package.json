@@ -8,6 +8,8 @@
     "compile": "hardhat compile",
     "test": "hardhat test",
     "coverage": "hardhat coverage",
+    "deploy:tut:local": "hardhat run scripts/deploy-tut-token.js --network localhost",
+    "deploy:tut:sepolia": "hardhat run scripts/deploy-tut-token.js --network sepolia",
     "deploy:local": "hardhat run scripts/deploy.js --network localhost",
     "deploy:sepolia": "hardhat run scripts/deploy.js --network sepolia",
     "deploy:polygon": "hardhat run scripts/deploy.js --network polygon",

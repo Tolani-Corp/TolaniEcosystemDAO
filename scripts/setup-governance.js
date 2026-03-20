@@ -17,7 +17,7 @@ async function main() {
   }
 
   // Connect to contracts
-  const token = await ethers.getContractAt("MockGovernanceToken", TOKEN_ADDRESS);
+  const token = await ethers.getContractAt("ITUTToken", TOKEN_ADDRESS);
   const governor = await ethers.getContractAt("TolaniEcosystemGovernor", GOVERNOR_ADDRESS);
 
   console.log("\n📊 Token Info:");

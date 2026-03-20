@@ -1,40 +1,40 @@
 # Tolani Ecosystem DAO
 
-A decentralized autonomous organization (DAO) built with Hardhat and OpenZeppelin Governor contracts to manage the **Tolani Utility Token (TUT)** ecosystem.
+A Hardhat-based DAO and token infrastructure repository for the Tolani ecosystem.
 
-## 🔗 Related Repository
-
-This DAO is designed to govern the TUT token ecosystem:
-- **TUT Token Repository**: [https://github.com/Tolani-Corp/TolaniToken](https://github.com/Tolani-Corp/TolaniToken)
+This repository now contains the canonical Tolani token stack:
+- `contracts/token/TUTToken.sol`: stable deployment entrypoint for the TUT token
+- `contracts/TUTTokenSmartV2.sol`: production TUT implementation
+- `contracts/training/uTUT.sol`: utility token for learning, rewards, and micro-transactions
+- `contracts/training/TUTConverter.sol`: conversion rail between TUT and uTUT
 
 ## Overview
 
-The Tolani Ecosystem DAO provides governance infrastructure for the TUT token, enabling token holders to participate in:
-
-- **Protocol Governance** - Vote on proposals affecting the TUT ecosystem
-- **Role Management** - Control MINTER_ROLE, PAUSER_ROLE, UPGRADER_ROLE on TUT token
-- **Treasury Management** - Manage DAO funds and token distributions
-- **Ecosystem Operations** - Govern TUT Escrow, HVAC Services, Faucet, and other contracts
+The Tolani Ecosystem DAO provides governance and treasury infrastructure for:
+- protocol governance
+- role management
+- treasury management
+- ecosystem operations
+- training, rewards, and utility-token flows
 
 ### Smart Contracts
 
-1. **ITUTToken** - Interface for the deployed TUT token (ERC20Votes compatible)
-2. **TolaniEcosystemGovernor** - Governor contract for creating and voting on proposals
-3. **TolaniEcosystemTimelock** - Timelock controller for delayed execution of passed proposals
-4. **TolaniTreasury** - Treasury contract for managing DAO funds
+1. `TUTToken`: canonical upgradeable TUT deployment entrypoint
+2. `TolaniEcosystemGovernor`: Governor contract for creating and voting on proposals
+3. `TolaniEcosystemTimelock`: Timelock controller for delayed execution
+4. `TolaniTreasury`: Treasury contract for managing DAO funds
+5. `uTUT`: 6-decimal utility token for learning and rewards
+6. `TUTConverter`: bridge/conversion rail between TUT and uTUT
 
 ## TUT Token Details
 
-From the [TolaniToken repository](https://github.com/Tolani-Corp/TolaniToken):
-
 | Property | Value |
 |----------|-------|
-| **Symbol** | TUT |
-| **Decimals** | 18 |
-| **Initial Supply** | 50,000,000 TUT |
-| **Max Cap** | 100,000,000 TUT |
-| **Features** | ERC20, Capped, Burnable, Pausable, Upgradeable (UUPS) |
-| **Networks** | Ethereum, Polygon, Arbitrum |
+| Symbol | `TUT` |
+| Decimals | `18` |
+| Initial Supply | `50,000,000 TUT` |
+| Max Cap | `100,000,000 TUT` |
+| Features | ERC20, ERC20Votes, Permit, Burnable, Pausable, Blacklist, UUPS |
 
 ## Governance Parameters
 
@@ -66,99 +66,77 @@ pnpm test
 
 ## Deploy
 
-### Prerequisites
-
-1. Clone and deploy the TUT token from [TolaniToken repository](https://github.com/Tolani-Corp/TolaniToken)
-2. Note the deployed TUT proxy address
-
-### Local Network (Testing)
+### Local Network
 
 ```bash
 # Start a local node
 pnpm node
 
-# Deploy in another terminal (uses mock token for testing)
+# Deploy canonical TUT
+pnpm deploy:tut:local
+
+# Deploy DAO core against canonical TUT
 pnpm deploy:local
 ```
 
-### Production Deployment
+### Sepolia
 
-1. Create a `.env` file:
+```bash
+pnpm deploy:tut:sepolia
+pnpm deploy:sepolia
+```
+
+### Environment
+
+Create a `.env` file with at least:
+
 ```env
-TUT_TOKEN_ADDRESS=0x...  # Deployed TUT proxy address
+TUT_TOKEN_ADDRESS=0x...
 SEPOLIA_RPC_URL=your_rpc_url
 PRIVATE_KEY=your_private_key
+TUT_TRUSTED_FORWARDER=0x...
 ```
 
-2. Deploy:
-```bash
-npx hardhat run scripts/deploy.js --network sepolia
-```
-
-### Post-Deployment Setup
-
-After deploying the DAO contracts, grant roles on the TUT token to the Timelock:
-
-```bash
-# On the TUT token contract, call:
-# grantRole(MINTER_ROLE, timelockAddress)
-# grantRole(PAUSER_ROLE, timelockAddress)
-# grantRole(UPGRADER_ROLE, timelockAddress)
-```
-
-## Contract Addresses
-
-After deployment, contract addresses will be displayed. Save them for frontend integration.
-
-## Governance Flow
-
-1. **Get TUT Tokens** - Acquire TUT tokens from the Tolani ecosystem
-2. **Delegate** - Token holders delegate voting power to themselves or others
-3. **Propose** - Create a proposal (requires 100,000 TUT tokens)
-4. **Vote** - Vote on active proposals (For, Against, Abstain)
-5. **Queue** - Queue passed proposals in the timelock
-6. **Execute** - Execute after timelock delay (1 hour)
+If `TUT_TOKEN_ADDRESS` is omitted, the deploy scripts now default to deploying the canonical TUT token from this repository. Set `USE_MOCK_GOV_TOKEN=true` only when you explicitly want the legacy mock path.
 
 ## Project Structure
 
+```text
+contracts/
+  token/
+    TUTToken.sol
+  TUTTokenSmartV2.sol
+  TolaniGovernor.sol
+  TolaniTimelock.sol
+  TolaniTreasury.sol
+  training/
+    uTUT.sol
+    TUTConverter.sol
+  mocks/
+    MockGovernanceToken.sol
+scripts/
+  deploy-tut-token.js
+  deploy.js
+  deploy-full.js
+test/
+  TUTToken.test.js
+  TolaniDAO.test.js
 ```
-├── contracts/
-│   ├── TolaniToken.sol       # ITUTToken interface
-│   ├── TolaniGovernor.sol    # Governor contract
-│   ├── TolaniTimelock.sol    # Timelock controller
-│   ├── TolaniTreasury.sol    # Treasury contract
-│   └── mocks/
-│       └── MockGovernanceToken.sol  # Mock token for testing
-├── scripts/
-│   └── deploy.js             # Deployment script
-├── test/
-│   └── TolaniDAO.test.js     # Test suite
-├── hardhat.config.js         # Hardhat configuration
-└── package.json
-```
 
-## Integration with TUT Ecosystem
+## Governance Flow
 
-This DAO can manage the following contracts from the TolaniToken repository:
+1. Acquire or mint TUT
+2. Delegate voting power
+3. Create proposals
+4. Vote
+5. Queue in timelock
+6. Execute after delay
 
-| Contract | Purpose |
-|----------|---------|
-| TUTToken | Main utility token (ERC20, Votes, Upgradeable) |
-| TUTEscrow | Escrow payments between parties |
-| TUTHVACServices | HVAC service order management |
-| TUTFaucet | Test token distribution |
-| TUTDAO | Lightweight on-chain governance |
-| TUTGovernor | Full OpenZeppelin Governor |
+## Notes
 
-## ENS Domains
-
-The Tolani ecosystem uses these ENS domains:
-
-- **tolanicorp.eth** - Corporate identity
-- **tolanidao.eth** - DAO portal
-- **tolaniecosystemdao.eth** - Ecosystem DAO
-- **tolanitoken.eth** - TUT token
-- **tuttoken.eth** / **tuttoken.dao** - TUT token aliases
+- `MockGovernanceToken.sol` remains in the repository as an explicit fallback for isolated testing only.
+- The canonical source of truth for TUT in this repo is `contracts/token/TUTToken.sol`.
+- Historical references to an external `TolaniToken` repository are deprecated.
 
 ## License
 

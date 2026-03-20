@@ -6,11 +6,12 @@ import "@openzeppelin/contracts/governance/utils/IVotes.sol";
 
 /**
  * @title ITUTToken
- * @dev Interface for the Tolani Utility Token (TUT) from the TolaniToken repository
+ * @dev Interface for the canonical Tolani Utility Token (TUT) implementation
+ * in this repository.
  * @notice This interface defines the expected functions from the deployed TUT token
- * @custom:repository https://github.com/Tolani-Corp/TolaniToken
+ * @custom:repository https://github.com/Tolani-Corp/TolaniEcosystemDAO
  * 
- * TUT Token Details:
+ * Canonical TUT Details:
  * - Symbol: TUT
  * - Decimals: 18
  * - Initial Supply: 50,000,000 TUT
