@@ -1,0 +1,25 @@
+{
+  "name": "@tolani/ai-engineering-mcp",
+  "version": "0.1.0",
+  "description": "AI Engineering MCP system for Tolani DAO governance",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "node --test tests/**/*.test.js",
+    "policy-check": "node src/policy-engine.js",
+    "init-audit-log": "node scripts/init-audit-log.js"
+  },
+  "keywords": [
+    "mcp",
+    "ai",
+    "governance",
+    "dao"
+  ],
+  "author": "Tolani Corp",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^17.2.3"
+  },
+  "devDependencies": {}
+}
