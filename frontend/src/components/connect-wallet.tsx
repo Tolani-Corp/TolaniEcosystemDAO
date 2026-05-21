@@ -1,7 +1,7 @@
 "use client";
 
 import { useConnect, useAccount, useDisconnect, useBalance } from "wagmi";
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Wallet,
@@ -21,6 +21,11 @@ export function ConnectWallet() {
   const { disconnect } = useDisconnect();
   const { data: balance } = useBalance({ address });
   const { name: udName, isLoading: udLoading } = useUDName(address);
+  const isMounted = useSyncExternalStore(
+    () => () => undefined,
+    () => true,
+    () => false
+  );
   const [isOpen, setIsOpen] = useState(false);
   const [copied, setCopied] = useState(false);
 
@@ -34,6 +39,21 @@ export function ConnectWallet() {
 
   // Display name: UD domain or shortened address
   const displayName = udName || formatAddress(address || "");
+
+  if (!isMounted) {
+    return (
+      <div className="relative">
+        <button
+          type="button"
+          className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-purple-600 px-5 py-2.5 font-medium text-white shadow-lg shadow-violet-500/25"
+          aria-label="Wallet status"
+        >
+          <Wallet className="w-4 h-4" />
+          Connect Wallet
+        </button>
+      </div>
+    );
+  }
 
   if (isConnected && address) {
     return (

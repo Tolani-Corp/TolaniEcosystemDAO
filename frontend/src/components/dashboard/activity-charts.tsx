@@ -1,6 +1,4 @@
 "use client";
-
-import { motion } from "framer-motion";
 import {
   ResponsiveContainer,
   AreaChart,
@@ -47,7 +45,7 @@ export function ActivityChart({ data }: ActivityChartProps) {
         </div>
       </div>
       <div className="h-64">
-        <ResponsiveContainer width="100%" height="100%">
+        <ResponsiveContainer width="100%" height="100%" minWidth={0}>
           <AreaChart data={data}>
             <defs>
               <linearGradient id="proposalGradient" x1="0" y1="0" x2="0" y2="1">
@@ -129,7 +127,7 @@ export function ParticipationChart({ data }: ParticipationChartProps) {
         </div>
       </div>
       <div className="h-48">
-        <ResponsiveContainer width="100%" height="100%">
+        <ResponsiveContainer width="100%" height="100%" minWidth={0}>
           <BarChart data={data}>
             <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
             <XAxis dataKey="month" stroke="#9ca3af" tick={{ fontSize: 12 }} />

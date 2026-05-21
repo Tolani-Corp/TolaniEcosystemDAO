@@ -108,8 +108,8 @@ export const CONTRACT_ADDRESSES = {
     uTUT: '0x6D3205ba4066260ca4B94F9221c46b95B1eedcD4' as `0x${string}`,
     sessionKeyRegistry: '0x73e8fDfE1EEd5f6fbE47Ef9bCEaD76da78516025' as `0x${string}`,
     tutConverter: '0xF064C89198Ce3c595bf60ac0b6A12045CB49ebeD' as `0x${string}`,
-    trainingRewards: '0x1fec9c4dB67b6d3531171936C13760E2a61415D7' as `0x${string}`,
-    trainingRewardsV2: '0x1fec9c4dB67b6d3531171936C13760E2a61415D7' as `0x${string}`,
+    trainingRewards: '0x24D8bE6650DBb2e4F15FcCE540b1f417A48B3526' as `0x${string}`,
+    trainingRewardsV2: '0x24D8bE6650DBb2e4F15FcCE540b1f417A48B3526' as `0x${string}`,
     // DeFi
     stakingPool: '0x21Fc5CD8606e19961F38E26fd7286f7e647eFf04' as `0x${string}`,
     // Placeholder for L1-only contracts
