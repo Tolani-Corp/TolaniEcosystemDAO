@@ -2,42 +2,14 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
-import {
-  LayoutDashboard,
-  FileText,
-  Vote,
-  Vault,
-  Users,
-  Settings,
-  Menu,
-  X,
-  GraduationCap,
-  Coins,
-  Target,
-  BookOpen,
-  CreditCard,
-} from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
-
-const navigation = [
-  { name: "Dashboard", href: "/", icon: LayoutDashboard },
-  { name: "Proposals", href: "/proposals", icon: FileText },
-  { name: "Vote", href: "/vote", icon: Vote },
-  { name: "Treasury", href: "/treasury", icon: Vault },
-  { name: "Staking", href: "/staking", icon: Coins },
-  { name: "Bounties", href: "/bounties", icon: Target },
-  { name: "Training", href: "/training", icon: BookOpen },
-  { name: "Learn", href: "/learn", icon: GraduationCap },
-  { name: "Payments", href: "/payments", icon: CreditCard },
-  { name: "Delegates", href: "/delegates", icon: Users },
-  { name: "Settings", href: "/settings", icon: Settings },
-];
+import { usePages } from "@/context/pages-context";
 
 export function Sidebar() {
-  const pathname = usePathname();
+  const { navigationPages, mobileNavigationPages, isActiveHref } = usePages();
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   return (
@@ -79,8 +51,8 @@ export function Sidebar() {
 
         {/* Navigation */}
         <nav className="flex-1 p-4 space-y-1">
-          {navigation.map((item) => {
-            const isActive = pathname === item.href;
+          {navigationPages.map((item) => {
+            const isActive = isActiveHref(item.href);
             return (
               <Link key={item.name} href={item.href}>
                 <motion.div
@@ -125,8 +97,8 @@ export function Sidebar() {
       {/* Mobile Bottom Navigation */}
       <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-gray-900/95 backdrop-blur-xl border-t border-gray-800/50 z-50">
         <div className="flex items-center justify-around py-2">
-          {navigation.slice(0, 5).map((item) => {
-            const isActive = pathname === item.href;
+          {mobileNavigationPages.map((item) => {
+            const isActive = isActiveHref(item.href);
             return (
               <Link key={item.name} href={item.href}>
                 <div

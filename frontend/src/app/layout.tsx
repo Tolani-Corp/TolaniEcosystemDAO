@@ -1,5 +1,6 @@
 import { ThemeProvider } from '@/components/ThemeProvider'
 import GovernanceShell from '@/components/GovernanceShell'
+import { PagesProvider } from '@/context/pages-context'
 import { Providers } from '@/components/providers'
 import './globals.css'
 
@@ -13,7 +14,9 @@ export default function RootLayout({
       <body className="bg-[var(--bg-page)] text-[var(--text-primary)] antialiased transition-colors duration-300">
         <Providers>
           <ThemeProvider>
-            <GovernanceShell>{children}</GovernanceShell>
+            <PagesProvider>
+              <GovernanceShell>{children}</GovernanceShell>
+            </PagesProvider>
           </ThemeProvider>
         </Providers>
       </body>
