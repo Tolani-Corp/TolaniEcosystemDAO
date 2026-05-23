@@ -20,6 +20,8 @@
     "vote": "hardhat run scripts/vote.js",
     "execute": "hardhat run scripts/execute.js",
     "status": "hardhat run scripts/proposal-status.js",
+    "reconcile:base": "hardhat run --no-compile scripts/deployments/reconcile-mainnet-status.js --network base",
+    "roles:base": "hardhat run --no-compile scripts/deployments/transfer-to-multisig.js --network base",
     "verify": "hardhat verify"
   },
   "keywords": [

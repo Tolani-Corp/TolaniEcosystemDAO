@@ -33,7 +33,7 @@
     "Timelock": {
       "address": "0xb23f0662511ec0ee8d3760e3158a5Ab01551d52d",
       "type": "TolaniEcosystemTimelock",
-      "description": "24-hour delay for governance execution"
+      "description": "48-hour delay for governance execution"
     },
     "Governor": {
       "address": "0xeEd65936FaEDb315c598F8b1aF796289BCE2B7f6",
@@ -48,7 +48,7 @@
     "Staking": {
       "address": "0x21Fc5CD8606e19961F38E26fd7286f7e647eFf04",
       "type": "StakingPool",
-      "description": "Stake TUT to earn TUT rewards"
+      "description": "Stake TUT to earn TUT rewards; admin roles are assigned to the TUT token address and require redeploy/migration"
     }
   },
   "configuration": {
@@ -65,7 +65,7 @@
     "TUT": "https://basescan.org/token/0xAf7e938741a720508897Bf3a13538f6713A337A4",
     "Governor": "https://basescan.org/address/0xeEd65936FaEDb315c598F8b1aF796289BCE2B7f6",
     "Treasury": "https://basescan.org/address/0x3FaB09377944144eB991DB2a5ADf2C96A5e8587c",
-    "Safe": "https://app.safe.global/home?safe=base:0xa56eb5E3990C740C8c58F02eAD263feF02567677"
+    "Safe": "https://app.safe.global/home?safe=base:0x57dd8B744fd527c4cbd983d2878a29c5116ab855"
   },
   "l1Bridge": {
     "ethereumTUT": "0x90e9d7189D605a824C2481Fe88A1d9A7DDFAF71D",

@@ -1,251 +1,195 @@
 /**
- * Transfer Admin Roles to Multi-Sig (Gnosis Safe)
- * 
- * This script transfers all admin roles from deployer to a Gnosis Safe multi-sig
- * for production security.
- * 
- * Usage:
- *   npx hardhat run scripts/deployments/transfer-to-multisig.js --network baseSepolia
- *   npx hardhat run scripts/deployments/transfer-to-multisig.js --network base
+ * Reconcile Base mainnet admin roles to the configured Safe.
+ *
+ * Default mode is dry-run. To send transactions, set:
+ *   EXECUTE_ROLE_TRANSFER=true
+ *
+ * To renounce deployer admin roles after grants succeed, also set:
+ *   RENOUNCE_DEPLOYER_ROLES=true
  */
 
+require("dotenv").config();
 const { ethers } = require("hardhat");
+const {
+  BASE_MAINNET_ADDRESSES,
+  configuredSafeAddress,
+  isExecuteMode,
+} = require("./base-mainnet-addresses");
 
-// Base Sepolia deployed contracts
-const CONTRACTS = {
-    uTUT: "0xf4758a12583F424B65CC860A2ff3D3B501cf591C",
-    TUT: "0x05AbCD77f178cF43E561091f263Eaa66353Dce87",
-    TUTConverter: "0xCFce25C0eF67e51E8Fe85Dcba7F4501d5BeE84b2",
-    TrainingRewards: "0x4d8FD67c3BAf949A9f7CfCE7830A9588CA0F13dC",
-    MerchantRegistry: "0x17904f65220771fDBAbca6eCcDdAf42345C9571d",
-    PaymentProcessor: "0x6A0e297A0116dDeaaa5d1F8a8f6372cC8a7843e1",
-    Treasury: "0xC12035B044c5988E9977E50bA0913AEF4eec28F7",
-    StakingPool: "0x829C9F2EAA45Eb587a6A683087b796A74B2826F7",
-    LiquidityIncentives: "0xFe7FEf4E4604478Ce49BbCC1231460E3E5869E53"
-};
+const EXECUTE = isExecuteMode(process.env.EXECUTE_ROLE_TRANSFER || process.env.EXECUTE_RECONCILIATION);
+const RENOUNCE_DEPLOYER = isExecuteMode(process.env.RENOUNCE_DEPLOYER_ROLES);
+const SAFE_ADDRESS = configuredSafeAddress();
 
-// CONFIGURE THIS: Your Gnosis Safe address
-const GNOSIS_SAFE = process.env.GNOSIS_SAFE_ADDRESS || "";
+const CONTRACTS = [
+  {
+    label: "uTUT",
+    artifact: "uTUT",
+    address: BASE_MAINNET_ADDRESSES.uTut,
+    roles: ["DEFAULT_ADMIN_ROLE", "PAUSER_ROLE", "UPGRADER_ROLE"],
+    grantOnly: ["MINTER_ROLE"],
+  },
+  {
+    label: "TUTConverter",
+    artifact: "TUTConverter",
+    address: BASE_MAINNET_ADDRESSES.tutConverter,
+    roles: ["DEFAULT_ADMIN_ROLE", "PAUSER_ROLE", "UPGRADER_ROLE", "TREASURY_ROLE"],
+  },
+  {
+    label: "TrainingRewards",
+    artifact: "contracts/training/TrainingRewards.sol:TrainingRewards",
+    address: BASE_MAINNET_ADDRESSES.trainingRewards,
+    roles: ["DEFAULT_ADMIN_ROLE", "CAMPAIGN_MANAGER_ROLE", "PAUSER_ROLE", "UPGRADER_ROLE"],
+  },
+  {
+    label: "SessionKeyRegistry",
+    artifact: "SessionKeyRegistry",
+    address: BASE_MAINNET_ADDRESSES.sessionKeyRegistry,
+    roles: ["DEFAULT_ADMIN_ROLE", "SESSION_MANAGER_ROLE", "PAUSER_ROLE", "UPGRADER_ROLE"],
+  },
+  {
+    label: "StakingPool",
+    artifact: "StakingPool",
+    address: BASE_MAINNET_ADDRESSES.stakingPool,
+    roles: ["DEFAULT_ADMIN_ROLE", "REWARDS_MANAGER_ROLE"],
+  },
+  {
+    label: "Timelock",
+    artifact: "TolaniEcosystemTimelock",
+    address: BASE_MAINNET_ADDRESSES.timelock,
+    roles: ["DEFAULT_ADMIN_ROLE"],
+    grantOnly: ["EXECUTOR_ROLE"],
+  },
+];
 
-// Standard role hashes
-const ROLES = {
-    DEFAULT_ADMIN_ROLE: ethers.ZeroHash,
-    MINTER_ROLE: ethers.keccak256(ethers.toUtf8Bytes("MINTER_ROLE")),
-    PAUSER_ROLE: ethers.keccak256(ethers.toUtf8Bytes("PAUSER_ROLE")),
-    UPGRADER_ROLE: ethers.keccak256(ethers.toUtf8Bytes("UPGRADER_ROLE")),
-    BLACKLIST_ROLE: ethers.keccak256(ethers.toUtf8Bytes("BLACKLIST_ROLE")),
-    GOVERNANCE_ROLE: ethers.keccak256(ethers.toUtf8Bytes("GOVERNANCE_ROLE")),
-    CAMPAIGN_MANAGER_ROLE: ethers.keccak256(ethers.toUtf8Bytes("CAMPAIGN_MANAGER_ROLE")),
-    REWARDER_ROLE: ethers.keccak256(ethers.toUtf8Bytes("REWARDER_ROLE")),
-    APPROVER_ROLE: ethers.keccak256(ethers.toUtf8Bytes("APPROVER_ROLE")),
-    FEE_MANAGER_ROLE: ethers.keccak256(ethers.toUtf8Bytes("FEE_MANAGER_ROLE")),
-    REWARDS_MANAGER_ROLE: ethers.keccak256(ethers.toUtf8Bytes("REWARDS_MANAGER_ROLE"))
-};
+async function getRole(contract, roleName) {
+  if (roleName === "DEFAULT_ADMIN_ROLE") return ethers.ZeroHash;
+  if (typeof contract[roleName] !== "function") return null;
+
+  try {
+    return await contract[roleName]();
+  } catch {
+    return null;
+  }
+}
+
+async function canGrantRole(contract, role, deployer) {
+  if (typeof contract.getRoleAdmin !== "function") return false;
+
+  try {
+    const adminRole = await contract.getRoleAdmin(role);
+    const hasAdmin = await contract.hasRole(adminRole, deployer.address);
+    return { hasAdmin, adminRole };
+  } catch {
+    return { hasAdmin: false, adminRole: null };
+  }
+}
+
+async function maybeGrant(contract, role, roleName, deployer) {
+  const grantStatus = await canGrantRole(contract, role, deployer);
+
+  if (!grantStatus.hasAdmin) {
+    console.log(`   BLOCKED: deployer lacks admin authority to grant ${roleName}`);
+    return;
+  }
+
+  if (!EXECUTE) {
+    console.log(`   DRY-RUN: grant ${roleName} to Safe`);
+    return;
+  }
+
+  const tx = await contract.grantRole(role, SAFE_ADDRESS);
+  console.log(`   TX: ${tx.hash}`);
+  await tx.wait();
+  console.log(`   Done: grant ${roleName} to Safe`);
+}
+
+async function maybeSend(description, fn) {
+  if (!EXECUTE) {
+    console.log(`   DRY-RUN: ${description}`);
+    return;
+  }
+  const tx = await fn();
+  console.log(`   TX: ${tx.hash}`);
+  await tx.wait();
+  console.log(`   Done: ${description}`);
+}
+
+async function reconcileContract({ label, artifact, address, roles, grantOnly = [] }, deployer) {
+  console.log("\n" + "-".repeat(70));
+  console.log(`${label}: ${address}`);
+
+  const contract = await ethers.getContractAt(artifact, address);
+  const adminRole = await getRole(contract, "DEFAULT_ADMIN_ROLE");
+  const deployerIsAdmin = await contract.hasRole(adminRole, deployer.address);
+  console.log(`   Deployer DEFAULT_ADMIN_ROLE: ${deployerIsAdmin}`);
+
+  for (const roleName of roles) {
+    const role = await getRole(contract, roleName);
+    if (!role) {
+      console.log(`   ${roleName}: skipped (not exposed by deployed contract)`);
+      continue;
+    }
+
+    const safeHasRole = await contract.hasRole(role, SAFE_ADDRESS);
+    const deployerHasRole = await contract.hasRole(role, deployer.address);
+    console.log(`   ${roleName}: safe=${safeHasRole} deployer=${deployerHasRole}`);
+
+    if (!safeHasRole) {
+      await maybeGrant(contract, role, roleName, deployer);
+    }
+
+    if (RENOUNCE_DEPLOYER && roleName === "DEFAULT_ADMIN_ROLE" && deployerHasRole) {
+      await maybeSend(`renounce ${roleName} from deployer`, () => contract.renounceRole(role, deployer.address));
+    }
+  }
+
+  for (const roleName of grantOnly) {
+    const role = await getRole(contract, roleName);
+    if (!role) {
+      console.log(`   ${roleName}: skipped (not exposed by deployed contract)`);
+      continue;
+    }
+
+    const safeHasRole = await contract.hasRole(role, SAFE_ADDRESS);
+    console.log(`   ${roleName}: safe=${safeHasRole}`);
+    if (!safeHasRole) {
+      await maybeGrant(contract, role, roleName, deployer);
+    }
+  }
+}
 
 async function main() {
-    console.log("\n" + "=".repeat(70));
-    console.log("  TRANSFER ADMIN ROLES TO GNOSIS SAFE");
-    console.log("=".repeat(70) + "\n");
+  const [deployer] = await ethers.getSigners();
+  const network = await ethers.provider.getNetwork();
 
-    if (!GNOSIS_SAFE || GNOSIS_SAFE === "") {
-        console.log("❌ ERROR: GNOSIS_SAFE_ADDRESS not set in .env");
-        console.log("\nTo create a Gnosis Safe:");
-        console.log("1. Go to https://app.safe.global/");
-        console.log("2. Connect wallet and create a new Safe");
-        console.log("3. Add team members as signers");
-        console.log("4. Set threshold (e.g., 2 of 3)");
-        console.log("5. Add GNOSIS_SAFE_ADDRESS=0x... to .env");
-        console.log("\nThen run this script again.");
-        return;
-    }
+  console.log("\nBASE MAINNET ROLE RECONCILIATION");
+  console.log("=".repeat(70));
+  console.log(`Network: ${network.name} (${network.chainId})`);
+  console.log(`Deployer: ${deployer.address}`);
+  console.log(`Safe: ${SAFE_ADDRESS}`);
+  console.log(`Mode: ${EXECUTE ? "EXECUTE" : "DRY-RUN"}`);
+  console.log(`Renounce deployer admin roles: ${RENOUNCE_DEPLOYER}`);
 
-    const [deployer] = await ethers.getSigners();
-    console.log("Current Admin:", deployer.address);
-    console.log("New Admin (Safe):", GNOSIS_SAFE);
-    console.log("");
+  if (network.chainId !== BigInt(BASE_MAINNET_ADDRESSES.chainId)) {
+    throw new Error(`Run this on Base mainnet (${BASE_MAINNET_ADDRESSES.chainId})`);
+  }
 
-    const network = await ethers.provider.getNetwork();
-    console.log("Network:", network.name, `(${network.chainId})`);
-    console.log("");
+  const safeCode = await ethers.provider.getCode(SAFE_ADDRESS);
+  if (safeCode === "0x") {
+    throw new Error(`Safe address has no contract code on Base: ${SAFE_ADDRESS}`);
+  }
 
-    // Confirm before proceeding
-    console.log("⚠️  WARNING: This will transfer all admin roles to the multi-sig.");
-    console.log("   You will no longer be able to directly manage these contracts.");
-    console.log("   All future changes will require multi-sig approval.\n");
+  for (const contract of CONTRACTS) {
+    await reconcileContract(contract, deployer);
+  }
 
-    const results = [];
-
-    // ========================================
-    // Transfer roles for each contract
-    // ========================================
-
-    // 1. uTUT Token
-    console.log("-".repeat(50));
-    console.log("📦 uTUT Token");
-    try {
-        const uTUT = await ethers.getContractAt("uTUTSimple", CONTRACTS.uTUT);
-        
-        // Grant roles to Safe
-        await (await uTUT.grantRole(ROLES.DEFAULT_ADMIN_ROLE, GNOSIS_SAFE)).wait();
-        await (await uTUT.grantRole(ROLES.PAUSER_ROLE, GNOSIS_SAFE)).wait();
-        
-        // Revoke from deployer (except MINTER - that stays with TrainingRewards)
-        await (await uTUT.renounceRole(ROLES.DEFAULT_ADMIN_ROLE, deployer.address)).wait();
-        
-        console.log("   ✅ Admin transferred to Safe");
-        results.push({ contract: "uTUT", status: "✅" });
-    } catch (e) {
-        console.log("   ❌ Failed:", e.message.slice(0, 50));
-        results.push({ contract: "uTUT", status: "❌" });
-    }
-
-    // 2. TUT Token (MockBridgedTUT)
-    console.log("-".repeat(50));
-    console.log("📦 TUT Token");
-    try {
-        const TUT = await ethers.getContractAt("MockBridgedTUT", CONTRACTS.TUT);
-        
-        await (await TUT.grantRole(ROLES.DEFAULT_ADMIN_ROLE, GNOSIS_SAFE)).wait();
-        await (await TUT.grantRole(ROLES.MINTER_ROLE, GNOSIS_SAFE)).wait();
-        await (await TUT.grantRole(ROLES.PAUSER_ROLE, GNOSIS_SAFE)).wait();
-        await (await TUT.renounceRole(ROLES.DEFAULT_ADMIN_ROLE, deployer.address)).wait();
-        
-        console.log("   ✅ Admin transferred to Safe");
-        results.push({ contract: "TUT", status: "✅" });
-    } catch (e) {
-        console.log("   ❌ Failed:", e.message.slice(0, 50));
-        results.push({ contract: "TUT", status: "❌" });
-    }
-
-    // 3. TrainingRewards
-    console.log("-".repeat(50));
-    console.log("📦 TrainingRewards");
-    try {
-        const training = await ethers.getContractAt("TrainingRewardsSimple", CONTRACTS.TrainingRewards);
-        
-        await (await training.grantRole(ROLES.DEFAULT_ADMIN_ROLE, GNOSIS_SAFE)).wait();
-        await (await training.grantRole(ROLES.CAMPAIGN_MANAGER_ROLE, GNOSIS_SAFE)).wait();
-        await (await training.renounceRole(ROLES.DEFAULT_ADMIN_ROLE, deployer.address)).wait();
-        
-        console.log("   ✅ Admin transferred to Safe");
-        results.push({ contract: "TrainingRewards", status: "✅" });
-    } catch (e) {
-        console.log("   ❌ Failed:", e.message.slice(0, 50));
-        results.push({ contract: "TrainingRewards", status: "❌" });
-    }
-
-    // 4. MerchantRegistry
-    console.log("-".repeat(50));
-    console.log("📦 MerchantRegistry");
-    try {
-        const registry = await ethers.getContractAt("MerchantRegistry", CONTRACTS.MerchantRegistry);
-        
-        await (await registry.grantRole(ROLES.DEFAULT_ADMIN_ROLE, GNOSIS_SAFE)).wait();
-        await (await registry.grantRole(ROLES.APPROVER_ROLE, GNOSIS_SAFE)).wait();
-        await (await registry.renounceRole(ROLES.DEFAULT_ADMIN_ROLE, deployer.address)).wait();
-        
-        console.log("   ✅ Admin transferred to Safe");
-        results.push({ contract: "MerchantRegistry", status: "✅" });
-    } catch (e) {
-        console.log("   ❌ Failed:", e.message.slice(0, 50));
-        results.push({ contract: "MerchantRegistry", status: "❌" });
-    }
-
-    // 5. PaymentProcessor
-    console.log("-".repeat(50));
-    console.log("📦 PaymentProcessor");
-    try {
-        const processor = await ethers.getContractAt("TolaniPaymentProcessor", CONTRACTS.PaymentProcessor);
-        
-        await (await processor.grantRole(ROLES.DEFAULT_ADMIN_ROLE, GNOSIS_SAFE)).wait();
-        await (await processor.grantRole(ROLES.FEE_MANAGER_ROLE, GNOSIS_SAFE)).wait();
-        await (await processor.grantRole(ROLES.PAUSER_ROLE, GNOSIS_SAFE)).wait();
-        await (await processor.renounceRole(ROLES.DEFAULT_ADMIN_ROLE, deployer.address)).wait();
-        
-        console.log("   ✅ Admin transferred to Safe");
-        results.push({ contract: "PaymentProcessor", status: "✅" });
-    } catch (e) {
-        console.log("   ❌ Failed:", e.message.slice(0, 50));
-        results.push({ contract: "PaymentProcessor", status: "❌" });
-    }
-
-    // 6. Treasury
-    console.log("-".repeat(50));
-    console.log("📦 Treasury");
-    try {
-        const treasury = await ethers.getContractAt("TolaniTreasury", CONTRACTS.Treasury);
-        
-        await (await treasury.grantRole(ROLES.DEFAULT_ADMIN_ROLE, GNOSIS_SAFE)).wait();
-        await (await treasury.grantRole(ROLES.GOVERNANCE_ROLE, GNOSIS_SAFE)).wait();
-        await (await treasury.renounceRole(ROLES.DEFAULT_ADMIN_ROLE, deployer.address)).wait();
-        
-        console.log("   ✅ Admin transferred to Safe");
-        results.push({ contract: "Treasury", status: "✅" });
-    } catch (e) {
-        console.log("   ❌ Failed:", e.message.slice(0, 50));
-        results.push({ contract: "Treasury", status: "❌" });
-    }
-
-    // 7. StakingPool
-    console.log("-".repeat(50));
-    console.log("📦 StakingPool");
-    try {
-        const staking = await ethers.getContractAt("StakingPool", CONTRACTS.StakingPool);
-        
-        await (await staking.grantRole(ROLES.DEFAULT_ADMIN_ROLE, GNOSIS_SAFE)).wait();
-        await (await staking.grantRole(ROLES.GOVERNANCE_ROLE, GNOSIS_SAFE)).wait();
-        await (await staking.grantRole(ROLES.REWARDS_MANAGER_ROLE, GNOSIS_SAFE)).wait();
-        await (await staking.renounceRole(ROLES.DEFAULT_ADMIN_ROLE, deployer.address)).wait();
-        
-        console.log("   ✅ Admin transferred to Safe");
-        results.push({ contract: "StakingPool", status: "✅" });
-    } catch (e) {
-        console.log("   ❌ Failed:", e.message.slice(0, 50));
-        results.push({ contract: "StakingPool", status: "❌" });
-    }
-
-    // 8. LiquidityIncentives
-    console.log("-".repeat(50));
-    console.log("📦 LiquidityIncentives");
-    try {
-        const incentives = await ethers.getContractAt("LiquidityIncentives", CONTRACTS.LiquidityIncentives);
-        
-        await (await incentives.grantRole(ROLES.DEFAULT_ADMIN_ROLE, GNOSIS_SAFE)).wait();
-        await (await incentives.grantRole(ROLES.GOVERNANCE_ROLE, GNOSIS_SAFE)).wait();
-        await (await incentives.renounceRole(ROLES.DEFAULT_ADMIN_ROLE, deployer.address)).wait();
-        
-        console.log("   ✅ Admin transferred to Safe");
-        results.push({ contract: "LiquidityIncentives", status: "✅" });
-    } catch (e) {
-        console.log("   ❌ Failed:", e.message.slice(0, 50));
-        results.push({ contract: "LiquidityIncentives", status: "❌" });
-    }
-
-    // ========================================
-    // Summary
-    // ========================================
-    console.log("\n" + "=".repeat(70));
-    console.log("  TRANSFER SUMMARY");
-    console.log("=".repeat(70) + "\n");
-
-    results.forEach(r => {
-        console.log(`   ${r.status} ${r.contract}`);
-    });
-
-    const successful = results.filter(r => r.status === "✅").length;
-    console.log(`\n   Total: ${successful}/${results.length} contracts transferred`);
-
-    if (successful === results.length) {
-        console.log("\n✅ All admin roles successfully transferred to Gnosis Safe!");
-        console.log(`   Safe Address: ${GNOSIS_SAFE}`);
-        console.log("\n⚠️  IMPORTANT: The deployer wallet no longer has admin access.");
-        console.log("   All future contract changes require multi-sig approval.");
-    }
+  console.log("\n" + "=".repeat(70));
+  console.log(EXECUTE ? "Role reconciliation transactions completed." : "Dry-run complete. Set EXECUTE_ROLE_TRANSFER=true to apply.");
 }
 
 main()
-    .then(() => process.exit(0))
-    .catch((error) => {
-        console.error(error);
-        process.exit(1);
-    });
+  .then(() => process.exit(0))
+  .catch((error) => {
+    console.error(error);
+    process.exit(1);
+  });

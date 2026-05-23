@@ -16,8 +16,8 @@
 | **uTUT** | `0x6D3205ba4066260ca4B94F9221c46b95B1eedcD4` | ✅ |
 | **SessionKeyRegistry** | `0x73e8fDfE1EEd5f6fbE47Ef9bCEaD76da78516025` | ✅ |
 | **TUTConverter** | `0xF064C89198Ce3c595bf60ac0b6A12045CB49ebeD` | ✅ |
-| **TrainingRewards** | `0x1fec9c4dB67b6d3531171936C13760E2a61415D7` | ✅ |
-| **StakingPool** | `0x21Fc5CD8606e19961F38E26fd7286f7e647eFf04` | ✅ |
+| **TrainingRewards** | `0x24D8bE6650DBb2e4F15FcCE540b1f417A48B3526` | ✅ |
+| **StakingPool** | `0x21Fc5CD8606e19961F38E26fd7286f7e647eFf04` | ⚠️ Admin assigned to TUT token address |
 
 ### Ethereum Mainnet (L1 - Token Origin)
 **Chain ID:** 1  
@@ -46,7 +46,7 @@ TUT is the canonical governance token on Ethereum L1, bridged to Base L2 via the
 
 | Role | Address | Network |
 |------|---------|---------|
-| **Gnosis Safe (Multisig)** | `0xa56eb5E3990C740C8c58F02eAD263feF02567677` | Base |
+| **Gnosis Safe (Multisig)** | `0x57dd8B744fd527c4cbd983d2878a29c5116ab855` | Base |
 | **Deployer** | `0xAdBcb3Ba539b741c386d28705858Af699856B928` | Both |
 
 ---
@@ -58,13 +58,14 @@ TUT is the canonical governance token on Ethereum L1, bridged to Base L2 via the
 - ✅ `Governor` has `PROPOSER_ROLE` on `Timelock`
 - ✅ Anyone can execute on `Timelock` (EXECUTOR_ROLE = address(0))
 - ✅ Gnosis Safe has `DEFAULT_ADMIN_ROLE` on `uTUT`
+- ⚠️ `StakingPool` `DEFAULT_ADMIN_ROLE` and `REWARDS_MANAGER_ROLE` are assigned to the TUT token address; redeploy or migrate before production staking rewards.
 
 ### Governance Parameters
 - **Voting Delay:** 1 day
 - **Voting Period:** 1 week  
 - **Proposal Threshold:** 100,000 TUT
 - **Quorum:** 4% of total supply
-- **Timelock Delay:** 24 hours
+- **Timelock Delay:** 48 hours
 
 ---
 

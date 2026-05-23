@@ -1,20 +1,21 @@
 require("dotenv").config();
 const { ethers } = require("hardhat");
+const { BASE_MAINNET_ADDRESSES, configuredSafeAddress } = require("./base-mainnet-addresses");
 
 // All deployed contracts on Base Mainnet
 const DEPLOYED = {
-    TUT: "0xAf7e938741a720508897Bf3a13538f6713A337A4",
-    uTUT: "0x6D3205ba4066260ca4B94F9221c46b95B1eedcD4",
-    SessionKeyRegistry: "0x73e8fDfE1EEd5f6fbE47Ef9bCEaD76da78516025",
-    TUTConverter: "0xF064C89198Ce3c595bf60ac0b6A12045CB49ebeD",
-    TrainingRewards: "0x1fec9c4dB67b6d3531171936C13760E2a61415D7",
-    Timelock: "0xb23f0662511ec0ee8d3760e3158a5Ab01551d52d",
-    Governor: "0xeEd65936FaEDb315c598F8b1aF796289BCE2B7f6",
-    Treasury: "0x3FaB09377944144eB991DB2a5ADf2C96A5e8587c",
-    Staking: "0x21Fc5CD8606e19961F38E26fd7286f7e647eFf04"
+    TUT: BASE_MAINNET_ADDRESSES.tut,
+    uTUT: BASE_MAINNET_ADDRESSES.uTut,
+    SessionKeyRegistry: BASE_MAINNET_ADDRESSES.sessionKeyRegistry,
+    TUTConverter: BASE_MAINNET_ADDRESSES.tutConverter,
+    TrainingRewards: BASE_MAINNET_ADDRESSES.trainingRewards,
+    Timelock: BASE_MAINNET_ADDRESSES.timelock,
+    Governor: BASE_MAINNET_ADDRESSES.governor,
+    Treasury: BASE_MAINNET_ADDRESSES.treasury,
+    Staking: BASE_MAINNET_ADDRESSES.stakingPool
 };
 
-const GNOSIS_SAFE = "0xa56eb5E3990C740C8c58F02eAD263feF02567677";
+const GNOSIS_SAFE = configuredSafeAddress();
 
 async function main() {
     const [deployer] = await ethers.getSigners();
@@ -29,6 +30,15 @@ async function main() {
     
     const balance = await ethers.provider.getBalance(deployer.address);
     console.log(`   Balance: ${ethers.formatEther(balance)} ETH`);
+
+    if (network.chainId !== BigInt(BASE_MAINNET_ADDRESSES.chainId)) {
+        throw new Error(`configure-mainnet must run on Base mainnet (${BASE_MAINNET_ADDRESSES.chainId}); connected to ${network.chainId}`);
+    }
+
+    const safeCode = await ethers.provider.getCode(GNOSIS_SAFE);
+    if (safeCode === "0x") {
+        throw new Error(`GNOSIS_SAFE_ADDRESS has no contract code on Base: ${GNOSIS_SAFE}`);
+    }
     
     // Wait a bit to ensure nonce is fresh
     console.log("\n⏳ Waiting 15s for nonce to settle...");
