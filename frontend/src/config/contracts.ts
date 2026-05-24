@@ -111,7 +111,7 @@ export const CONTRACT_ADDRESSES = {
     trainingRewards: '0x24D8bE6650DBb2e4F15FcCE540b1f417A48B3526' as `0x${string}`,
     trainingRewardsV2: '0x24D8bE6650DBb2e4F15FcCE540b1f417A48B3526' as `0x${string}`,
     // DeFi
-    stakingPool: '0x21Fc5CD8606e19961F38E26fd7286f7e647eFf04' as `0x${string}`,
+    stakingPool: '0xA2887e45E0aFF0476a841c3eE4a647A21f32A628' as `0x${string}`, // Clean replacement; old 0x21Fc... pool is deprecated
     // Placeholder for L1-only contracts
     escrow: '0x0000000000000000000000000000000000000000' as `0x${string}`,
     payroll: '0x0000000000000000000000000000000000000000' as `0x${string}`,

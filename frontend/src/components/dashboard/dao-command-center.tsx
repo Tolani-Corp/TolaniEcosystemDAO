@@ -105,6 +105,92 @@ const laneCards = [
   },
 ];
 
+const ecosystemMapNodes: Array<{
+  label: string;
+  status: string;
+  detail: string;
+  icon: LucideIcon;
+  color: string;
+  border: string;
+}> = [
+  {
+    label: "TCCG.work",
+    status: "Project demand",
+    detail: "Scopes retrofit work, site approval, contractor readiness, and field execution demand.",
+    icon: Layers3,
+    color: "text-blue-300",
+    border: "border-blue-400/25",
+  },
+  {
+    label: "Smart HVAC",
+    status: "Device layer",
+    detail: "Controllers, meters, IAQ sensors, and gateways create energy and operations telemetry.",
+    icon: Activity,
+    color: "text-cyan-300",
+    border: "border-cyan-400/25",
+  },
+  {
+    label: "ESG",
+    status: "Evidence review",
+    detail: "Energy, IAQ, refrigerant, and closeout records become auditable impact evidence.",
+    icon: BadgeCheck,
+    color: "text-lime-300",
+    border: "border-lime-400/25",
+  },
+  {
+    label: "uTUT",
+    status: "Completion credit",
+    detail: "Training, certification, and participation points issued through DAO reward rails.",
+    icon: GraduationCap,
+    color: "text-emerald-300",
+    border: "border-emerald-400/25",
+  },
+  {
+    label: "TUT",
+    status: "Governance token",
+    detail: "Base governance token for proposals, treasury decisions, and conversion reserves.",
+    icon: Coins,
+    color: "text-amber-300",
+    border: "border-amber-400/25",
+  },
+  {
+    label: "sTUT",
+    status: "Staked posture",
+    detail: "Staked TUT position for longer-term DAO alignment; reward funding remains gated.",
+    icon: Vault,
+    color: "text-rose-300",
+    border: "border-rose-400/25",
+  },
+];
+
+const ecosystemMapFlows = [
+  {
+    from: "TCCG.work",
+    to: "Smart HVAC",
+    detail: "Approved scopes create retrofit procurement and installation work.",
+  },
+  {
+    from: "Smart HVAC",
+    to: "ESG",
+    detail: "Telemetry and closeout records become impact evidence.",
+  },
+  {
+    from: "ESG",
+    to: "uTUT",
+    detail: "Accepted evidence can back learning and reward eligibility.",
+  },
+  {
+    from: "uTUT",
+    to: "TUT",
+    detail: "The DAO converter governs utility-credit conversion.",
+  },
+  {
+    from: "TUT",
+    to: "sTUT",
+    detail: "TUT holders stake only through the DAO staking pool.",
+  },
+];
+
 function toFiniteNumber(value: string | number | undefined) {
   const parsed = typeof value === "number" ? value : Number.parseFloat(value ?? "0");
   return Number.isFinite(parsed) ? parsed : 0;
@@ -368,6 +454,54 @@ export function DAOCommandCenter() {
           ))}
         </div>
       </motion.section>
+
+      <GlassCard className="rounded-lg">
+        <CardHeader
+          title="Ecosystem Map"
+          description="How project demand, ESG evidence, and TUT token rails connect."
+          action={<Badge variant="info">TCCG / ESG / TUT</Badge>}
+        />
+        <CardContent className="space-y-5">
+          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-6">
+            {ecosystemMapNodes.map(({ label, status, detail, icon: Icon, color, border }) => (
+              <div key={label} className={cn("rounded-lg border bg-gray-950/60 p-4", border)}>
+                <div className="mb-4 flex items-center justify-between gap-3">
+                  <Icon className={cn("h-5 w-5", color)} />
+                  <span className="rounded-full border border-gray-800 px-2 py-0.5 text-xs text-gray-500">
+                    {status}
+                  </span>
+                </div>
+                <h2 className="text-base font-semibold text-white">{label}</h2>
+                <p className="mt-2 text-sm leading-6 text-gray-400">{detail}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="grid gap-3 lg:grid-cols-5">
+            {ecosystemMapFlows.map((flow) => (
+              <div key={`${flow.from}-${flow.to}`} className="rounded-lg border border-gray-800 bg-gray-900/40 p-4">
+                <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-white">
+                  <span>{flow.from}</span>
+                  <ArrowRight className="h-4 w-4 text-cyan-300" />
+                  <span>{flow.to}</span>
+                </div>
+                <p className="text-sm leading-6 text-gray-400">{flow.detail}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="rounded-lg border border-amber-400/20 bg-amber-950/15 p-4">
+            <div className="mb-2 flex items-center gap-2">
+              <ShieldCheck className="h-4 w-4 text-amber-300" />
+              <p className="text-sm font-semibold text-white">Operating boundary</p>
+            </div>
+            <p className="text-sm leading-6 text-gray-300">
+              TCCG.work, ESG, and smart HVAC records can feed evidence and governance context; token
+              balances, reward execution, conversion, staking, and sTUT status stay DAO-owned.
+            </p>
+          </div>
+        </CardContent>
+      </GlassCard>
 
       <div className="grid gap-6 xl:grid-cols-[1.25fr_0.75fr]">
         <GlassCard className="rounded-lg">
