@@ -22,6 +22,8 @@
     "status": "hardhat run scripts/proposal-status.js",
     "reconcile:base": "hardhat run --no-compile scripts/deployments/reconcile-mainnet-status.js --network base",
     "roles:base": "hardhat run --no-compile scripts/deployments/transfer-to-multisig.js --network base",
+    "fund:base": "hardhat run --no-compile scripts/deployments/fund-base-tut.js --network base",
+    "staking:deploy:base": "hardhat run --no-compile scripts/deployments/deploy-clean-staking.js --network base",
     "verify": "hardhat verify"
   },
   "keywords": [

@@ -17,7 +17,8 @@
 | **SessionKeyRegistry** | `0x73e8fDfE1EEd5f6fbE47Ef9bCEaD76da78516025` | ✅ |
 | **TUTConverter** | `0xF064C89198Ce3c595bf60ac0b6A12045CB49ebeD` | ✅ |
 | **TrainingRewards** | `0x24D8bE6650DBb2e4F15FcCE540b1f417A48B3526` | ✅ |
-| **StakingPool** | `0x21Fc5CD8606e19961F38E26fd7286f7e647eFf04` | ⚠️ Admin assigned to TUT token address |
+| **StakingPool** | `0xA2887e45E0aFF0476a841c3eE4a647A21f32A628` | ✅ Clean replacement |
+| **Deprecated StakingPool** | `0x21Fc5CD8606e19961F38E26fd7286f7e647eFf04` | Replaced; empty |
 
 ### Ethereum Mainnet (L1 - Token Origin)
 **Chain ID:** 1  
@@ -36,6 +37,10 @@
 TUT is the canonical governance token on Ethereum L1, bridged to Base L2 via the **Optimism Standard Bridge**.
 
 - **Bridged Amount:** 10,000,000 TUT
+- **Treasury Funded:** 9,750,000 TUT
+- **Converter Reserve:** 250,000 TUT
+- **Staking Rewards Funded:** 0 TUT; activation deferred
+- **Source Wallet Remaining:** 0 TUT
 - **Bridge Contract:** Base Standard Bridge
 - **L1 → L2 Time:** ~2 minutes (instant finality)
 - **L2 → L1 Time:** 7 days (challenge period)
@@ -55,10 +60,21 @@ TUT is the canonical governance token on Ethereum L1, bridged to Base L2 via the
 
 ### Roles Configured
 - ✅ `TrainingRewards` has `MINTER_ROLE` on `uTUT`
+- ✅ `TUTConverter` has `MINTER_ROLE` on `uTUT`
+- ✅ `uTUT` converter is set to `TUTConverter`
 - ✅ `Governor` has `PROPOSER_ROLE` on `Timelock`
 - ✅ Anyone can execute on `Timelock` (EXECUTOR_ROLE = address(0))
 - ✅ Gnosis Safe has `DEFAULT_ADMIN_ROLE` on `uTUT`
-- ⚠️ `StakingPool` `DEFAULT_ADMIN_ROLE` and `REWARDS_MANAGER_ROLE` are assigned to the TUT token address; redeploy or migrate before production staking rewards.
+- ✅ Gnosis Safe has admin/treasury roles on `TUTConverter`
+- ✅ Gnosis Safe has `DEFAULT_ADMIN_ROLE` on `Timelock`
+- ✅ Gnosis Safe and Timelock have `DEFAULT_ADMIN_ROLE` and `REWARDS_MANAGER_ROLE` on the clean `StakingPool`
+- ✅ Deployer roles were renounced on the clean `StakingPool`
+- ✅ Clean `StakingPool` is deployed but intentionally unfunded/inactive
+- ✅ Deployer admin roles were renounced on `uTUT`, `TUTConverter`, `SessionKeyRegistry`, and `Timelock`
+- ✅ Deployer operational roles were renounced on `uTUT` and `TUTConverter`
+
+### Staking Activation Gate
+Staking rewards remain deferred until Tolani Labs, HookTravel, Listo, and the DAO UI are online and operational. The clean StakingPool exists for readiness, but reward funding should require a new governance decision after those ecosystem surfaces are validated.
 
 ### Governance Parameters
 - **Voting Delay:** 1 day

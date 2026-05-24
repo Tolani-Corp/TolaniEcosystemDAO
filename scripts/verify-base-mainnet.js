@@ -4,56 +4,58 @@
  */
 
 const hre = require("hardhat");
+const { BASE_MAINNET_ADDRESSES, configuredSafeAddress } = require("./deployments/base-mainnet-addresses");
+
+const SAFE_ADDRESS = configuredSafeAddress();
 
 // Deployed contract addresses
 const CONTRACTS = {
-  uTUT: "0x6D3205ba4066260ca4B94F9221c46b95B1eedcD4",
-  SessionKeyRegistry: "0x73e8fDfE1EEd5f6fbE47Ef9bCEaD76da78516025",
-  TrainingRewards: "0x1fec9c4dB67b6d3531171936C13760E2a61415D7",
-  Timelock: "0xb23f0662511ec0ee8d3760e3158a5Ab01551d52d",
-  Governor: "0xeEd65936FaEDb315c598F8b1aF796289BCE2B7f6",
-  Treasury: "0x3FaB09377944144eB991DB2a5ADf2C96A5e8587c",
-  StakingPool: "0x21Fc5CD8606e19961F38E26fd7286f7e647eFf04",
+  uTUT: BASE_MAINNET_ADDRESSES.uTut,
+  SessionKeyRegistry: BASE_MAINNET_ADDRESSES.sessionKeyRegistry,
+  TrainingRewards: BASE_MAINNET_ADDRESSES.trainingRewards,
+  Timelock: BASE_MAINNET_ADDRESSES.timelock,
+  Governor: BASE_MAINNET_ADDRESSES.governor,
+  Treasury: BASE_MAINNET_ADDRESSES.treasury,
+  StakingPool: BASE_MAINNET_ADDRESSES.stakingPool,
 };
 
 // Constructor arguments for each contract
 const CONSTRUCTOR_ARGS = {
   // uTUTSimple(admin)
-  uTUT: ["0xa56eb5E3990C740C8c58F02eAD263feF02567677"], // Gnosis Safe
+  uTUT: [SAFE_ADDRESS],
   
   // SessionKeyRegistry() - no args
   SessionKeyRegistry: [],
   
   // TrainingRewardsSimple(uTUT, admin)
   TrainingRewards: [
-    "0x6D3205ba4066260ca4B94F9221c46b95B1eedcD4", // uTUT
-    "0xa56eb5E3990C740C8c58F02eAD263feF02567677", // Gnosis Safe
+    BASE_MAINNET_ADDRESSES.uTut,
+    SAFE_ADDRESS,
   ],
   
   // TolaniEcosystemTimelock(minDelay, proposers, executors, admin)
   Timelock: [
-    86400, // 24 hours
+    172800, // 48 hours
     [], // Proposers added after Governor deployment
     ["0x0000000000000000000000000000000000000000"], // Anyone can execute
-    "0xa56eb5E3990C740C8c58F02eAD263feF02567677", // Gnosis Safe
+    BASE_MAINNET_ADDRESSES.deployer,
   ],
   
   // TolaniEcosystemGovernor(token, timelock)
   Governor: [
-    "0xAf7e938741a720508897Bf3a13538f6713A337A4", // TUT
-    "0xb23f0662511ec0ee8d3760e3158a5Ab01551d52d", // Timelock
+    BASE_MAINNET_ADDRESSES.tut,
+    BASE_MAINNET_ADDRESSES.timelock,
   ],
   
   // TolaniTreasury(timelock)
   Treasury: [
-    "0xb23f0662511ec0ee8d3760e3158a5Ab01551d52d", // Timelock
+    BASE_MAINNET_ADDRESSES.timelock,
   ],
   
-  // StakingPool(stakingToken, rewardToken, admin)
+  // StakingPool(stakingToken, governance)
   StakingPool: [
-    "0xAf7e938741a720508897Bf3a13538f6713A337A4", // TUT (stake)
-    "0xAf7e938741a720508897Bf3a13538f6713A337A4", // TUT (reward)
-    "0xa56eb5E3990C740C8c58F02eAD263feF02567677", // Gnosis Safe
+    BASE_MAINNET_ADDRESSES.tut,
+    BASE_MAINNET_ADDRESSES.deployer,
   ],
 };
 

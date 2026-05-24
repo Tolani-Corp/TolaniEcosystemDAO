@@ -13,7 +13,8 @@ const BASE_MAINNET_ADDRESSES = Object.freeze({
   timelock: "0xb23f0662511ec0ee8d3760e3158a5Ab01551d52d",
   governor: "0xeEd65936FaEDb315c598F8b1aF796289BCE2B7f6",
   treasury: "0x3FaB09377944144eB991DB2a5ADf2C96A5e8587c",
-  stakingPool: "0x21Fc5CD8606e19961F38E26fd7286f7e647eFf04",
+  deprecatedStakingPool: "0x21Fc5CD8606e19961F38E26fd7286f7e647eFf04",
+  stakingPool: "0xA2887e45E0aFF0476a841c3eE4a647A21f32A628",
 });
 
 function configuredSafeAddress() {

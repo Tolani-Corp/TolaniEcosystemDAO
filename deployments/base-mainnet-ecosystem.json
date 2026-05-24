@@ -46,19 +46,70 @@
       "description": "DAO treasury controlled by Timelock"
     },
     "Staking": {
+      "address": "0xA2887e45E0aFF0476a841c3eE4a647A21f32A628",
+      "type": "StakingPool",
+      "description": "Clean StakingPool replacement; Safe and Timelock hold admin/rewards roles; rewards are intentionally unfunded until ecosystem activation"
+    },
+    "DeprecatedStaking": {
       "address": "0x21Fc5CD8606e19961F38E26fd7286f7e647eFf04",
       "type": "StakingPool",
-      "description": "Stake TUT to earn TUT rewards; admin roles are assigned to the TUT token address and require redeploy/migration"
+      "description": "Deprecated empty pool; admin roles were assigned to the TUT token address"
     }
   },
   "configuration": {
+    "funding": {
+      "sourceWalletRemaining": "0 TUT",
+      "treasuryBalance": "9,750,000 TUT",
+      "converterReserve": "250,000 TUT",
+      "stakingRewardsFunded": "0 TUT",
+      "treasuryTransferTx": "0x45e4d2f5ee2421597d1e60a7531dc683e8bf37f3175184a5ac038826186b6112",
+      "converterApprovalTx": "0x814db0f0b47cb56fad4179bb90055e5fbaa7ed5a37382efdcd3e531bcba018d9",
+      "converterDepositTx": "0xe863c77563d60b55739c9a5375184dbf2fb73f548afc1a7d56e8d07d73264013"
+    },
     "uTUT": {
       "MINTER_ROLE": "Granted to TrainingRewards",
+      "CONVERTER": "Set to TUTConverter",
       "DEFAULT_ADMIN_ROLE": "Granted to Gnosis Safe"
+    },
+    "TUTConverter": {
+      "MINTER_ROLE_ON_UTUT": "Granted to TUTConverter",
+      "DEFAULT_ADMIN_ROLE": "Granted to Gnosis Safe",
+      "TREASURY_ROLE": "Granted to Gnosis Safe"
     },
     "Timelock": {
       "PROPOSER_ROLE": "Granted to Governor",
-      "EXECUTOR_ROLE": "Open to anyone (address(0))"
+      "EXECUTOR_ROLE": "Open to anyone (address(0)); also granted to Gnosis Safe",
+      "DEFAULT_ADMIN_ROLE": "Granted to Gnosis Safe"
+    },
+    "StakingPool": {
+      "DEFAULT_ADMIN_ROLE": "Granted to Gnosis Safe and Timelock; deployer renounced",
+      "REWARDS_MANAGER_ROLE": "Granted to Gnosis Safe and Timelock; deployer renounced",
+      "activationStatus": "Deferred; no rewards funded",
+      "activationPrerequisites": [
+        "Tolani Labs online and operational",
+        "HookTravel online and operational",
+        "Listo online and operational",
+        "DAO UI completion",
+        "New governance decision for reward amount and duration"
+      ],
+      "deploymentTx": "0x357030e685bd8309d6a997d9b3ef5643fc7ae8436ec238178ac439afa740d60d",
+      "safeAdminGrantTx": "0xb05fb8bf3cfa635e7e913e8082d5cacbe8dffe272df7638f51793c87c82cecc5",
+      "safeRewardsGrantTx": "0xa7cffc7561e95c48a84d2f1e4dc9fdc94c960a3fbcc008033006b5726065400a",
+      "timelockAdminGrantTx": "0xbba3f4c26fcb1163fcffa83d3dde0afc4090b1718b53d43fa6708da80e855a26",
+      "timelockRewardsGrantTx": "0x7f3a8efacf0fcdc117fe0de3a72097976e153612381de7c2862d91cc98e83f13",
+      "deployerRewardsRenounceTx": "0x4ef167180f1cbec30f438aeb4103c181f3d4e14903f487ec94a71d0c7a14bfec",
+      "deployerAdminRenounceTx": "0x38fe9b8d13368ebdde01285632e8bb4d3967a4df1d15855872cc01959af310de"
+    },
+    "deployerRoleCleanup": {
+      "uTUTAdminRenounceTx": "0xaded6365dc93270769ca6295743ed9ba362466a530a459a860c7f4a130679b2b",
+      "uTUTPauserRenounceTx": "0xef8265337f25f058754f695490bb43a6d6cd8ef95a749b4bfd62b318d923191d",
+      "uTUTMinterRenounceTx": "0x3454580a7f41a80b1e160415f6fa776bb0126002eb73ba263aa2b4267959dc4d",
+      "converterAdminRenounceTx": "0x5a5888cdf3a45ea785fc20e06f76196fdb764e5ff26753169e0d3033f81cfb37",
+      "converterPauserRenounceTx": "0xa293c3950cfa0f66d0cfbe3a5290920b2b598dfa250932697add4e43c0ab0a30",
+      "converterUpgraderRenounceTx": "0x035a57fce633c7cec4e9fe46f2048fe6ffafc188884d5340caadc937cd1898e7",
+      "converterTreasuryRenounceTx": "0x2452003212d5385b934814918a878ae24fad799ac7005f14e8fb6f0f02d21f65",
+      "sessionKeyRegistryAdminRenounceTx": "0x6f4dff6adc0d1d53c5be3dbfdaa77a56c6f3c2a6d7b56274d5978b56b58f5ec1",
+      "timelockAdminRenounceTx": "0x4ba758f273c4ece543733b237b5bc018dc1e194a931b6b5d4597e76982a0116d"
     }
   },
   "links": {

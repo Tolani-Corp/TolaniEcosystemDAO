@@ -11,18 +11,19 @@
 const { ethers, upgrades } = require("hardhat");
 const fs = require("fs");
 const path = require("path");
+const { BASE_MAINNET_ADDRESSES } = require("./base-mainnet-addresses");
 
 // Already deployed contracts from partial deployment
 const DEPLOYED = {
-    TUT: "0xAf7e938741a720508897Bf3a13538f6713A337A4",
-    uTUT: "0x6D3205ba4066260ca4B94F9221c46b95B1eedcD4",
-    SessionKeyRegistry: "0x73e8fDfE1EEd5f6fbE47Ef9bCEaD76da78516025",
-    TUTConverter: "0xF064C89198Ce3c595bf60ac0b6A12045CB49ebeD",
-    TrainingRewards: "0x1fec9c4dB67b6d3531171936C13760E2a61415D7",
-    Timelock: "0xb23f0662511ec0ee8d3760e3158a5Ab01551d52d",
-    Governor: "0xeEd65936FaEDb315c598F8b1aF796289BCE2B7f6",
-    Treasury: "0x3FaB09377944144eB991DB2a5ADf2C96A5e8587c",
-    Staking: "0x21Fc5CD8606e19961F38E26fd7286f7e647eFf04"
+    TUT: BASE_MAINNET_ADDRESSES.tut,
+    uTUT: BASE_MAINNET_ADDRESSES.uTut,
+    SessionKeyRegistry: BASE_MAINNET_ADDRESSES.sessionKeyRegistry,
+    TUTConverter: BASE_MAINNET_ADDRESSES.tutConverter,
+    TrainingRewards: BASE_MAINNET_ADDRESSES.trainingRewards,
+    Timelock: BASE_MAINNET_ADDRESSES.timelock,
+    Governor: BASE_MAINNET_ADDRESSES.governor,
+    Treasury: BASE_MAINNET_ADDRESSES.treasury,
+    Staking: BASE_MAINNET_ADDRESSES.stakingPool
 };
 
 // Uniswap V3 addresses on Base Mainnet

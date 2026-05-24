@@ -32,9 +32,25 @@ const STAKING_CONFIG = {
   // At $0.0125/TUT = ~$68/day in rewards distributed
 };
 
+const STAKING_ACTIVATION_ACK = "tolani-ecosystem-online";
+const STAKING_ACTIVATION_PREREQUISITES = [
+  "Tolani Labs online and operational",
+  "HookTravel online and operational",
+  "Listo online and operational",
+  "DAO UI complete",
+  "Fresh governance decision for staking reward amount and duration",
+];
+
 async function main() {
   console.log("\n🔒 TUT Staking Pool Initialization");
   console.log("===================================\n");
+
+  if (process.env.STAKING_ACTIVATION_ACK !== STAKING_ACTIVATION_ACK) {
+    console.error("Staking rewards are intentionally deferred.");
+    console.error(`Set STAKING_ACTIVATION_ACK=${STAKING_ACTIVATION_ACK} only after these prerequisites are met:`);
+    STAKING_ACTIVATION_PREREQUISITES.forEach((item) => console.error(`- ${item}`));
+    process.exit(1);
+  }
   
   // Get network info
   const network = await ethers.provider.getNetwork();

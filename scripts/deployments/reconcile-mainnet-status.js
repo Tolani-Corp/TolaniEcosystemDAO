@@ -69,6 +69,7 @@ async function main() {
   pass("Official Base TUT", BASE_MAINNET_ADDRESSES.tut);
   pass("Base TUT supply", `${ethers.formatEther(totalSupply)} TUT`);
   if (sourceBalance > 0n) warn("Source wallet still holds Base TUT", `${ethers.formatEther(sourceBalance)} TUT`);
+  else pass("Source wallet fully funded out");
   if (treasuryBalance > 0n) pass("Treasury funded", `${ethers.formatEther(treasuryBalance)} TUT`);
   else warn("Treasury can receive TUT but is not funded", "0 TUT");
   if (converterBalance > 0n) pass("Converter reserve funded", `${ethers.formatEther(converterBalance)} TUT`);
@@ -97,6 +98,7 @@ async function main() {
   else warn("Safe does not have Timelock admin");
 
   const minterRole = await uTut.MINTER_ROLE();
+  const uTutPauserRole = await uTut.PAUSER_ROLE();
   const uTutAdminRole = await uTut.DEFAULT_ADMIN_ROLE();
   const converterAddress = await uTut.converter();
   if (await uTut.hasRole(minterRole, BASE_MAINNET_ADDRESSES.trainingRewards)) pass("TrainingRewards can mint uTUT");
@@ -108,8 +110,15 @@ async function main() {
   if (await uTut.hasRole(uTutAdminRole, SAFE_ADDRESS)) pass("Safe has uTUT admin");
   else warn("Safe missing uTUT admin");
   if (await uTut.hasRole(uTutAdminRole, deployer.address)) warn("Deployer still has uTUT admin");
+  else pass("Deployer is not uTUT admin");
+  if (await uTut.hasRole(uTutPauserRole, deployer.address)) warn("Deployer still has uTUT pauser role");
+  else pass("Deployer is not uTUT pauser");
+  if (await uTut.hasRole(minterRole, deployer.address)) warn("Deployer still has uTUT minter role");
+  else pass("Deployer is not uTUT minter");
 
   const converterAdminRole = await converter.DEFAULT_ADMIN_ROLE();
+  const converterPauserRole = await converter.PAUSER_ROLE();
+  const converterUpgraderRole = await converter.UPGRADER_ROLE();
   const converterTreasuryRole = await converter.TREASURY_ROLE();
   const converterTut = await converter.tut();
   const converterUtut = await converter.utut();
@@ -122,6 +131,13 @@ async function main() {
   if (await converter.hasRole(converterTreasuryRole, SAFE_ADDRESS)) pass("Safe has converter treasury role");
   else warn("Safe missing converter treasury role");
   if (await converter.hasRole(converterAdminRole, deployer.address)) warn("Deployer still has converter admin");
+  else pass("Deployer is not converter admin");
+  if (await converter.hasRole(converterPauserRole, deployer.address)) warn("Deployer still has converter pauser role");
+  else pass("Deployer is not converter pauser");
+  if (await converter.hasRole(converterUpgraderRole, deployer.address)) warn("Deployer still has converter upgrader role");
+  else pass("Deployer is not converter upgrader");
+  if (await converter.hasRole(converterTreasuryRole, deployer.address)) warn("Deployer still has converter treasury role");
+  else pass("Deployer is not converter treasury");
 
   const stakingAdminRole = await stakingPool.DEFAULT_ADMIN_ROLE();
   const rewardsManagerRole = await stakingPool.REWARDS_MANAGER_ROLE();
@@ -131,6 +147,8 @@ async function main() {
   else warn("Safe missing StakingPool admin", "requires DAO/timelock-side role grant if Safe should manage staking");
   if (await stakingPool.hasRole(rewardsManagerRole, SAFE_ADDRESS)) pass("Safe has StakingPool rewards manager role");
   else warn("Safe missing StakingPool rewards manager role");
+  if (await stakingPool.hasRole(rewardsManagerRole, BASE_MAINNET_ADDRESSES.timelock)) pass("Timelock has StakingPool rewards manager role");
+  else warn("Timelock missing StakingPool rewards manager role");
   if (await stakingPool.hasRole(stakingAdminRole, BASE_MAINNET_ADDRESSES.tut)) {
     fail("StakingPool admin is the TUT token address", "contract cannot initiate AccessControl grants");
   }
@@ -138,6 +156,21 @@ async function main() {
     fail("StakingPool rewards manager is the TUT token address", "contract cannot initiate reward configuration");
   }
   if (await stakingPool.hasRole(stakingAdminRole, deployer.address)) warn("Deployer still has StakingPool admin");
+  else pass("Deployer is not StakingPool admin");
+  if (await stakingPool.hasRole(rewardsManagerRole, deployer.address)) warn("Deployer still has StakingPool rewards manager role");
+
+  if (
+    BASE_MAINNET_ADDRESSES.deprecatedStakingPool &&
+    BASE_MAINNET_ADDRESSES.deprecatedStakingPool.toLowerCase() !== BASE_MAINNET_ADDRESSES.stakingPool.toLowerCase()
+  ) {
+    const deprecatedStakingPool = await ethers.getContractAt("StakingPool", BASE_MAINNET_ADDRESSES.deprecatedStakingPool);
+    const deprecatedTotalStaked = await deprecatedStakingPool.totalStaked();
+    const deprecatedTutBalance = await tut.balanceOf(BASE_MAINNET_ADDRESSES.deprecatedStakingPool);
+    warn(
+      "Deprecated StakingPool replaced",
+      `${BASE_MAINNET_ADDRESSES.deprecatedStakingPool}; totalStaked=${ethers.formatEther(deprecatedTotalStaked)} TUT balance=${ethers.formatEther(deprecatedTutBalance)} TUT`
+    );
+  }
 
   console.log("\nTSG TOKEN POLICY");
   console.log("=".repeat(70));

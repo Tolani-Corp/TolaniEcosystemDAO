@@ -26,7 +26,7 @@ const CONTRACTS = [
     artifact: "uTUT",
     address: BASE_MAINNET_ADDRESSES.uTut,
     roles: ["DEFAULT_ADMIN_ROLE", "PAUSER_ROLE", "UPGRADER_ROLE"],
-    grantOnly: ["MINTER_ROLE"],
+    renounceOnly: ["MINTER_ROLE"],
   },
   {
     label: "TUTConverter",
@@ -73,7 +73,7 @@ async function getRole(contract, roleName) {
 }
 
 async function canGrantRole(contract, role, deployer) {
-  if (typeof contract.getRoleAdmin !== "function") return false;
+  if (typeof contract.getRoleAdmin !== "function") return { hasAdmin: false, adminRole: null };
 
   try {
     const adminRole = await contract.getRoleAdmin(role);
@@ -85,22 +85,26 @@ async function canGrantRole(contract, role, deployer) {
 }
 
 async function maybeGrant(contract, role, roleName, deployer) {
+  return maybeGrantTo(contract, role, roleName, SAFE_ADDRESS, "Safe", deployer);
+}
+
+async function maybeGrantTo(contract, role, roleName, account, accountLabel, deployer) {
   const grantStatus = await canGrantRole(contract, role, deployer);
 
   if (!grantStatus.hasAdmin) {
-    console.log(`   BLOCKED: deployer lacks admin authority to grant ${roleName}`);
+    console.log(`   BLOCKED: deployer lacks admin authority to grant ${roleName} to ${accountLabel}`);
     return;
   }
 
   if (!EXECUTE) {
-    console.log(`   DRY-RUN: grant ${roleName} to Safe`);
+    console.log(`   DRY-RUN: grant ${roleName} to ${accountLabel}`);
     return;
   }
 
-  const tx = await contract.grantRole(role, SAFE_ADDRESS);
+  const tx = await contract.grantRole(role, account);
   console.log(`   TX: ${tx.hash}`);
   await tx.wait();
-  console.log(`   Done: grant ${roleName} to Safe`);
+  console.log(`   Done: grant ${roleName} to ${accountLabel}`);
 }
 
 async function maybeSend(description, fn) {
@@ -114,7 +118,7 @@ async function maybeSend(description, fn) {
   console.log(`   Done: ${description}`);
 }
 
-async function reconcileContract({ label, artifact, address, roles, grantOnly = [] }, deployer) {
+async function reconcileContract({ label, artifact, address, roles, grantOnly = [], renounceOnly = [] }, deployer) {
   console.log("\n" + "-".repeat(70));
   console.log(`${label}: ${address}`);
 
@@ -138,8 +142,12 @@ async function reconcileContract({ label, artifact, address, roles, grantOnly = 
       await maybeGrant(contract, role, roleName, deployer);
     }
 
-    if (RENOUNCE_DEPLOYER && roleName === "DEFAULT_ADMIN_ROLE" && deployerHasRole) {
-      await maybeSend(`renounce ${roleName} from deployer`, () => contract.renounceRole(role, deployer.address));
+    if (RENOUNCE_DEPLOYER && deployerHasRole) {
+      if (roleName === "DEFAULT_ADMIN_ROLE" || safeHasRole) {
+        await maybeSend(`renounce ${roleName} from deployer`, () => contract.renounceRole(role, deployer.address));
+      } else {
+        console.log(`   SKIP: deployer has ${roleName}, but Safe does not`);
+      }
     }
   }
 
@@ -156,6 +164,71 @@ async function reconcileContract({ label, artifact, address, roles, grantOnly = 
       await maybeGrant(contract, role, roleName, deployer);
     }
   }
+
+  for (const roleName of renounceOnly) {
+    const role = await getRole(contract, roleName);
+    if (!role) {
+      console.log(`   ${roleName}: skipped (not exposed by deployed contract)`);
+      continue;
+    }
+
+    const deployerHasRole = await contract.hasRole(role, deployer.address);
+    console.log(`   ${roleName}: deployer=${deployerHasRole}`);
+    if (RENOUNCE_DEPLOYER && deployerHasRole) {
+      await maybeSend(`renounce ${roleName} from deployer`, () => contract.renounceRole(role, deployer.address));
+    }
+  }
+}
+
+async function reconcileUTutConversion(deployer) {
+  console.log("\n" + "-".repeat(70));
+  console.log("uTUT conversion wiring");
+
+  const uTut = await ethers.getContractAt("uTUT", BASE_MAINNET_ADDRESSES.uTut);
+  const minterRole = await getRole(uTut, "MINTER_ROLE");
+  const converterHasMinter = await uTut.hasRole(minterRole, BASE_MAINNET_ADDRESSES.tutConverter);
+  console.log(`   TUTConverter MINTER_ROLE: ${converterHasMinter}`);
+
+  if (!converterHasMinter) {
+    await maybeGrantTo(
+      uTut,
+      minterRole,
+      "MINTER_ROLE",
+      BASE_MAINNET_ADDRESSES.tutConverter,
+      "TUTConverter",
+      deployer
+    );
+  }
+
+  if (typeof uTut.converter !== "function" || typeof uTut.setConverter !== "function") {
+    console.log("   converter(): skipped (not exposed by deployed contract)");
+    return;
+  }
+
+  const currentConverter = await uTut.converter();
+  console.log(`   configured converter: ${currentConverter}`);
+
+  if (currentConverter.toLowerCase() === BASE_MAINNET_ADDRESSES.tutConverter.toLowerCase()) {
+    console.log("   Converter already set");
+    return;
+  }
+
+  const adminRole = await getRole(uTut, "DEFAULT_ADMIN_ROLE");
+  const deployerIsAdmin = await uTut.hasRole(adminRole, deployer.address);
+  if (!deployerIsAdmin) {
+    console.log("   BLOCKED: deployer lacks admin authority to set converter");
+    return;
+  }
+
+  if (!EXECUTE) {
+    console.log(`   DRY-RUN: set converter to ${BASE_MAINNET_ADDRESSES.tutConverter}`);
+    return;
+  }
+
+  const tx = await uTut.setConverter(BASE_MAINNET_ADDRESSES.tutConverter);
+  console.log(`   TX: ${tx.hash}`);
+  await tx.wait();
+  console.log("   Done: set uTUT converter");
 }
 
 async function main() {
@@ -182,6 +255,8 @@ async function main() {
   for (const contract of CONTRACTS) {
     await reconcileContract(contract, deployer);
   }
+
+  await reconcileUTutConversion(deployer);
 
   console.log("\n" + "=".repeat(70));
   console.log(EXECUTE ? "Role reconciliation transactions completed." : "Dry-run complete. Set EXECUTE_ROLE_TRANSFER=true to apply.");
