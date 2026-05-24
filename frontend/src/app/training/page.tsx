@@ -1,19 +1,17 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from "wagmi";
+import { useAccount, useReadContract } from "wagmi";
 import {
   GraduationCap,
   BookOpen,
   CheckCircle2,
-  Clock,
   Award,
   Coins,
   Lock,
   Play,
   Trophy,
-  Loader2,
   AlertCircle,
 } from "lucide-react";
 import { formatUnits } from "viem";
@@ -30,20 +28,12 @@ interface Course {
 }
 
 export default function TrainingPage() {
-  const { address, isConnected } = useAccount();
-  const [courses, setCourses] = useState<Course[]>([]);
-  const [completedCourses, setCompletedCourses] = useState<Set<number>>(new Set());
-  const [selectedCourse, setSelectedCourse] = useState<number | null>(null);
+  const { isConnected } = useAccount();
+  const [completedCourses] = useState<Set<number>>(new Set());
+  const [, setSelectedCourse] = useState<number | null>(null);
 
   const chainId = CHAIN_IDS.SEPOLIA;
   const trainingRewardsAddress = CONTRACT_ADDRESSES[chainId].trainingRewards;
-
-  // Read course count
-  const { data: courseCount } = useReadContract({
-    address: trainingRewardsAddress,
-    abi: ABIS.trainingRewards,
-    functionName: "courseCount",
-  });
 
   // Read total rewards distributed
   const { data: totalRewardsDistributed } = useReadContract({
@@ -52,31 +42,8 @@ export default function TrainingPage() {
     functionName: "totalRewardsDistributed",
   });
 
-  // Fetch courses
-  useEffect(() => {
-    const fetchCourses = async () => {
-      if (!courseCount) return;
-      
-      const count = Number(courseCount);
-      const fetchedCourses: Course[] = [];
-      
-      for (let i = 0; i < count; i++) {
-        try {
-          const response = await fetch(`/api/course/${i}`);
-          if (response.ok) {
-            const data = await response.json();
-            fetchedCourses.push({ id: i, ...data });
-          }
-        } catch (error) {
-          console.error(`Error fetching course ${i}:`, error);
-        }
-      }
-      
-      setCourses(fetchedCourses);
-    };
-
-    // For now, use mock data since we don't have API endpoints
-    const mockCourses: Course[] = [
+  const courses = useMemo<Course[]>(
+    () => [
       {
         id: 0,
         name: "DAO Basics",
@@ -122,9 +89,9 @@ export default function TrainingPage() {
         completions: BigInt(0),
         active: true,
       },
-    ];
-    setCourses(mockCourses);
-  }, [courseCount]);
+    ],
+    []
+  );
 
   const stats = [
     {
@@ -198,7 +165,7 @@ export default function TrainingPage() {
           transition={{ delay: 0.1 }}
           className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12"
         >
-          {stats.map((stat, index) => (
+          {stats.map((stat) => (
             <div
               key={stat.label}
               className="bg-[#1a1a2e] rounded-xl p-4 border border-purple-500/20"

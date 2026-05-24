@@ -1,9 +1,9 @@
 'use client';
 
 import { useReadContract, useWriteContract, useAccount, useWaitForTransactionReceipt } from 'wagmi';
-import { useGovernorContract, useTokenContract, useTimelockContract } from './useContracts';
-import { useState, useEffect, useMemo } from 'react';
-import { formatUnits, parseUnits, keccak256, toHex, encodePacked } from 'viem';
+import { useGovernorContract, useTokenContract } from './useContracts';
+import { useMemo } from 'react';
+import { formatUnits } from 'viem';
 
 // Proposal state enum (matches Governor.sol)
 export const ProposalState = {
@@ -375,8 +375,6 @@ export function useExecuteProposal() {
 
 // Hook to get proposal count (approximation via events - for UI stats)
 export function useProposalCount() {
-  const governorContract = useGovernorContract();
-  
   // OpenZeppelin Governor doesn't have a proposalCount getter
   // We'd need to index events for accurate counts
   // For now, return a placeholder

@@ -23,7 +23,7 @@ export async function reverseResolveUD(address: string): Promise<string | null> 
   try {
     const domain = await resolution.reverse(address);
     return domain;
-  } catch (error) {
+  } catch {
     // No domain found for this address
     return null;
   }
@@ -49,7 +49,7 @@ export async function getUDAvatar(domain: string): Promise<string | null> {
   try {
     const records = await resolution.allRecords(domain);
     return records['social.picture.value'] || records['ipfs.html.value'] || null;
-  } catch (error) {
+  } catch {
     return null;
   }
 }

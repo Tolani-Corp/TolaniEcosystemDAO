@@ -1,10 +1,8 @@
 "use client";
 
-import { motion } from "framer-motion";
 import {
   Vault,
   ArrowUpRight,
-  ArrowDownLeft,
   TrendingUp,
   Coins,
   DollarSign,
@@ -14,7 +12,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { StatCard, GlassCard, CardHeader, CardContent } from "@/components/ui/cards";
-import { Button, Badge } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { formatNumber } from "@/lib/utils";
 import { useTreasuryStats, useEscrowBalance, usePayrollBalance, useEcosystemValue } from "@/hooks/useTreasury";
 import { useContracts } from "@/hooks/useContracts";

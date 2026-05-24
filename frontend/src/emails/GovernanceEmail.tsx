@@ -1,6 +1,8 @@
 import React from 'react';
 
-const styles = {
+type EmailStyleMap = Record<string, React.CSSProperties>;
+
+const styles: EmailStyleMap = {
     body: {
         backgroundColor: '#0f172a', // Slate-900 (Dark Mode Email)
         fontFamily: '"Montserrat", sans-serif',
@@ -18,7 +20,7 @@ const styles = {
     },
     header: {
         padding: '30px',
-        textAlign: 'center' as const,
+        textAlign: 'center',
         borderBottom: '1px solid #334155',
         background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
     },
@@ -36,7 +38,7 @@ const styles = {
         fontSize: '20px',
         fontWeight: 700,
         letterSpacing: '1px',
-        textTransform: 'uppercase' as const,
+        textTransform: 'uppercase',
     },
     content: {
         padding: '40px',
@@ -69,7 +71,7 @@ const styles = {
     metaLabel: {
         fontSize: '12px',
         color: '#94a3b8',
-        textTransform: 'uppercase' as const,
+        textTransform: 'uppercase',
         letterSpacing: '0.05em',
         paddingBottom: '4px',
     },
@@ -89,18 +91,18 @@ const styles = {
         width: '100%',
         backgroundColor: '#E5C64B', // TUT Gold
         color: '#0f172a', // Slate-900 Text
-        textAlign: 'center' as const,
+        textAlign: 'center',
         textDecoration: 'none',
         padding: '16px 0',
         fontSize: '16px',
         fontWeight: 700,
         borderRadius: '4px',
-        textTransform: 'uppercase' as const,
+        textTransform: 'uppercase',
         letterSpacing: '0.5px',
     },
     footer: {
         padding: '30px',
-        textAlign: 'center' as const,
+        textAlign: 'center',
         fontSize: '12px',
         color: '#64748b',
         backgroundColor: '#0f172a',
@@ -110,7 +112,7 @@ const styles = {
 
 export const GovernanceEmail = () => {
     return (
-        <div style={styles.body as any}>
+        <div style={styles.body}>
             <table role="presentation" cellPadding="0" cellSpacing="0" style={{ width: '100%', backgroundColor: '#0f172a' }}>
                 <tr>
                     <td align="center">

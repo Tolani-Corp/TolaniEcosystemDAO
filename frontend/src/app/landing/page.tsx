@@ -2,14 +2,11 @@
 
 import React, { JSX } from "react";
 import { motion } from "framer-motion";
-import Link from "next/link";
 import {
   Coins,
   Shield,
   Vote,
-  Users,
   TrendingUp,
-  Zap,
   ArrowRight,
   ExternalLink,
   BookOpen,

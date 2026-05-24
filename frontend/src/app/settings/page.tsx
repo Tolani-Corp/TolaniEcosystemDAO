@@ -4,8 +4,6 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import {
   Settings,
-  Bell,
-  Palette,
   Shield,
   Globe,
   Moon,

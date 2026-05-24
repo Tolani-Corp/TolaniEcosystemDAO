@@ -14,7 +14,6 @@ interface VotingPanelProps {
 }
 
 export function VotingPanel({
-  proposalId,
   hasVoted,
   userVote,
   onVote,

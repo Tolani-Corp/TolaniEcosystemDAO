@@ -12,12 +12,12 @@ export function useUDName(address: string | undefined) {
 
   useEffect(() => {
     if (!address) {
-      setName(null);
+      queueMicrotask(() => setName(null));
       return;
     }
 
     let cancelled = false;
-    setIsLoading(true);
+    queueMicrotask(() => setIsLoading(true));
 
     reverseResolveUD(address)
       .then((resolvedName) => {
@@ -51,14 +51,18 @@ export function useUDAddress(domain: string | undefined) {
 
   useEffect(() => {
     if (!domain || !isUDomain(domain)) {
-      setAddress(null);
-      setError(null);
+      queueMicrotask(() => {
+        setAddress(null);
+        setError(null);
+      });
       return;
     }
 
     let cancelled = false;
-    setIsLoading(true);
-    setError(null);
+    queueMicrotask(() => {
+      setIsLoading(true);
+      setError(null);
+    });
 
     resolveUDomain(domain)
       .then((resolvedAddress) => {
@@ -95,12 +99,12 @@ export function useUDRecords(domain: string | undefined) {
 
   useEffect(() => {
     if (!domain || !isUDomain(domain)) {
-      setRecords(null);
+      queueMicrotask(() => setRecords(null));
       return;
     }
 
     let cancelled = false;
-    setIsLoading(true);
+    queueMicrotask(() => setIsLoading(true));
 
     getUDRecords(domain)
       .then((resolvedRecords) => {

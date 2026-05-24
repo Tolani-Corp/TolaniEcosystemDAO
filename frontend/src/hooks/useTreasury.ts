@@ -1,7 +1,7 @@
 'use client';
 
-import { useReadContract, useReadContracts, useAccount, useBalance } from 'wagmi';
-import { useTreasuryContract, useTokenContract, useContracts } from './useContracts';
+import { useReadContract, useBalance } from 'wagmi';
+import { useContracts } from './useContracts';
 import { formatUnits, formatEther } from 'viem';
 import { useMemo } from 'react';
 

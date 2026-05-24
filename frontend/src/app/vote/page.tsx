@@ -1,20 +1,20 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ThumbsUp, ThumbsDown, MinusCircle, Vote, Users, FileText, Loader2, ArrowRight, Clock } from "lucide-react";
+import { ThumbsUp, ThumbsDown, MinusCircle, Vote, FileText, Loader2, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { Button, Badge } from "@/components/ui/button";
 import { GlassCard, CardHeader, CardContent } from "@/components/ui/cards";
-import { cn, formatNumber, formatAddress } from "@/lib/utils";
+import { formatNumber, formatAddress } from "@/lib/utils";
 import { useAccount } from "wagmi";
 import { useVotingPower, useDelegate } from "@/hooks/useGovernance";
-import { useActiveProposals, type Proposal } from "@/hooks/useProposals";
+import { useActiveProposals } from "@/hooks/useProposals";
 
 export default function VotePage() {
   const { isConnected } = useAccount();
   const { votingPowerFormatted, isLoading: votingLoading } = useVotingPower();
   const { hasDelegated, isSelfDelegated } = useDelegate();
-  const { proposals: activeProposals, isLoading: proposalsLoading, error } = useActiveProposals();
+  const { proposals: activeProposals, isLoading: proposalsLoading } = useActiveProposals();
 
   return (
     <div className="space-y-8">
@@ -232,7 +232,7 @@ export default function VotePage() {
               <div>
                 <h4 className="font-medium text-white">Proposal Created</h4>
                 <p className="text-sm text-gray-400">
-                  Anyone with enough voting power can create a proposal. There's a short delay before voting begins.
+                  Anyone with enough voting power can create a proposal. There is a short delay before voting begins.
                 </p>
               </div>
             </div>

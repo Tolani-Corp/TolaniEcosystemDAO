@@ -1,18 +1,24 @@
 "use client";
 
 import { http, createConfig } from "wagmi";
+import type { CreateConnectorFn } from "wagmi";
 import { mainnet, sepolia, polygon, polygonMumbai, arbitrum, baseSepolia, base } from "wagmi/chains";
 import { injected, walletConnect, coinbaseWallet } from "wagmi/connectors";
 
 const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || "";
 
+const connectors: CreateConnectorFn[] = [
+  injected(),
+  coinbaseWallet({ appName: "Tolani Ecosystem DAO" }),
+];
+
+if (typeof window !== "undefined" && projectId) {
+  connectors.push(walletConnect({ projectId }));
+}
+
 export const config = createConfig({
   chains: [mainnet, sepolia, polygon, polygonMumbai, arbitrum, baseSepolia, base],
-  connectors: [
-    injected(),
-    walletConnect({ projectId }),
-    coinbaseWallet({ appName: "Tolani Ecosystem DAO" }),
-  ],
+  connectors,
   transports: {
     [mainnet.id]: http(),
     [sepolia.id]: http(),

@@ -6,7 +6,6 @@ import { useAccount, useReadContract } from "wagmi";
 import {
   GraduationCap,
   BookOpen,
-  CheckCircle2,
   Award,
   Coins,
   ExternalLink,
@@ -138,7 +137,7 @@ export default function SkillsBuildPage() {
         const data = campaignDataMap[key];
         if (!data) return null;
 
-        const [name, rewardPerCompletion, budget, spent, , , active] = data as [
+        const [, rewardPerCompletion, budget, spent, , , active] = data as [
           string, bigint, bigint, bigint, bigint, bigint, boolean
         ];
 

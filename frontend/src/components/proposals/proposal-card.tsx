@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { ArrowUpRight, Clock, Users, CheckCircle2, XCircle } from "lucide-react";
-import { Badge, ProgressBar } from "@/components/ui/button";
+import { Badge } from "@/components/ui/button";
 import { cn, getProposalStateColor, getTimeRemaining, formatAddress } from "@/lib/utils";
 
 export interface Proposal {

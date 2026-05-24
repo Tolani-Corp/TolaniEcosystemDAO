@@ -13,12 +13,10 @@ const ThemeContext = createContext<{
 })
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-    const [theme, setTheme] = useState<Theme>('dark') // Default to dark for DAO
-
-    useEffect(() => {
-        const savedTheme = localStorage.getItem('theme') as Theme
-        if (savedTheme) setTheme(savedTheme)
-    }, [])
+    const [theme, setTheme] = useState<Theme>(() => {
+        if (typeof window === 'undefined') return 'dark'
+        return (localStorage.getItem('theme') as Theme | null) || 'dark'
+    }) // Default to dark for DAO
 
     useEffect(() => {
         const root = window.document.documentElement

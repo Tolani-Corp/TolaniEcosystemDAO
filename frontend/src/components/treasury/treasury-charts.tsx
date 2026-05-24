@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useSyncExternalStore } from "react";
 import {
   PieChart,
   Pie,
@@ -15,6 +16,14 @@ import {
 } from "recharts";
 import { formatNumber } from "@/lib/utils";
 
+const subscribe = () => () => {};
+const getClientSnapshot = () => true;
+const getServerSnapshot = () => false;
+
+function useIsClient() {
+  return useSyncExternalStore(subscribe, getClientSnapshot, getServerSnapshot);
+}
+
 interface TreasuryData {
   ethBalance: number;
   tokenBalance: number;
@@ -28,6 +37,8 @@ interface TreasuryChartProps {
 }
 
 export function TreasuryOverview({ data }: TreasuryChartProps) {
+  const isClient = useIsClient();
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* Asset Distribution */}
@@ -36,39 +47,41 @@ export function TreasuryOverview({ data }: TreasuryChartProps) {
           Asset Distribution
         </h3>
         <div className="h-64">
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Pie
-                data={data.assets}
-                cx="50%"
-                cy="50%"
-                innerRadius={60}
-                outerRadius={100}
-                paddingAngle={4}
-                dataKey="value"
-              >
-                {data.assets.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.color} />
-                ))}
-              </Pie>
-              <Tooltip
-                content={({ active, payload }) => {
-                  if (active && payload && payload.length) {
-                    const data = payload[0].payload;
-                    return (
-                      <div className="bg-gray-900 border border-gray-700 rounded-lg p-3 shadow-xl">
-                        <p className="text-white font-medium">{data.name}</p>
-                        <p className="text-gray-400">
-                          ${formatNumber(data.value)}
-                        </p>
-                      </div>
-                    );
-                  }
-                  return null;
-                }}
-              />
-            </PieChart>
-          </ResponsiveContainer>
+          {isClient ? (
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={data.assets}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={60}
+                  outerRadius={100}
+                  paddingAngle={4}
+                  dataKey="value"
+                >
+                  {data.assets.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip
+                  content={({ active, payload }) => {
+                    if (active && payload && payload.length) {
+                      const data = payload[0].payload;
+                      return (
+                        <div className="bg-gray-900 border border-gray-700 rounded-lg p-3 shadow-xl">
+                          <p className="text-white font-medium">{data.name}</p>
+                          <p className="text-gray-400">
+                            ${formatNumber(data.value)}
+                          </p>
+                        </div>
+                      );
+                    }
+                    return null;
+                  }}
+                />
+              </PieChart>
+            </ResponsiveContainer>
+          ) : null}
         </div>
         {/* Legend */}
         <div className="flex flex-wrap justify-center gap-4 mt-4">
@@ -90,45 +103,47 @@ export function TreasuryOverview({ data }: TreasuryChartProps) {
           Treasury Value Over Time
         </h3>
         <div className="h-64">
-          <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={data.history}>
-              <defs>
-                <linearGradient id="treasuryGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.3} />
-                  <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-              <XAxis dataKey="date" stroke="#9ca3af" tick={{ fontSize: 12 }} />
-              <YAxis
-                stroke="#9ca3af"
-                tick={{ fontSize: 12 }}
-                tickFormatter={(value) => `$${formatNumber(value)}`}
-              />
-              <Tooltip
-                content={({ active, payload, label }) => {
-                  if (active && payload && payload.length) {
-                    return (
-                      <div className="bg-gray-900 border border-gray-700 rounded-lg p-3 shadow-xl">
-                        <p className="text-gray-400 text-sm">{label}</p>
-                        <p className="text-white font-medium">
-                          ${formatNumber(payload[0].value as number)}
-                        </p>
-                      </div>
-                    );
-                  }
-                  return null;
-                }}
-              />
-              <Area
-                type="monotone"
-                dataKey="value"
-                stroke="#8b5cf6"
-                strokeWidth={2}
-                fill="url(#treasuryGradient)"
-              />
-            </AreaChart>
-          </ResponsiveContainer>
+          {isClient ? (
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={data.history}>
+                <defs>
+                  <linearGradient id="treasuryGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                <XAxis dataKey="date" stroke="#9ca3af" tick={{ fontSize: 12 }} />
+                <YAxis
+                  stroke="#9ca3af"
+                  tick={{ fontSize: 12 }}
+                  tickFormatter={(value) => `$${formatNumber(value)}`}
+                />
+                <Tooltip
+                  content={({ active, payload, label }) => {
+                    if (active && payload && payload.length) {
+                      return (
+                        <div className="bg-gray-900 border border-gray-700 rounded-lg p-3 shadow-xl">
+                          <p className="text-gray-400 text-sm">{label}</p>
+                          <p className="text-white font-medium">
+                            ${formatNumber(payload[0].value as number)}
+                          </p>
+                        </div>
+                      );
+                    }
+                    return null;
+                  }}
+                />
+                <Area
+                  type="monotone"
+                  dataKey="value"
+                  stroke="#8b5cf6"
+                  strokeWidth={2}
+                  fill="url(#treasuryGradient)"
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          ) : null}
         </div>
       </div>
     </div>

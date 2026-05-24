@@ -81,7 +81,7 @@ function ProposalCard({ proposal }: { proposal: Proposal }) {
   );
 }
 
-function EmptyState({ proposalThresholdFormatted }: { proposalThresholdFormatted: string }) {
+function EmptyState() {
   return (
     <GlassCard>
       <CardContent className="py-20">
@@ -200,7 +200,7 @@ export default function ProposalsPage() {
       {!isLoading && !error && (
         <>
           {proposals.length === 0 ? (
-            <EmptyState proposalThresholdFormatted={proposalThresholdFormatted} />
+            <EmptyState />
           ) : (
             <div className="space-y-8">
               {/* Active Proposals */}

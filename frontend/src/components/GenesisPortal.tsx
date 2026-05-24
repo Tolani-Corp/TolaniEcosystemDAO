@@ -108,7 +108,7 @@ export default function GenesisPortal() {
                                 <div className="absolute inset-0 bg-purple-500/20 blur-xl rounded-full" />
                                 <Gift className="relative w-12 h-12 text-purple-400 animate-bounce" />
                             </div>
-                            <h3 className="text-white font-semibold mb-1">Founder's NFT Series</h3>
+                            <h3 className="text-white font-semibold mb-1">Founder&apos;s NFT Series</h3>
                             <p className="text-zinc-500 text-[10px] mb-4">Claimable by Genesis members only</p>
                             <div className="flex items-center gap-1 text-[10px] text-purple-400 font-bold uppercase tracking-widest">
                                 <Sparkles className="w-3 h-3" /> Incoming Drop

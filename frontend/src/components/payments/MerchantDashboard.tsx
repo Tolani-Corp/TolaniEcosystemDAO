@@ -2,19 +2,16 @@
 
 import { useState, useEffect } from 'react';
 import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
-import { formatUnits, isAddress, keccak256, encodePacked } from 'viem';
+import { formatUnits } from 'viem';
 import { QRCodeSVG } from 'qrcode.react';
 
 // Contract addresses on Base Sepolia
 const MERCHANT_REGISTRY = '0x17904f65220771fDBAbca6eCcDdAf42345C9571d';
-const PAYMENT_PROCESSOR = '0x6A0e297A0116dDeaaa5d1F8a8f6372cC8a7843e1';
-const UTUT_ADDRESS = '0xf4758a12583F424B65CC860A2ff3D3B501cf591C';
 
 // Token decimals
 const UTUT_DECIMALS = 6;
 
 // Relayer endpoint
-const RELAYER_URL = process.env.NEXT_PUBLIC_RELAYER_URL || 'http://localhost:3001';
 
 // Contract ABIs
 const MERCHANT_REGISTRY_ABI = [
@@ -75,56 +72,6 @@ const MERCHANT_REGISTRY_ABI = [
   }
 ] as const;
 
-const PAYMENT_PROCESSOR_ABI = [
-  {
-    name: 'pay',
-    type: 'function',
-    stateMutability: 'nonpayable',
-    inputs: [
-      { name: 'merchantId', type: 'bytes32' },
-      { name: 'amount', type: 'uint256' },
-      { name: 'useUTUT', type: 'bool' }
-    ],
-    outputs: [{ name: 'paymentId', type: 'bytes32' }]
-  },
-  {
-    name: 'nonces',
-    type: 'function',
-    stateMutability: 'view',
-    inputs: [{ name: 'address', type: 'address' }],
-    outputs: [{ name: '', type: 'uint256' }]
-  }
-] as const;
-
-const ERC20_ABI = [
-  {
-    name: 'approve',
-    type: 'function',
-    stateMutability: 'nonpayable',
-    inputs: [
-      { name: 'spender', type: 'address' },
-      { name: 'amount', type: 'uint256' }
-    ],
-    outputs: [{ name: '', type: 'bool' }]
-  },
-  {
-    name: 'allowance',
-    type: 'function',
-    stateMutability: 'view',
-    inputs: [
-      { name: 'owner', type: 'address' },
-      { name: 'spender', type: 'address' }
-    ],
-    outputs: [{ name: '', type: 'uint256' }]
-  },
-  {
-    name: 'balanceOf',
-    type: 'function',
-    stateMutability: 'view',
-    inputs: [{ name: 'account', type: 'address' }],
-    outputs: [{ name: '', type: 'uint256' }]
-  }
-] as const;
 
 // Merchant categories
 const CATEGORIES = [
@@ -208,7 +155,7 @@ export default function MerchantDashboard() {
   useEffect(() => {
     if (isRegisterSuccess) {
       refetchMerchant();
-      setActiveTab('dashboard');
+      queueMicrotask(() => setActiveTab('dashboard'));
     }
   }, [isRegisterSuccess, refetchMerchant]);
   

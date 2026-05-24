@@ -132,6 +132,18 @@ interface MerchantInfo {
   acceptsTUT: boolean;
 }
 
+type DetectedBarcode = {
+  rawValue: string;
+};
+
+type BarcodeDetectorConstructor = new (options?: { formats?: string[] }) => {
+  detect(source: CanvasImageSource): Promise<DetectedBarcode[]>;
+};
+
+type BarcodeWindow = Window & {
+  BarcodeDetector?: BarcodeDetectorConstructor;
+};
+
 const CATEGORIES = [
   'Retail',
   'Food & Beverage', 
@@ -268,9 +280,9 @@ export default function PaymentScanner() {
       ctx.drawImage(video, 0, 0);
       
       // Use BarcodeDetector API if available
-      if ('BarcodeDetector' in window) {
+      const BarcodeDetector = (window as BarcodeWindow).BarcodeDetector;
+      if (BarcodeDetector) {
         try {
-          // @ts-ignore - BarcodeDetector is not in TS types yet
           const detector = new BarcodeDetector({ formats: ['qr_code'] });
           const barcodes = await detector.detect(canvas);
           
@@ -279,7 +291,7 @@ export default function PaymentScanner() {
             setPaymentData(data);
             stopCamera();
           }
-        } catch (error) {
+        } catch {
           // QR not found in this frame
         }
       }
@@ -388,9 +400,9 @@ export default function PaymentScanner() {
       
       setTxResult({ success: true, hash: result.txHash });
       
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Gasless payment error:', error);
-      setTxResult({ success: false, error: error.message });
+      setTxResult({ success: false, error: error instanceof Error ? error.message : 'Payment failed' });
     } finally {
       setIsProcessing(false);
     }

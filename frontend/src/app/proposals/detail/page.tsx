@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useAccount } from 'wagmi';
-import { 
+import {
   ArrowLeft, 
   ExternalLink, 
   ThumbsUp, 
@@ -25,6 +25,7 @@ import {
   Archive,
   Ban
 } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import { GlassCard, CardHeader, CardContent } from '@/components/ui/cards';
 import { Button, Badge } from '@/components/ui/button';
 import { cn, formatAddress, formatNumber } from '@/lib/utils';
@@ -39,7 +40,7 @@ const VoteType = {
 } as const;
 
 // State configuration
-const stateConfig: Record<string, { color: string; bgColor: string; icon: any; description: string }> = {
+const stateConfig: Record<string, { color: string; bgColor: string; icon: LucideIcon; description: string }> = {
   Pending: { color: "text-yellow-400", bgColor: "bg-yellow-500/20", icon: Clock, description: "Voting has not started yet" },
   Active: { color: "text-blue-400", bgColor: "bg-blue-500/20", icon: Timer, description: "Voting is in progress" },
   Canceled: { color: "text-gray-400", bgColor: "bg-gray-500/20", icon: Ban, description: "Proposal was canceled" },
@@ -145,7 +146,7 @@ function ProposalDetailContent() {
               <AlertTriangle className="w-16 h-16 text-red-400 mx-auto mb-4" />
               <h2 className="text-2xl font-bold text-white mb-3">Proposal Not Found</h2>
               <p className="text-gray-400 mb-6">
-                {error?.message || "The proposal you're looking for doesn't exist."}
+                {error?.message || "The proposal you are looking for does not exist."}
               </p>
               <Link href="/proposals">
                 <Button>View All Proposals</Button>

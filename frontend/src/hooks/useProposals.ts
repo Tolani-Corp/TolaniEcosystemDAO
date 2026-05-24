@@ -1,10 +1,9 @@
 'use client';
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { usePublicClient, useReadContract, useAccount } from 'wagmi';
-import { useGovernorContract, useTimelockContract } from './useContracts';
-import { formatUnits, keccak256, toBytes, encodePacked } from 'viem';
-import { sepolia } from 'viem/chains';
+import { usePublicClient } from 'wagmi';
+import { useGovernorContract } from './useContracts';
+import { formatUnits, keccak256, toBytes } from 'viem';
 
 // Proposal state enum (matches Governor.sol)
 export const ProposalState = {
@@ -155,7 +154,7 @@ export function useProposals() {
         const block = await publicClient.getBlock({ blockNumber: log.blockNumber });
 
         // Parse description
-        const { title, category, body } = parseDescription(args.description);
+        const { title, category } = parseDescription(args.description);
 
         return {
           id: args.proposalId,

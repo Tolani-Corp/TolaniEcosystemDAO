@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from "wagmi";
 import {
@@ -8,14 +8,10 @@ import {
   Lock,
   Unlock,
   TrendingUp,
-  Clock,
   Shield,
   Award,
   Loader2,
   AlertCircle,
-  CheckCircle2,
-  ArrowRight,
-  Percent,
   Vote,
 } from "lucide-react";
 import { formatUnits, parseUnits } from "viem";
@@ -126,20 +122,17 @@ export default function StakingPage() {
 
   const { writeContract: stake, data: stakeHash } = useWriteContract();
   const { writeContract: claim, data: claimHash } = useWriteContract();
-  const { writeContract: approve, data: approveHash } = useWriteContract();
+  const { writeContract: approve } = useWriteContract();
 
-  const { isLoading: isStakeLoading, isSuccess: isStakeSuccess } = useWaitForTransactionReceipt({
+  const { isLoading: isStakeLoading } = useWaitForTransactionReceipt({
     hash: stakeHash,
   });
 
-  const { isLoading: isClaimLoading, isSuccess: isClaimSuccess } = useWaitForTransactionReceipt({
+  const { isLoading: isClaimLoading } = useWaitForTransactionReceipt({
     hash: claimHash,
   });
 
   const totalStaked = poolStats ? (poolStats as [bigint, bigint, bigint, bigint])[0] : BigInt(0);
-  const rewardRate = poolStats ? (poolStats as [bigint, bigint, bigint, bigint])[1] : BigInt(0);
-  const rewardsEndTime = poolStats ? (poolStats as [bigint, bigint, bigint, bigint])[2] : BigInt(0);
-  const totalDistributed = poolStats ? (poolStats as [bigint, bigint, bigint, bigint])[3] : BigInt(0);
 
   const stats = [
     {

@@ -1,13 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { useAccount, useReadContract, useChainId, useSwitchChain } from "wagmi";
 import {
   GraduationCap,
   BookOpen,
   CheckCircle2,
-  Award,
   Coins,
   ExternalLink,
   Trophy,
@@ -18,7 +17,7 @@ import {
   ArrowRight,
   Wallet,
 } from "lucide-react";
-import { formatUnits, keccak256, toBytes } from "viem";
+import { keccak256, toBytes } from "viem";
 import { CONTRACT_ADDRESSES, ABIS, CHAIN_IDS } from "@/config/contracts";
 import Link from "next/link";
 

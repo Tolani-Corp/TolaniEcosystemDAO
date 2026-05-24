@@ -13,7 +13,7 @@ import { formatNumber, cn } from "@/lib/utils";
 import { encodeFunctionData, parseEther, parseUnits } from "viem";
 
 export default function CreateProposalPage() {
-  const { isConnected, address } = useAccount();
+  const { isConnected } = useAccount();
   const contracts = useContracts();
   const { votingPowerFormatted, isLoading: votingLoading } = useVotingPower();
   const { proposalThresholdFormatted } = useGovernorParams();

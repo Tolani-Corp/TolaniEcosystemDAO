@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useState } from "react";
-import { Search, Users, Award, TrendingUp, Loader2, CheckCircle, AlertCircle } from "lucide-react";
+import { Users, Award, TrendingUp, Loader2, CheckCircle, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { GlassCard, CardHeader, CardContent, StatCard } from "@/components/ui/cards";
 import { formatNumber, cn, formatAddress } from "@/lib/utils";
@@ -150,8 +150,8 @@ export default function DelegatesPage() {
                   </p>
                 ) : hasDelegated ? (
                   <p className="text-gray-400">
-                    {isSelfDelegated 
-                      ? "You've delegated to yourself" 
+                    {isSelfDelegated
+                      ? "You have delegated to yourself"
                       : `Delegated to ${formatAddress(delegate!)}`}
                   </p>
                 ) : (
@@ -221,7 +221,7 @@ export default function DelegatesPage() {
             />
             <CardContent className="space-y-4">
               <p className="text-gray-400 text-sm">
-                If you can't actively participate, delegate to someone who will vote in the ecosystem's best interest.
+                If you cannot actively participate, delegate to someone who will vote in the ecosystem&apos;s best interest.
               </p>
               
               {showCustomInput ? (
