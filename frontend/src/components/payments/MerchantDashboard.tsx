@@ -1,484 +1,389 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
-import { formatUnits } from 'viem';
-import { QRCodeSVG } from 'qrcode.react';
+import { useEffect, useMemo, useState } from "react";
+import { useAccount, useChainId, useReadContract, useSwitchChain, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
+import { formatUnits, isAddress, keccak256, toBytes } from "viem";
+import { QRCodeSVG } from "qrcode.react";
+import {
+  MERCHANT_REGISTRY_ABI,
+  POS_CATEGORIES,
+  POS_STATUS_LABELS,
+  POS_TOKEN_DECIMALS,
+  ZERO_BYTES32,
+  type PosMerchantData,
+  type PosQrPayload,
+  type PosTokenSymbol,
+  getPosConfig,
+  isPosChain,
+} from "@/lib/pos";
 
-// Contract addresses on Base Sepolia
-const MERCHANT_REGISTRY = '0x17904f65220771fDBAbca6eCcDdAf42345C9571d';
-
-// Token decimals
-const UTUT_DECIMALS = 6;
-
-// Relayer endpoint
-
-// Contract ABIs
-const MERCHANT_REGISTRY_ABI = [
-  {
-    name: 'requestMerchantRegistration',
-    type: 'function',
-    stateMutability: 'nonpayable',
-    inputs: [
-      { name: 'name', type: 'string' },
-      { name: 'businessId', type: 'string' },
-      { name: 'category', type: 'uint8' },
-      { name: 'payoutAddress', type: 'address' },
-      { name: 'acceptsUTUT', type: 'bool' },
-      { name: 'acceptsTUT', type: 'bool' },
-      { name: 'metadataURI', type: 'string' }
-    ],
-    outputs: [{ name: 'merchantId', type: 'bytes32' }]
-  },
-  {
-    name: 'getMerchant',
-    type: 'function',
-    stateMutability: 'view',
-    inputs: [{ name: 'merchantId', type: 'bytes32' }],
-    outputs: [{
-      name: '',
-      type: 'tuple',
-      components: [
-        { name: 'name', type: 'string' },
-        { name: 'businessId', type: 'string' },
-        { name: 'category', type: 'uint8' },
-        { name: 'payoutAddress', type: 'address' },
-        { name: 'owner', type: 'address' },
-        { name: 'feeRate', type: 'uint256' },
-        { name: 'acceptsUTUT', type: 'bool' },
-        { name: 'acceptsTUT', type: 'bool' },
-        { name: 'status', type: 'uint8' },
-        { name: 'totalVolume', type: 'uint256' },
-        { name: 'totalTransactions', type: 'uint256' },
-        { name: 'registeredAt', type: 'uint256' },
-        { name: 'lastTransactionAt', type: 'uint256' },
-        { name: 'metadataURI', type: 'string' }
-      ]
-    }]
-  },
-  {
-    name: 'ownerToMerchant',
-    type: 'function',
-    stateMutability: 'view',
-    inputs: [{ name: 'owner', type: 'address' }],
-    outputs: [{ name: '', type: 'bytes32' }]
-  },
-  {
-    name: 'isActiveMerchant',
-    type: 'function',
-    stateMutability: 'view',
-    inputs: [{ name: 'merchantId', type: 'bytes32' }],
-    outputs: [{ name: '', type: 'bool' }]
-  }
-] as const;
-
-
-// Merchant categories
-const CATEGORIES = [
-  'Retail',
-  'Food & Beverage',
-  'Services',
-  'Education',
-  'Technology',
-  'Healthcare',
-  'Entertainment',
-  'Other'
-];
-
-// Merchant status
-const STATUS_LABELS = ['Pending', 'Active', 'Suspended', 'Banned'];
-
-interface MerchantData {
-  name: string;
-  businessId: string;
-  category: number;
-  payoutAddress: `0x${string}`;
-  owner: `0x${string}`;
-  feeRate: bigint;
-  acceptsUTUT: boolean;
-  acceptsTUT: boolean;
-  status: number;
-  totalVolume: bigint;
-  totalTransactions: bigint;
-  registeredAt: bigint;
-  lastTransactionAt: bigint;
-  metadataURI: string;
+function createOrderId(seed: string) {
+  return keccak256(toBytes(`${seed}:${Date.now()}:${Math.random()}`));
 }
 
 export default function MerchantDashboard() {
   const { address, isConnected } = useAccount();
-  const [activeTab, setActiveTab] = useState<'register' | 'dashboard' | 'receive'>('register');
-  
-  // Registration form state
+  const chainId = useChainId();
+  const { switchChain } = useSwitchChain();
+  const pos = getPosConfig(chainId);
+  const networkReady = isPosChain(chainId) && chainId === pos.chainId;
+
+  const [activeTab, setActiveTab] = useState<"register" | "dashboard" | "receive">("register");
   const [formData, setFormData] = useState({
-    name: '',
-    businessId: '',
-    category: 0,
-    payoutAddress: '',
+    name: "",
+    businessId: "",
+    category: 1,
+    payoutAddress: "",
     acceptsUTUT: true,
-    acceptsTUT: true
+    acceptsTUT: true,
+    metadataURI: "",
   });
-  
-  // Payment receive state
-  const [receiveAmount, setReceiveAmount] = useState('');
+  const [receiveAmount, setReceiveAmount] = useState("");
+  const [receiveToken, setReceiveToken] = useState<PosTokenSymbol>("uTUT");
+  const [receiveMemo, setReceiveMemo] = useState("POS sale");
   const [qrData, setQrData] = useState<string | null>(null);
-  
-  // Check if user has a merchant account
-  const { data: merchantId } = useReadContract({
-    address: MERCHANT_REGISTRY,
+
+  const { data: merchantId, refetch: refetchMerchantId } = useReadContract({
+    address: pos.merchantRegistry,
     abi: MERCHANT_REGISTRY_ABI,
-    functionName: 'ownerToMerchant',
+    functionName: "ownerToMerchant",
     args: address ? [address] : undefined,
-    query: { enabled: !!address }
+    chainId: pos.chainId,
+    query: { enabled: !!address },
   });
-  
-  // Get merchant data if exists
+
+  const hasMerchant = !!merchantId && merchantId !== ZERO_BYTES32;
+
   const { data: merchantData, refetch: refetchMerchant } = useReadContract({
-    address: MERCHANT_REGISTRY,
+    address: pos.merchantRegistry,
     abi: MERCHANT_REGISTRY_ABI,
-    functionName: 'getMerchant',
-    args: merchantId && merchantId !== '0x0000000000000000000000000000000000000000000000000000000000000000' 
-      ? [merchantId] 
-      : undefined,
-    query: { 
-      enabled: !!merchantId && merchantId !== '0x0000000000000000000000000000000000000000000000000000000000000000' 
-    }
-  }) as { data: MerchantData | undefined, refetch: () => void };
-  
-  // Registration transaction
+    functionName: "getMerchant",
+    args: hasMerchant ? [merchantId] : undefined,
+    chainId: pos.chainId,
+    query: { enabled: hasMerchant },
+  }) as { data: PosMerchantData | undefined; refetch: () => void };
+
   const { writeContract: registerMerchant, data: registerHash, isPending: isRegistering } = useWriteContract();
   const { isLoading: isRegisterConfirming, isSuccess: isRegisterSuccess } = useWaitForTransactionReceipt({
-    hash: registerHash
+    hash: registerHash,
   });
-  
-  // Switch to dashboard after successful registration
+
   useEffect(() => {
     if (isRegisterSuccess) {
+      refetchMerchantId();
       refetchMerchant();
-      queueMicrotask(() => setActiveTab('dashboard'));
+      queueMicrotask(() => setActiveTab("dashboard"));
     }
-  }, [isRegisterSuccess, refetchMerchant]);
-  
-  // Generate QR code for receiving payments
-  const generatePaymentQR = () => {
-    if (!merchantId || !receiveAmount) return;
-    
-    const paymentData = {
-      merchantId,
-      amount: receiveAmount,
-      useUTUT: true,
-      timestamp: Date.now()
-    };
-    
-    setQrData(JSON.stringify(paymentData));
-  };
-  
-  // Handle registration submit
+  }, [isRegisterSuccess, refetchMerchant, refetchMerchantId]);
+
+  useEffect(() => {
+    if (hasMerchant) {
+      queueMicrotask(() => setActiveTab("dashboard"));
+    }
+  }, [hasMerchant]);
+
+  const merchantCanReceive = useMemo(() => {
+    if (!merchantData || merchantData.status !== 1) return false;
+    return receiveToken === "uTUT" ? merchantData.acceptsUTUT : merchantData.acceptsTUT;
+  }, [merchantData, receiveToken]);
+
   const handleRegister = () => {
-    if (!address) return;
-    
-    const payoutAddr = (formData.payoutAddress || address) as `0x${string}`;
-    
+    if (!address || !networkReady) return;
+    const payoutAddress = formData.payoutAddress.trim() || address;
+    if (!isAddress(payoutAddress)) return;
+
     registerMerchant({
-      address: MERCHANT_REGISTRY,
+      address: pos.merchantRegistry,
       abi: MERCHANT_REGISTRY_ABI,
-      functionName: 'requestMerchantRegistration',
+      functionName: "registerMerchant",
       args: [
-        formData.name,
-        formData.businessId,
+        formData.name.trim(),
+        formData.businessId.trim(),
         formData.category,
-        payoutAddr,
+        payoutAddress,
         formData.acceptsUTUT,
         formData.acceptsTUT,
-        '' // metadataURI
-      ]
+        formData.metadataURI.trim(),
+      ],
     });
   };
-  
-  // Check if merchant exists
-  const hasMerchant = merchantId && merchantId !== '0x0000000000000000000000000000000000000000000000000000000000000000';
-  
+
+  const generatePaymentQR = () => {
+    if (!merchantId || !receiveAmount || Number(receiveAmount) <= 0 || !merchantCanReceive) return;
+
+    const payload: PosQrPayload = {
+      schema: "tolani-pos-payment",
+      version: 1,
+      chainId: pos.chainId,
+      merchantId,
+      amount: receiveAmount,
+      token: receiveToken,
+      orderId: createOrderId(`${merchantId}:${receiveAmount}:${receiveToken}`),
+      memo: receiveMemo,
+      createdAt: Date.now(),
+    };
+
+    setQrData(JSON.stringify(payload));
+  };
+
   if (!isConnected) {
     return (
-      <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center">
+      <div className="min-h-screen bg-gray-950 text-white flex items-center justify-center p-6">
         <div className="text-center">
-          <h1 className="text-3xl font-bold mb-4">Merchant Dashboard</h1>
-          <p className="text-gray-400">Connect your wallet to continue</p>
+          <h1 className="text-3xl font-bold mb-3">Tolani Merchant POS</h1>
+          <p className="text-gray-400">Connect your wallet to register or run a checkout terminal.</p>
         </div>
       </div>
     );
   }
-  
+
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-8">
+    <div className="min-h-screen bg-gray-950 text-white p-6">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold mb-2">🏪 Merchant Dashboard</h1>
-        <p className="text-gray-400 mb-8">Accept uTUT/TUT payments from DAO members</p>
-        
-        {/* Tab Navigation */}
-        <div className="flex space-x-4 mb-8">
+        <div className="mb-8">
+          <p className="text-sm text-emerald-300">{pos.chainName}</p>
+          <h1 className="text-3xl font-bold">Tolani Merchant POS</h1>
+          <p className="text-gray-400 mt-1">Register merchants and generate QR checkout requests for uTUT/TUT payments.</p>
+        </div>
+
+        {!networkReady && (
+          <div className="mb-6 rounded-lg border border-yellow-500/40 bg-yellow-500/10 p-4">
+            <p className="text-sm text-yellow-100 mb-3">Switch to {pos.chainName} to manage this POS terminal.</p>
+            <button
+              onClick={() => switchChain({ chainId: pos.chainId })}
+              className="rounded-lg bg-yellow-500 px-4 py-2 text-sm font-semibold text-gray-950"
+            >
+              Switch Network
+            </button>
+          </div>
+        )}
+
+        <div className="flex gap-3 mb-6">
           {!hasMerchant && (
             <button
-              onClick={() => setActiveTab('register')}
-              className={`px-6 py-3 rounded-lg font-semibold transition ${
-                activeTab === 'register'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
-              }`}
+              onClick={() => setActiveTab("register")}
+              className={`rounded-lg px-5 py-3 font-semibold ${activeTab === "register" ? "bg-blue-600" : "bg-gray-900 text-gray-400"}`}
             >
               Register
             </button>
           )}
-          
           {hasMerchant && (
             <>
               <button
-                onClick={() => setActiveTab('dashboard')}
-                className={`px-6 py-3 rounded-lg font-semibold transition ${
-                  activeTab === 'dashboard'
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
-                }`}
+                onClick={() => setActiveTab("dashboard")}
+                className={`rounded-lg px-5 py-3 font-semibold ${activeTab === "dashboard" ? "bg-blue-600" : "bg-gray-900 text-gray-400"}`}
               >
                 Dashboard
               </button>
-              
               <button
-                onClick={() => setActiveTab('receive')}
-                className={`px-6 py-3 rounded-lg font-semibold transition ${
-                  activeTab === 'receive'
-                    ? 'bg-green-600 text-white'
-                    : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
-                }`}
+                onClick={() => setActiveTab("receive")}
+                className={`rounded-lg px-5 py-3 font-semibold ${activeTab === "receive" ? "bg-green-600" : "bg-gray-900 text-gray-400"}`}
               >
                 Receive Payment
               </button>
             </>
           )}
         </div>
-        
-        {/* Registration Form */}
-        {activeTab === 'register' && !hasMerchant && (
-          <div className="bg-gray-800 rounded-xl p-8">
-            <h2 className="text-xl font-bold mb-6">Register as Merchant</h2>
-            
-            <div className="space-y-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-400 mb-2">
-                  Business Name *
-                </label>
+
+        {activeTab === "register" && !hasMerchant && (
+          <div className="bg-gray-900 rounded-lg p-6">
+            <h2 className="text-xl font-bold mb-5">Register Merchant</h2>
+            <div className="grid md:grid-cols-2 gap-5">
+              <label>
+                <span className="block text-sm text-gray-400 mb-2">Business Name</span>
                 <input
-                  type="text"
                   value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full bg-gray-700 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-blue-500"
-                  placeholder="Enter your business name"
+                  onChange={(event) => setFormData({ ...formData, name: event.target.value })}
+                  className="w-full rounded-lg bg-gray-800 px-4 py-3"
+                  placeholder="Business name"
                 />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-gray-400 mb-2">
-                  Business ID / Registration Number
-                </label>
+              </label>
+              <label>
+                <span className="block text-sm text-gray-400 mb-2">Business ID</span>
                 <input
-                  type="text"
                   value={formData.businessId}
-                  onChange={(e) => setFormData({ ...formData, businessId: e.target.value })}
-                  className="w-full bg-gray-700 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-blue-500"
-                  placeholder="Optional"
+                  onChange={(event) => setFormData({ ...formData, businessId: event.target.value })}
+                  className="w-full rounded-lg bg-gray-800 px-4 py-3"
+                  placeholder="Registration number"
                 />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-gray-400 mb-2">
-                  Category *
-                </label>
+              </label>
+              <label>
+                <span className="block text-sm text-gray-400 mb-2">Category</span>
                 <select
                   value={formData.category}
-                  onChange={(e) => setFormData({ ...formData, category: Number(e.target.value) })}
-                  className="w-full bg-gray-700 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-blue-500"
+                  onChange={(event) => setFormData({ ...formData, category: Number(event.target.value) })}
+                  className="w-full rounded-lg bg-gray-800 px-4 py-3"
                 >
-                  {CATEGORIES.map((cat, idx) => (
-                    <option key={idx} value={idx}>{cat}</option>
+                  {POS_CATEGORIES.map((category, index) => (
+                    <option key={category} value={index}>
+                      {category}
+                    </option>
                   ))}
                 </select>
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-gray-400 mb-2">
-                  Payout Address
-                </label>
+              </label>
+              <label>
+                <span className="block text-sm text-gray-400 mb-2">Payout Address</span>
                 <input
-                  type="text"
                   value={formData.payoutAddress}
-                  onChange={(e) => setFormData({ ...formData, payoutAddress: e.target.value })}
-                  className="w-full bg-gray-700 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-blue-500"
-                  placeholder={`Default: ${address?.slice(0, 10)}...`}
+                  onChange={(event) => setFormData({ ...formData, payoutAddress: event.target.value })}
+                  className="w-full rounded-lg bg-gray-800 px-4 py-3 font-mono text-sm"
+                  placeholder={address}
                 />
-              </div>
-              
-              <div className="flex space-x-6">
-                <label className="flex items-center space-x-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={formData.acceptsUTUT}
-                    onChange={(e) => setFormData({ ...formData, acceptsUTUT: e.target.checked })}
-                    className="w-5 h-5 rounded bg-gray-700"
-                  />
-                  <span>Accept uTUT</span>
-                </label>
-                
-                <label className="flex items-center space-x-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={formData.acceptsTUT}
-                    onChange={(e) => setFormData({ ...formData, acceptsTUT: e.target.checked })}
-                    className="w-5 h-5 rounded bg-gray-700"
-                  />
-                  <span>Accept TUT</span>
-                </label>
-              </div>
-              
-              <button
-                onClick={handleRegister}
-                disabled={!formData.name || isRegistering || isRegisterConfirming}
-                className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 py-4 rounded-lg font-bold text-lg transition"
-              >
-                {isRegistering || isRegisterConfirming ? 'Processing...' : 'Register Merchant'}
-              </button>
-              
-              <p className="text-sm text-gray-500 text-center">
-                Registration requires admin approval before you can receive payments.
-              </p>
+              </label>
+              <label className="md:col-span-2">
+                <span className="block text-sm text-gray-400 mb-2">Metadata URI</span>
+                <input
+                  value={formData.metadataURI}
+                  onChange={(event) => setFormData({ ...formData, metadataURI: event.target.value })}
+                  className="w-full rounded-lg bg-gray-800 px-4 py-3"
+                  placeholder="ipfs://... or HTTPS URL"
+                />
+              </label>
             </div>
+
+            <div className="flex gap-6 my-6">
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={formData.acceptsUTUT}
+                  onChange={(event) => setFormData({ ...formData, acceptsUTUT: event.target.checked })}
+                  className="h-5 w-5"
+                />
+                Accept uTUT
+              </label>
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={formData.acceptsTUT}
+                  onChange={(event) => setFormData({ ...formData, acceptsTUT: event.target.checked })}
+                  className="h-5 w-5"
+                />
+                Accept TUT
+              </label>
+            </div>
+
+            <button
+              onClick={handleRegister}
+              disabled={!networkReady || !formData.name.trim() || isRegistering || isRegisterConfirming}
+              className="w-full rounded-lg bg-blue-600 py-4 font-bold disabled:bg-gray-700 disabled:text-gray-400"
+            >
+              {isRegistering || isRegisterConfirming ? "Registering..." : "Register Merchant"}
+            </button>
+            <p className="text-sm text-gray-500 text-center mt-4">
+              New merchants start as pending and must be activated by a verifier before checkout can run.
+            </p>
           </div>
         )}
-        
-        {/* Dashboard View */}
-        {activeTab === 'dashboard' && merchantData && (
+
+        {activeTab === "dashboard" && merchantData && (
           <div className="space-y-6">
-            {/* Status Card */}
-            <div className="bg-gray-800 rounded-xl p-6">
-              <div className="flex justify-between items-start">
-                <div>
-                  <h2 className="text-2xl font-bold">{merchantData.name}</h2>
-                  <p className="text-gray-400">{CATEGORIES[merchantData.category]}</p>
-                </div>
-                <span className={`px-4 py-2 rounded-full text-sm font-semibold ${
-                  merchantData.status === 1 ? 'bg-green-600' :
-                  merchantData.status === 0 ? 'bg-yellow-600' :
-                  'bg-red-600'
-                }`}>
-                  {STATUS_LABELS[merchantData.status]}
-                </span>
+            <div className="bg-gray-900 rounded-lg p-6 flex flex-col md:flex-row md:items-start justify-between gap-4">
+              <div>
+                <h2 className="text-2xl font-bold">{merchantData.name}</h2>
+                <p className="text-gray-400">{POS_CATEGORIES[merchantData.category] || "Merchant"}</p>
+                <p className="text-xs text-gray-500 font-mono mt-3">{merchantId}</p>
+              </div>
+              <span className={`w-fit rounded-full px-4 py-2 text-sm font-semibold ${
+                merchantData.status === 1 ? "bg-green-600" : merchantData.status === 0 ? "bg-yellow-600" : "bg-red-600"
+              }`}>
+                {POS_STATUS_LABELS[merchantData.status] || "Unknown"}
+              </span>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-4">
+              <div className="bg-gray-900 rounded-lg p-5">
+                <p className="text-sm text-gray-400">Total Volume</p>
+                <p className="text-2xl font-bold">{formatUnits(merchantData.totalVolume, POS_TOKEN_DECIMALS.uTUT)} uTUT</p>
+              </div>
+              <div className="bg-gray-900 rounded-lg p-5">
+                <p className="text-sm text-gray-400">Transactions</p>
+                <p className="text-2xl font-bold">{merchantData.totalTransactions.toString()}</p>
+              </div>
+              <div className="bg-gray-900 rounded-lg p-5">
+                <p className="text-sm text-gray-400">Fee Rate</p>
+                <p className="text-2xl font-bold">{(Number(merchantData.feeRate) / 100).toFixed(2)}%</p>
               </div>
             </div>
-            
-            {/* Stats Grid */}
-            <div className="grid grid-cols-3 gap-4">
-              <div className="bg-gray-800 rounded-xl p-6">
-                <p className="text-gray-400 text-sm">Total Volume</p>
-                <p className="text-2xl font-bold">
-                  {formatUnits(merchantData.totalVolume, UTUT_DECIMALS)} uTUT
-                </p>
+
+            <div className="bg-gray-900 rounded-lg p-6 grid md:grid-cols-2 gap-4 text-sm">
+              <div>
+                <p className="text-gray-500">Payout Address</p>
+                <p className="font-mono">{merchantData.payoutAddress}</p>
               </div>
-              
-              <div className="bg-gray-800 rounded-xl p-6">
-                <p className="text-gray-400 text-sm">Transactions</p>
-                <p className="text-2xl font-bold">
-                  {merchantData.totalTransactions.toString()}
-                </p>
+              <div>
+                <p className="text-gray-500">Accepted Tokens</p>
+                <p>{[merchantData.acceptsUTUT && "uTUT", merchantData.acceptsTUT && "TUT"].filter(Boolean).join(", ")}</p>
               </div>
-              
-              <div className="bg-gray-800 rounded-xl p-6">
-                <p className="text-gray-400 text-sm">Fee Rate</p>
-                <p className="text-2xl font-bold">
-                  {(Number(merchantData.feeRate) / 100).toFixed(2)}%
-                </p>
+              <div>
+                <p className="text-gray-500">Registered</p>
+                <p>{new Date(Number(merchantData.registeredAt) * 1000).toLocaleDateString()}</p>
               </div>
-            </div>
-            
-            {/* Details */}
-            <div className="bg-gray-800 rounded-xl p-6">
-              <h3 className="font-bold mb-4">Merchant Details</h3>
-              
-              <div className="space-y-3 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Merchant ID</span>
-                  <span className="font-mono">{merchantId?.slice(0, 18)}...</span>
-                </div>
-                
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Payout Address</span>
-                  <span className="font-mono">
-                    {merchantData.payoutAddress.slice(0, 10)}...{merchantData.payoutAddress.slice(-8)}
-                  </span>
-                </div>
-                
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Accepts</span>
-                  <span>
-                    {merchantData.acceptsUTUT && 'uTUT '}
-                    {merchantData.acceptsTUT && 'TUT'}
-                  </span>
-                </div>
-                
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Registered</span>
-                  <span>
-                    {new Date(Number(merchantData.registeredAt) * 1000).toLocaleDateString()}
-                  </span>
-                </div>
+              <div>
+                <p className="text-gray-500">Business ID</p>
+                <p>{merchantData.businessId || "Not provided"}</p>
               </div>
             </div>
           </div>
         )}
-        
-        {/* Receive Payment View */}
-        {activeTab === 'receive' && hasMerchant && (
-          <div className="bg-gray-800 rounded-xl p-8">
-            <h2 className="text-xl font-bold mb-6">Receive Payment</h2>
-            
-            <div className="space-y-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-400 mb-2">
-                  Amount (uTUT)
-                </label>
+
+        {activeTab === "receive" && hasMerchant && (
+          <div className="bg-gray-900 rounded-lg p-6">
+            <h2 className="text-xl font-bold mb-5">Receive Payment</h2>
+            {merchantData?.status !== 1 && (
+              <p className="mb-5 rounded-lg border border-yellow-500/40 bg-yellow-500/10 p-3 text-sm text-yellow-100">
+                This merchant must be active before it can receive payments.
+              </p>
+            )}
+            <div className="grid md:grid-cols-2 gap-5">
+              <label>
+                <span className="block text-sm text-gray-400 mb-2">Amount</span>
                 <input
                   type="number"
                   value={receiveAmount}
-                  onChange={(e) => setReceiveAmount(e.target.value)}
-                  className="w-full bg-gray-700 rounded-lg px-4 py-3 text-white text-xl focus:ring-2 focus:ring-green-500"
+                  onChange={(event) => setReceiveAmount(event.target.value)}
+                  className="w-full rounded-lg bg-gray-800 px-4 py-3 text-xl"
                   placeholder="0.00"
-                  step="0.01"
+                  min="0"
+                  step="0.000001"
                 />
-              </div>
-              
-              <button
-                onClick={generatePaymentQR}
-                disabled={!receiveAmount || Number(receiveAmount) <= 0}
-                className="w-full bg-green-600 hover:bg-green-700 disabled:bg-gray-600 py-4 rounded-lg font-bold text-lg transition"
-              >
-                Generate QR Code
-              </button>
-              
-              {qrData && (
-                <div className="flex flex-col items-center mt-8 p-6 bg-white rounded-xl">
-                  <QRCodeSVG
-                    value={qrData}
-                    size={256}
-                    level="H"
-                    includeMargin
-                  />
-                  <p className="text-gray-800 mt-4 font-semibold">
-                    {receiveAmount} uTUT
-                  </p>
-                  <p className="text-gray-500 text-sm mt-2">
-                    Scan to pay with TolaniDAO
-                  </p>
-                </div>
-              )}
+              </label>
+              <label>
+                <span className="block text-sm text-gray-400 mb-2">Token</span>
+                <select
+                  value={receiveToken}
+                  onChange={(event) => setReceiveToken(event.target.value as PosTokenSymbol)}
+                  className="w-full rounded-lg bg-gray-800 px-4 py-3"
+                >
+                  <option value="uTUT" disabled={merchantData ? !merchantData.acceptsUTUT : false}>uTUT</option>
+                  <option value="TUT" disabled={merchantData ? !merchantData.acceptsTUT : false}>TUT</option>
+                </select>
+              </label>
+              <label className="md:col-span-2">
+                <span className="block text-sm text-gray-400 mb-2">Receipt Memo</span>
+                <input
+                  value={receiveMemo}
+                  onChange={(event) => setReceiveMemo(event.target.value)}
+                  className="w-full rounded-lg bg-gray-800 px-4 py-3"
+                  placeholder="Order number, table, customer, or invoice"
+                />
+              </label>
             </div>
+
+            <button
+              onClick={generatePaymentQR}
+              disabled={!networkReady || !receiveAmount || Number(receiveAmount) <= 0 || !merchantCanReceive}
+              className="mt-6 w-full rounded-lg bg-green-600 py-4 font-bold disabled:bg-gray-700 disabled:text-gray-400"
+            >
+              Generate QR Code
+            </button>
+
+            {qrData && (
+              <div className="mt-8 flex flex-col items-center rounded-lg bg-white p-6 text-gray-950">
+                <QRCodeSVG value={qrData} size={256} level="H" includeMargin />
+                <p className="mt-4 text-lg font-bold">{receiveAmount} {receiveToken}</p>
+                <p className="text-sm text-gray-500">Scan to pay with Tolani POS</p>
+              </div>
+            )}
           </div>
         )}
       </div>
