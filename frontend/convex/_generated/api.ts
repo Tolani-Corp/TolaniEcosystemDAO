@@ -8,9 +8,11 @@
 
 import type { ApiFromModules, FilterApi, FunctionReference } from "convex/server";
 import { anyApi } from "convex/server";
+import type * as labsEvidence from "../labsEvidence.js";
 import type * as workItems from "../workItems.js";
 
 const fullApi: ApiFromModules<{
+  labsEvidence: typeof labsEvidence;
   workItems: typeof workItems;
 }> = anyApi as any;
 

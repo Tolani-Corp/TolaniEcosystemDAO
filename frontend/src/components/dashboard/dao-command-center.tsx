@@ -10,6 +10,7 @@ import {
   BadgeCheck,
   BookOpen,
   CheckCircle2,
+  ClipboardCheck,
   Clock3,
   Coins,
   FileText,
@@ -93,6 +94,15 @@ const laneCards = [
     icon: Coins,
     accent: "text-emerald-300",
     rail: "bg-emerald-400",
+  },
+  {
+    title: "DAO Evidence",
+    href: "/dao-evidence",
+    status: "Labs handoff",
+    detail: "Review validated supplier, ESG, smart HVAC, and training evidence before DAO action.",
+    icon: ClipboardCheck,
+    accent: "text-blue-300",
+    rail: "bg-blue-400",
   },
   {
     title: "Bounties",

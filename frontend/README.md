@@ -1,5 +1,20 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## DAO Evidence Handoff
+
+Tolani Labs sends approved validation packets directly into the DAO Convex `labsEvidence:submit` mutation. The DAO frontend stays static-exportable; it reads and reviews those packets from Convex at `/dao-evidence`.
+
+Configure:
+
+- `NEXT_PUBLIC_CONVEX_URL` for the DAO frontend Convex deployment.
+- `DAO_EVIDENCE_HANDOFF_SECRET` in the DAO Convex environment when you want Labs submissions to require a shared secret.
+
+Run the local packet-contract smoke check without live Convex:
+
+```bash
+npm run smoke:dao-evidence
+```
+
 ## Getting Started
 
 First, run the development server:
