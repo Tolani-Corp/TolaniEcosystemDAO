@@ -8,6 +8,7 @@ Configure:
 
 - `NEXT_PUBLIC_CONVEX_URL` for the DAO frontend Convex deployment.
 - `DAO_EVIDENCE_HANDOFF_SECRET` in the DAO Convex environment when you want Labs submissions to require a shared secret.
+- `TSG_ECOSYSTEM_SYNC_URL` plus `TSG_ECOSYSTEM_SYNC_KEY` in the DAO Convex environment when DAO evidence review/execution state should write back to the TSG `/api/ecosystem/sync` ledger.
 
 Run the local packet-contract smoke check without live Convex:
 

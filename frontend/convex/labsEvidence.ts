@@ -1,5 +1,7 @@
 import { v } from "convex/values";
-import { mutation, query } from "./_generated/server";
+import { action, mutation, query } from "./_generated/server";
+import { api } from "./_generated/api";
+import type { Doc } from "./_generated/dataModel";
 
 const daoEvidenceStatus = v.union(
   v.literal("review"),
@@ -113,6 +115,13 @@ export const getByLabValidationId = query({
   },
 });
 
+export const getById = query({
+  args: { id: v.id("daoEvidencePackets") },
+  handler: async (ctx, args) => {
+    return await ctx.db.get(args.id);
+  },
+});
+
 export const submit = mutation({
   args: {
     ...packetArgs,
@@ -182,5 +191,88 @@ export const review = mutation({
       proposalId: args.proposalId ?? packet.proposalId,
       updatedAt: Date.now(),
     });
+  },
+});
+
+function tsgSyncUrl() {
+  return process.env.TSG_ECOSYSTEM_SYNC_URL?.trim() || process.env.TSG_PLATFORM_SYNC_URL?.trim() || "";
+}
+
+function tsgApiKey() {
+  return (
+    process.env.TSG_ECOSYSTEM_SYNC_KEY?.trim() ||
+    process.env.TSG_PLATFORM_API_KEY?.trim() ||
+    process.env.TSG_PLATFORM_API_KEYS?.split(/[,\s;]+/).find((value) => value.trim())?.trim() ||
+    ""
+  );
+}
+
+async function notifyTsgReview(
+  packet: Doc<"daoEvidencePackets">,
+  status: string,
+  reviewerWallet?: string,
+  reviewNote?: string
+) {
+  const url = tsgSyncUrl();
+  if (!url) {
+    return { sent: false, mode: "disabled" as const, message: "TSG_ECOSYSTEM_SYNC_URL is not configured." };
+  }
+
+  const headers: Record<string, string> = { "content-type": "application/json" };
+  const apiKey = tsgApiKey();
+  if (apiKey) headers["x-api-key"] = apiKey;
+
+  const response = await fetch(url, {
+    method: "POST",
+    headers,
+    body: JSON.stringify({
+      sourcePacketId: packet.sourcePacketId,
+      labValidationId: packet.labValidationId,
+      daoPacketId: packet.packet?.daoPacketId,
+      projectId: packet.projectId,
+      actor: "Tolani Ecosystem DAO",
+      stage: status === "executed" ? "dao_execution" : "dao_review",
+      status,
+      summary: `DAO evidence packet ${status.replaceAll("_", " ")}.`,
+      metadata: {
+        reviewerWallet: reviewerWallet || null,
+        reviewNote: reviewNote || null,
+        proposalId: packet.proposalId || null,
+        rewardAction: packet.rewardAction,
+        proposalRequired: packet.proposalRequired,
+      },
+    }),
+  });
+  const body = await response.json().catch(() => null);
+
+  return {
+    sent: response.ok,
+    mode: "http" as const,
+    status: response.status,
+    body,
+  };
+}
+
+export const reviewAndNotifyTsg = action({
+  args: {
+    id: v.id("daoEvidencePackets"),
+    status: daoEvidenceStatus,
+    reviewerWallet: v.optional(v.string()),
+    reviewNote: v.optional(v.string()),
+    proposalId: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    await ctx.runMutation(api.labsEvidence.review, args);
+    const packet = await ctx.runQuery(api.labsEvidence.getById, { id: args.id });
+    if (!packet) throw new Error("DAO evidence packet not found after review.");
+
+    let tsgSync: unknown;
+    try {
+      tsgSync = await notifyTsgReview(packet, args.status, args.reviewerWallet, args.reviewNote);
+    } catch (error) {
+      tsgSync = { sent: false, mode: "error", message: error instanceof Error ? error.message : String(error) };
+    }
+
+    return { ok: true, id: args.id, status: args.status, tsgSync };
   },
 });

@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { useMutation, useQuery } from "convex/react";
+import { useAction, useMutation, useQuery } from "convex/react";
 import { motion } from "framer-motion";
 import { useAccount } from "wagmi";
 import {
@@ -104,7 +104,7 @@ function ConvexDaoEvidenceQueue() {
   const { address } = useAccount();
   const persistedPackets = useQuery(api.labsEvidence.list, {});
   const submit = useMutation(api.labsEvidence.submit);
-  const review = useMutation(api.labsEvidence.review);
+  const reviewAndNotifyTsg = useAction(api.labsEvidence.reviewAndNotifyTsg);
 
   const packets = useMemo(
     () => (persistedPackets ?? []).map(fromConvex),
@@ -131,7 +131,7 @@ function ConvexDaoEvidenceQueue() {
   };
 
   const reviewPacket = async (id: string, status: DaoEvidenceStatus, note: string) => {
-    await review({
+    await reviewAndNotifyTsg({
       id: id as Id<"daoEvidencePackets">,
       status,
       reviewerWallet: address,
