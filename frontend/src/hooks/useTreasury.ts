@@ -10,7 +10,7 @@ const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000' as `0x${string
 
 function useConfiguredAddress(key: string) {
   const chainId = useChainId();
-  const effectiveChainId = isSupportedChain(chainId) ? chainId : DEFAULT_CHAIN_ID;
+  const effectiveChainId = (isSupportedChain(chainId) ? chainId : DEFAULT_CHAIN_ID) as keyof typeof CONTRACT_ADDRESSES;
   const addresses = CONTRACT_ADDRESSES[effectiveChainId] as Record<string, `0x${string}` | undefined>;
 
   return addresses[key] || ZERO_ADDRESS;
