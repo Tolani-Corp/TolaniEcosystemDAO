@@ -25,11 +25,8 @@ function useIsClient() {
 }
 
 interface TreasuryData {
-  ethBalance: number;
-  tokenBalance: number;
-  totalValue: number;
   assets: { name: string; value: number; color: string }[];
-  history: { date: string; value: number }[];
+  history: { label: string; value: number }[];
 }
 
 interface TreasuryChartProps {
@@ -44,7 +41,7 @@ export function TreasuryOverview({ data }: TreasuryChartProps) {
       {/* Asset Distribution */}
       <div className="rounded-2xl bg-gray-900/50 border border-gray-800/50 p-6">
         <h3 className="text-lg font-semibold text-white mb-6">
-          Asset Distribution
+          Treasury Balance Mix
         </h3>
         <div className="h-64">
           {isClient ? (
@@ -71,7 +68,7 @@ export function TreasuryOverview({ data }: TreasuryChartProps) {
                         <div className="bg-gray-900 border border-gray-700 rounded-lg p-3 shadow-xl">
                           <p className="text-white font-medium">{data.name}</p>
                           <p className="text-gray-400">
-                            ${formatNumber(data.value)}
+                            {formatNumber(data.value)} TUT
                           </p>
                         </div>
                       );
@@ -100,7 +97,7 @@ export function TreasuryOverview({ data }: TreasuryChartProps) {
       {/* Treasury Value Over Time */}
       <div className="rounded-2xl bg-gray-900/50 border border-gray-800/50 p-6">
         <h3 className="text-lg font-semibold text-white mb-6">
-          Treasury Value Over Time
+          Governed Balance Snapshot
         </h3>
         <div className="h-64">
           {isClient ? (
@@ -113,11 +110,11 @@ export function TreasuryOverview({ data }: TreasuryChartProps) {
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                <XAxis dataKey="date" stroke="#9ca3af" tick={{ fontSize: 12 }} />
+                <XAxis dataKey="label" stroke="#9ca3af" tick={{ fontSize: 12 }} />
                 <YAxis
                   stroke="#9ca3af"
                   tick={{ fontSize: 12 }}
-                  tickFormatter={(value) => `$${formatNumber(value)}`}
+                  tickFormatter={(value) => formatNumber(Number(value))}
                 />
                 <Tooltip
                   content={({ active, payload, label }) => {
@@ -126,7 +123,7 @@ export function TreasuryOverview({ data }: TreasuryChartProps) {
                         <div className="bg-gray-900 border border-gray-700 rounded-lg p-3 shadow-xl">
                           <p className="text-gray-400 text-sm">{label}</p>
                           <p className="text-white font-medium">
-                            ${formatNumber(payload[0].value as number)}
+                            {formatNumber(payload[0].value as number)} TUT
                           </p>
                         </div>
                       );

@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo, type ReactNode } from "react";
 import {
   Vault,
   ArrowUpRight,
@@ -9,22 +10,85 @@ import {
   ExternalLink,
   Loader2,
   FileText,
+  Eye,
+  LockKeyhole,
+  ShieldCheck,
 } from "lucide-react";
 import Link from "next/link";
 import { StatCard, GlassCard, CardHeader, CardContent } from "@/components/ui/cards";
 import { Button } from "@/components/ui/button";
 import { formatNumber } from "@/lib/utils";
-import { useTreasuryStats, useEscrowBalance, usePayrollBalance, useEcosystemValue } from "@/hooks/useTreasury";
+import { TreasuryOverview } from "@/components/treasury/treasury-charts";
+import {
+  useTreasuryStats,
+  useEscrowBalance,
+  usePayrollBalance,
+  useEcosystemValue,
+  useConverterReserveBalance,
+  useStakingPoolBalance,
+} from "@/hooks/useTreasury";
 import { useContracts } from "@/hooks/useContracts";
+
+const PUBLIC_TREASURY_POLICY = [
+  "On-chain treasury, converter, staking, escrow, and payroll contract balances.",
+  "Executed transactions, public proposal records, timelock status, and role-controlled contract addresses.",
+  "Reserve categories and current TUT quantities needed to verify DAO custody and conversion coverage.",
+];
+
+const PRIVATE_TREASURY_POLICY = [
+  "Off-chain bank balances or fiat reserves.",
+  "Payroll recipient details.",
+  "Vendor/invoice details before approval.",
+  "Planned treasury moves before governance/public execution.",
+  "Safe signer personal/security details.",
+  "Internal runway, burn rate, or legal/accounting strategy unless intentionally published.",
+];
 
 export default function TreasuryPage() {
   const contracts = useContracts();
   const treasuryStats = useTreasuryStats();
   const escrowBalance = useEscrowBalance();
   const payrollBalance = usePayrollBalance();
+  const converterReserve = useConverterReserveBalance();
+  const stakingPoolBalance = useStakingPoolBalance();
   const ecosystemValue = useEcosystemValue();
 
-  const isLoading = treasuryStats.isLoading || escrowBalance.isLoading || payrollBalance.isLoading;
+  const isLoading =
+    treasuryStats.isLoading ||
+    escrowBalance.isLoading ||
+    payrollBalance.isLoading ||
+    converterReserve.isLoading ||
+    stakingPoolBalance.isLoading;
+
+  const treasuryChartData = useMemo(() => {
+    const treasuryTut = toFiniteBalance(treasuryStats.tokenBalanceFormatted);
+    const converterTut = toFiniteBalance(converterReserve.tokenBalanceFormatted);
+    const stakingTut = toFiniteBalance(stakingPoolBalance.tokenBalanceFormatted);
+    const escrowPayrollTut =
+      toFiniteBalance(escrowBalance.tokenBalanceFormatted) +
+      toFiniteBalance(payrollBalance.tokenBalanceFormatted);
+
+    return {
+      assets: [
+        { name: "Timelock treasury", value: treasuryTut, color: "#8b5cf6" },
+        { name: "Converter reserve", value: converterTut, color: "#06b6d4" },
+        { name: "Staking pool", value: stakingTut, color: "#f59e0b" },
+        { name: "Escrow + payroll", value: escrowPayrollTut, color: "#10b981" },
+      ],
+      history: [
+        { label: "Treasury", value: treasuryTut },
+        { label: "Converter", value: converterTut },
+        { label: "Staking", value: stakingTut },
+        { label: "Escrow/Payroll", value: escrowPayrollTut },
+      ],
+    };
+  }, [
+    treasuryStats.tokenBalanceFormatted,
+    converterReserve.tokenBalanceFormatted,
+    stakingPoolBalance.tokenBalanceFormatted,
+    escrowBalance.tokenBalanceFormatted,
+    payrollBalance.tokenBalanceFormatted,
+  ]);
 
   return (
     <div className="space-y-8">
@@ -101,6 +165,8 @@ export default function TreasuryPage() {
         />
       </div>
 
+      <TreasuryOverview data={treasuryChartData} />
+
       {/* Contract Balances Breakdown */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Asset Holdings */}
@@ -116,6 +182,18 @@ export default function TreasuryPage() {
               tutBalance={treasuryStats.tokenBalanceFormatted}
               ethBalance={treasuryStats.ethBalanceFormatted}
               isLoading={treasuryStats.isLoading}
+            />
+            <BalanceRow
+              name="Converter Reserve"
+              address={converterReserve.address}
+              tutBalance={converterReserve.tokenBalanceFormatted}
+              isLoading={converterReserve.isLoading}
+            />
+            <BalanceRow
+              name="Staking Pool"
+              address={stakingPoolBalance.address}
+              tutBalance={stakingPoolBalance.tokenBalanceFormatted}
+              isLoading={stakingPoolBalance.isLoading}
             />
             <BalanceRow
               name="Escrow"
@@ -164,6 +242,33 @@ export default function TreasuryPage() {
         </GlassCard>
       </div>
 
+      <GlassCard>
+        <CardHeader
+          title="DAO Treasury Disclosure Policy"
+          description="Public chain data stays visible. Sensitive operating records stay private by DAO policy unless intentionally published."
+        />
+        <CardContent className="space-y-5">
+          <div className="flex items-start gap-3 rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-4">
+            <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-emerald-300" />
+            <p className="text-sm text-emerald-100">
+              This dashboard may display public on-chain balances and executed governance activity, but it must not expose off-chain operating records, private counterparty details, or pre-approval treasury strategy.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <PolicyColumn
+              icon={<Eye className="h-5 w-5 text-cyan-300" />}
+              title="Public Transparency"
+              items={PUBLIC_TREASURY_POLICY}
+            />
+            <PolicyColumn
+              icon={<LockKeyhole className="h-5 w-5 text-amber-300" />}
+              title="Private By DAO Policy"
+              items={PRIVATE_TREASURY_POLICY}
+            />
+          </div>
+        </CardContent>
+      </GlassCard>
+
       {/* Contract Addresses */}
       <GlassCard>
         <CardHeader
@@ -210,6 +315,38 @@ export default function TreasuryPage() {
           </div>
         </CardContent>
       </GlassCard>
+    </div>
+  );
+}
+
+function toFiniteBalance(value: string): number {
+  const parsed = Number.parseFloat(value);
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function PolicyColumn({
+  icon,
+  title,
+  items,
+}: {
+  icon: ReactNode;
+  title: string;
+  items: string[];
+}) {
+  return (
+    <div className="rounded-xl border border-gray-800/50 bg-gray-900/40 p-5">
+      <div className="mb-4 flex items-center gap-3">
+        {icon}
+        <h3 className="font-semibold text-white">{title}</h3>
+      </div>
+      <ul className="space-y-3 text-sm text-gray-300">
+        {items.map((item) => (
+          <li key={item} className="flex gap-2">
+            <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-gray-500" />
+            <span>{item}</span>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

@@ -1,9 +1,20 @@
 'use client';
 
-import { useReadContract, useBalance } from 'wagmi';
+import { useReadContract, useBalance, useChainId } from 'wagmi';
 import { useContracts } from './useContracts';
+import { CONTRACT_ADDRESSES, DEFAULT_CHAIN_ID, isSupportedChain } from '@/config/contracts';
 import { formatUnits, formatEther } from 'viem';
 import { useMemo } from 'react';
+
+const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000' as `0x${string}`;
+
+function useConfiguredAddress(key: string) {
+  const chainId = useChainId();
+  const effectiveChainId = isSupportedChain(chainId) ? chainId : DEFAULT_CHAIN_ID;
+  const addresses = CONTRACT_ADDRESSES[effectiveChainId] as Record<string, `0x${string}` | undefined>;
+
+  return addresses[key] || ZERO_ADDRESS;
+}
 
 // Hook to get treasury ETH balance
 export function useTreasuryEthBalance() {
@@ -101,15 +112,65 @@ export function usePayrollBalance() {
   };
 }
 
+// Hook to get TUT held in the TUTConverter reserve
+export function useConverterReserveBalance() {
+  const contracts = useContracts();
+  const converterAddress = useConfiguredAddress('tutConverter');
+
+  const { data: tokenBalance, isLoading, refetch } = useReadContract({
+    address: contracts.token.address,
+    abi: contracts.token.abi,
+    functionName: 'balanceOf',
+    args: [converterAddress],
+  });
+
+  return {
+    address: converterAddress,
+    tokenBalance: tokenBalance ? BigInt(tokenBalance as string) : BigInt(0),
+    tokenBalanceFormatted: tokenBalance ? formatUnits(BigInt(tokenBalance as string), 18) : '0',
+    isLoading,
+    refetch,
+  };
+}
+
+// Hook to get TUT held in the clean staking pool
+export function useStakingPoolBalance() {
+  const contracts = useContracts();
+  const stakingPoolAddress = useConfiguredAddress('stakingPool');
+
+  const { data: tokenBalance, isLoading, refetch } = useReadContract({
+    address: contracts.token.address,
+    abi: contracts.token.abi,
+    functionName: 'balanceOf',
+    args: [stakingPoolAddress],
+  });
+
+  return {
+    address: stakingPoolAddress,
+    tokenBalance: tokenBalance ? BigInt(tokenBalance as string) : BigInt(0),
+    tokenBalanceFormatted: tokenBalance ? formatUnits(BigInt(tokenBalance as string), 18) : '0',
+    isLoading,
+    refetch,
+  };
+}
+
 // Hook to calculate total ecosystem value across all contracts
 export function useEcosystemValue() {
   const treasury = useTreasuryStats();
   const escrow = useEscrowBalance();
   const payroll = usePayrollBalance();
+  const converterReserve = useConverterReserveBalance();
+  const stakingPool = useStakingPoolBalance();
 
   const totalTokens = useMemo(() => {
-    return treasury.tokenBalance + escrow.tokenBalance + payroll.tokenBalance;
-  }, [treasury.tokenBalance, escrow.tokenBalance, payroll.tokenBalance]);
+    return treasury.tokenBalance + escrow.tokenBalance + payroll.tokenBalance + converterReserve.tokenBalance + stakingPool.tokenBalance;
+  }, [
+    treasury.tokenBalance,
+    escrow.tokenBalance,
+    payroll.tokenBalance,
+    converterReserve.tokenBalance,
+    stakingPool.tokenBalance,
+  ]);
 
   const totalEth = useMemo(() => {
     return treasury.ethBalance + escrow.ethBalance;
@@ -123,6 +184,8 @@ export function useEcosystemValue() {
     treasury,
     escrow,
     payroll,
-    isLoading: treasury.isLoading || escrow.isLoading || payroll.isLoading,
+    converterReserve,
+    stakingPool,
+    isLoading: treasury.isLoading || escrow.isLoading || payroll.isLoading || converterReserve.isLoading || stakingPool.isLoading,
   };
 }
