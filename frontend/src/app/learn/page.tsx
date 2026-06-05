@@ -17,6 +17,14 @@ import {
   Lightbulb,
   Award,
 } from "lucide-react";
+import { CHAIN_IDS, CONTRACT_ADDRESSES } from "@/config/contracts";
+import { getExplorerLink } from "@/lib/explorer";
+
+const tutTokenUrl = getExplorerLink(
+  "token",
+  CONTRACT_ADDRESSES[CHAIN_IDS.BASE].token,
+  CHAIN_IDS.BASE
+);
 
 const learningPaths = [
   {
@@ -383,7 +391,7 @@ export default function LearnPage() {
             View Proposals →
           </a>
           <a
-            href="https://sepolia.etherscan.io/address/0x6888CE424242B2d4460104Ffc5042E8B1A52F3E6"
+            href={tutTokenUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="px-4 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 text-white font-medium transition-colors flex items-center gap-2"

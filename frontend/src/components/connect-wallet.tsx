@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { formatAddress } from "@/lib/utils";
 import { useUDName } from "@/lib/hooks";
+import { getExplorerLink, getExplorerName } from "@/lib/explorer";
 
 export function ConnectWallet() {
   const { connectors, connect, isPending } = useConnect();
@@ -39,13 +40,15 @@ export function ConnectWallet() {
 
   // Display name: UD domain or shortened address
   const displayName = udName || formatAddress(address || "");
+  const chainId = chain?.id;
+  const explorerName = getExplorerName(chainId);
 
   if (!isMounted) {
     return (
       <div className="relative">
         <button
           type="button"
-          className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-purple-600 px-5 py-2.5 font-medium text-white shadow-lg shadow-violet-500/25"
+          className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#004D4D] to-[#007373] px-5 py-2.5 font-medium text-white shadow-lg shadow-[#007373]/20"
           aria-label="Wallet status"
         >
           <Wallet className="w-4 h-4" />
@@ -62,9 +65,9 @@ export function ConnectWallet() {
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           onClick={() => setIsOpen(!isOpen)}
-          className="flex items-center gap-3 px-4 py-2.5 bg-gradient-to-r from-violet-600/20 to-purple-600/20 hover:from-violet-600/30 hover:to-purple-600/30 border border-violet-500/30 rounded-xl transition-all duration-200"
+          className="flex items-center gap-3 rounded-lg border border-[#00AFAF]/30 bg-[#004D4D]/20 px-4 py-2.5 transition-all duration-200 hover:bg-[#004D4D]/30"
         >
-          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#004D4D] to-[#00AFAF] flex items-center justify-center">
             {udName ? (
               <Globe className="w-4 h-4 text-white" />
             ) : (
@@ -90,7 +93,7 @@ export function ConnectWallet() {
               initial={{ opacity: 0, y: 10, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 10, scale: 0.95 }}
-              className="absolute right-0 top-full mt-2 w-72 bg-gray-900/95 backdrop-blur-xl border border-gray-700/50 rounded-xl shadow-2xl overflow-hidden z-50"
+              className="absolute right-0 top-full mt-2 w-72 bg-gray-900/95 backdrop-blur-xl border border-gray-700/50 rounded-lg shadow-2xl overflow-hidden z-50"
             >
               <div className="p-4 border-b border-gray-700/50">
                 <div className="flex items-center justify-between mb-2">
@@ -100,7 +103,7 @@ export function ConnectWallet() {
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#004D4D] to-[#00AFAF] flex items-center justify-center">
                     {udName ? (
                       <Globe className="w-5 h-5 text-white" />
                     ) : (
@@ -112,7 +115,7 @@ export function ConnectWallet() {
                       {udName || formatAddress(address)}
                     </p>
                     {udName && (
-                      <p className="text-xs text-violet-400">
+                        <p className="text-xs text-cyan-300">
                         {formatAddress(address)}
                       </p>
                     )}
@@ -138,13 +141,13 @@ export function ConnectWallet() {
                   </span>
                 </button>
                 <a
-                  href={`https://etherscan.io/address/${address}`}
+                  href={getExplorerLink("address", address, chainId)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-white/5 rounded-lg transition-colors"
                 >
                   <ExternalLink className="w-4 h-4 text-gray-400" />
-                  <span className="text-sm text-gray-300">View on Explorer</span>
+                  <span className="text-sm text-gray-300">View on {explorerName}</span>
                 </a>
                 <button
                   onClick={() => {
@@ -170,7 +173,7 @@ export function ConnectWallet() {
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 rounded-xl font-medium text-white shadow-lg shadow-violet-500/25 transition-all duration-200"
+        className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#004D4D] to-[#007373] px-5 py-2.5 font-medium text-white shadow-lg shadow-[#007373]/20 transition-all duration-200 hover:from-[#006666] hover:to-[#00AFAF]"
       >
         <Wallet className="w-4 h-4" />
         Connect Wallet
@@ -182,7 +185,7 @@ export function ConnectWallet() {
             initial={{ opacity: 0, y: 10, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.95 }}
-            className="absolute right-0 top-full mt-2 w-72 bg-gray-900/95 backdrop-blur-xl border border-gray-700/50 rounded-xl shadow-2xl overflow-hidden z-50"
+            className="absolute right-0 top-full mt-2 w-72 bg-gray-900/95 backdrop-blur-xl border border-gray-700/50 rounded-lg shadow-2xl overflow-hidden z-50"
           >
             <div className="p-4 border-b border-gray-700/50">
               <h3 className="font-semibold text-white">Connect Wallet</h3>

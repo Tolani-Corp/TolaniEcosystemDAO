@@ -27,7 +27,8 @@ import {
   useConverterReserveBalance,
   useStakingPoolBalance,
 } from "@/hooks/useTreasury";
-import { useContracts } from "@/hooks/useContracts";
+import { useContracts, useEffectiveChainId } from "@/hooks/useContracts";
+import { getExplorerLink, getExplorerName } from "@/lib/explorer";
 
 const PUBLIC_TREASURY_POLICY = [
   "On-chain treasury, converter, staking, escrow, and payroll contract balances.",
@@ -46,6 +47,8 @@ const PRIVATE_TREASURY_POLICY = [
 
 export default function TreasuryPage() {
   const contracts = useContracts();
+  const effectiveChainId = useEffectiveChainId();
+  const explorerName = getExplorerName(effectiveChainId);
   const treasuryStats = useTreasuryStats();
   const escrowBalance = useEscrowBalance();
   const payrollBalance = usePayrollBalance();
@@ -273,18 +276,18 @@ export default function TreasuryPage() {
       <GlassCard>
         <CardHeader
           title="Contract Addresses"
-          description="View contracts on Sepolia Etherscan"
+          description={`View contracts on ${explorerName}`}
         />
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <ContractLink name="Treasury" address={contracts.treasury.address} />
-            <ContractLink name="Escrow" address={contracts.escrow.address} />
-            <ContractLink name="Payroll" address={contracts.payroll.address} />
-            <ContractLink name="Token (TUT)" address={contracts.token.address} />
-            <ContractLink name="Governor" address={contracts.governor.address} />
-            <ContractLink name="Timelock" address={contracts.timelock.address} />
-            <ContractLink name="Compliance" address={contracts.compliance.address} />
-            <ContractLink name="ESG" address={contracts.esg.address} />
+            <ContractLink name="Treasury" address={contracts.treasury.address} chainId={effectiveChainId} />
+            <ContractLink name="Escrow" address={contracts.escrow.address} chainId={effectiveChainId} />
+            <ContractLink name="Payroll" address={contracts.payroll.address} chainId={effectiveChainId} />
+            <ContractLink name="Token (TUT)" address={contracts.token.address} chainId={effectiveChainId} />
+            <ContractLink name="Governor" address={contracts.governor.address} chainId={effectiveChainId} />
+            <ContractLink name="Timelock" address={contracts.timelock.address} chainId={effectiveChainId} />
+            <ContractLink name="Compliance" address={contracts.compliance.address} chainId={effectiveChainId} />
+            <ContractLink name="ESG" address={contracts.esg.address} chainId={effectiveChainId} />
           </div>
         </CardContent>
       </GlassCard>
@@ -397,10 +400,10 @@ function BalanceRow({
   );
 }
 
-function ContractLink({ name, address }: { name: string; address: string }) {
+function ContractLink({ name, address, chainId }: { name: string; address: string; chainId: number }) {
   return (
     <a
-      href={`https://sepolia.etherscan.io/address/${address}`}
+      href={getExplorerLink("address", address, chainId)}
       target="_blank"
       rel="noopener noreferrer"
       className="flex items-center justify-between p-4 rounded-xl bg-gray-800/30 border border-gray-700/30 hover:border-violet-500/30 transition-colors group"

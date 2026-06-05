@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Menu, X } from "lucide-react";
+import { Menu, MoreHorizontal, X } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { usePages } from "@/context/pages-context";
@@ -11,6 +11,11 @@ import { usePages } from "@/context/pages-context";
 export function Sidebar() {
   const { navigationPages, mobileNavigationPages, isActiveHref } = usePages();
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const primaryMobilePages = mobileNavigationPages.slice(0, 4);
+  const primaryMobileIds = new Set(primaryMobilePages.map((page) => page.id));
+  const secondaryMobilePages = navigationPages.filter((page) => !primaryMobileIds.has(page.id));
+  const isMoreActive = secondaryMobilePages.some((page) => isActiveHref(page.href));
 
   return (
     <>
@@ -94,10 +99,47 @@ export function Sidebar() {
         )}
       </motion.aside>
 
+      {/* Mobile More Navigation */}
+      {isMobileMenuOpen && (
+        <div className="fixed inset-x-3 bottom-20 z-50 overflow-hidden rounded-lg border border-gray-800/70 bg-gray-950/95 shadow-2xl backdrop-blur-xl lg:hidden">
+          <div className="flex items-center justify-between border-b border-gray-800 px-4 py-3">
+            <p className="text-sm font-semibold text-white">DAO navigation</p>
+            <button
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="rounded-lg p-1.5 text-gray-400 transition hover:bg-white/5 hover:text-white"
+              aria-label="Close navigation menu"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+          <div className="grid max-h-[55vh] grid-cols-2 gap-1 overflow-y-auto p-2">
+            {secondaryMobilePages.map((item) => {
+              const isActive = isActiveHref(item.href);
+              return (
+                <Link
+                  key={item.id}
+                  href={item.href}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={cn(
+                    "flex items-center gap-3 rounded-lg px-3 py-3 text-sm transition-colors",
+                    isActive
+                      ? "border border-[#E5C64B]/30 bg-[#004D4D]/30 text-[#E5C64B]"
+                      : "text-gray-300 hover:bg-white/5 hover:text-white"
+                  )}
+                >
+                  <item.icon className="h-4 w-4 shrink-0" />
+                  <span className="min-w-0 truncate">{item.name}</span>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
       {/* Mobile Bottom Navigation */}
       <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-gray-900/95 backdrop-blur-xl border-t border-gray-800/50 z-50">
         <div className="flex items-center justify-around py-2">
-          {mobileNavigationPages.map((item) => {
+          {primaryMobilePages.map((item) => {
             const isActive = isActiveHref(item.href);
             return (
               <Link key={item.name} href={item.href}>
@@ -113,6 +155,18 @@ export function Sidebar() {
               </Link>
             );
           })}
+          <button
+            onClick={() => setIsMobileMenuOpen((open) => !open)}
+            className={cn(
+              "flex flex-col items-center gap-1 rounded-lg px-4 py-2 transition-colors",
+              isMoreActive || isMobileMenuOpen ? "text-[#E5C64B]" : "text-gray-400"
+            )}
+            aria-expanded={isMobileMenuOpen}
+            aria-label="Open more navigation"
+          >
+            <MoreHorizontal className="h-5 w-5" />
+            <span className="text-xs">More</span>
+          </button>
         </div>
       </nav>
     </>

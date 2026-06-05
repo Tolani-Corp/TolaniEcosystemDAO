@@ -4,6 +4,8 @@ import { motion } from "framer-motion";
 import { formatAddress, formatNumber } from "@/lib/utils";
 import { ExternalLink, Award, TrendingUp } from "lucide-react";
 import { Button, Badge } from "@/components/ui/button";
+import { useEffectiveChainId } from "@/hooks/useContracts";
+import { getExplorerLink } from "@/lib/explorer";
 
 export interface Delegate {
   address: string;
@@ -22,6 +24,8 @@ interface DelegateCardProps {
 }
 
 export function DelegateCard({ delegate, rank, onDelegate }: DelegateCardProps) {
+  const effectiveChainId = useEffectiveChainId();
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -50,7 +54,7 @@ export function DelegateCard({ delegate, rank, onDelegate }: DelegateCardProps) 
                 {delegate.ensName || formatAddress(delegate.address)}
               </h3>
               <a
-                href={`https://etherscan.io/address/${delegate.address}`}
+                href={getExplorerLink("address", delegate.address, effectiveChainId)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-gray-400 hover:text-violet-400 transition-colors"

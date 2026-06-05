@@ -11,11 +11,13 @@ import {
   Coins,
   Lock,
   Play,
+  Zap,
   Trophy,
   AlertCircle,
 } from "lucide-react";
 import { formatUnits } from "viem";
 import { CONTRACT_ADDRESSES, ABIS, CHAIN_IDS } from "@/config/contracts";
+import { getExplorerLink, getExplorerName } from "@/lib/explorer";
 
 interface Course {
   id: number;
@@ -34,12 +36,14 @@ export default function TrainingPage() {
 
   const chainId = CHAIN_IDS.SEPOLIA;
   const trainingRewardsAddress = CONTRACT_ADDRESSES[chainId].trainingRewards;
+  const explorerName = getExplorerName(chainId);
 
   // Read total rewards distributed
   const { data: totalRewardsDistributed } = useReadContract({
     address: trainingRewardsAddress,
     abi: ABIS.trainingRewards,
     functionName: "totalRewardsDistributed",
+    chainId,
   });
 
   const courses = useMemo<Course[]>(
@@ -153,7 +157,8 @@ export default function TrainingPage() {
               href="/training/base"
               className="text-sm text-blue-400 hover:text-blue-300 flex items-center gap-1"
             >
-              ⚡ Base L2 Training (Low Fees)
+              <Zap className="h-4 w-4" />
+              Base L2 Training (Low Fees)
             </a>
           </div>
         </motion.div>
@@ -342,12 +347,12 @@ export default function TrainingPage() {
           <p>
             Training Rewards Contract:{" "}
             <a
-              href={`https://sepolia.etherscan.io/address/${trainingRewardsAddress}`}
+              href={getExplorerLink("address", trainingRewardsAddress, chainId)}
               target="_blank"
               rel="noopener noreferrer"
               className="text-purple-400 hover:text-purple-300 transition"
             >
-              {trainingRewardsAddress}
+              {trainingRewardsAddress} on {explorerName}
             </a>
           </p>
         </motion.div>

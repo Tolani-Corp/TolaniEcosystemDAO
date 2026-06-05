@@ -31,6 +31,8 @@ import { Button, Badge } from '@/components/ui/button';
 import { cn, formatAddress, formatNumber } from '@/lib/utils';
 import { useVotingPower, useHasVoted, useCastVote, useQueueProposal, useExecuteProposal } from '@/hooks/useGovernance';
 import { useProposal, getDescriptionHash } from '@/hooks/useProposals';
+import { useEffectiveChainId } from '@/hooks/useContracts';
+import { getExplorerLink, getExplorerName } from '@/lib/explorer';
 
 // Vote types
 const VoteType = {
@@ -56,6 +58,8 @@ function ProposalDetailContent() {
   const proposalId = searchParams.get('id');
   
   const { isConnected } = useAccount();
+  const effectiveChainId = useEffectiveChainId();
+  const explorerName = getExplorerName(effectiveChainId);
   const { votingPowerFormatted } = useVotingPower();
   const { proposal, isLoading, error } = useProposal(proposalId || undefined);
   const { hasVoted, isLoading: hasVotedLoading } = useHasVoted(proposal?.id);
@@ -198,13 +202,13 @@ function ProposalDetailContent() {
         <div className="flex items-center gap-4 text-sm text-gray-400">
           <span>Proposed by {formatAddress(proposal.proposer)}</span>
           <a
-            href={`https://sepolia.etherscan.io/address/${proposal.proposer}`}
+            href={getExplorerLink("address", proposal.proposer, effectiveChainId)}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-1 hover:text-violet-400"
           >
             <ExternalLink className="w-3 h-3" />
-            View on Etherscan
+            View on {explorerName}
           </a>
         </div>
       </motion.div>
@@ -253,12 +257,12 @@ function ProposalDetailContent() {
               </p>
               {(voteHash || queueHash || executeHash) && (
                 <a
-                  href={`https://sepolia.etherscan.io/tx/${voteHash || queueHash || executeHash}`}
+                  href={getExplorerLink("tx", voteHash || queueHash || executeHash, effectiveChainId)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-sm text-gray-400 hover:text-white"
                 >
-                  View on Etherscan →
+                  View on {explorerName}
                 </a>
               )}
             </div>
@@ -426,7 +430,7 @@ function ProposalDetailContent() {
               {proposal.targets.map((target, i) => (
                 <div key={i} className="pl-4 py-1">
                   <a
-                    href={`https://sepolia.etherscan.io/address/${target}`}
+                    href={getExplorerLink("address", target, effectiveChainId)}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-sm text-violet-400 hover:underline font-mono"

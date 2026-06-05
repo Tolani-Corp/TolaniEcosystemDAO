@@ -32,10 +32,10 @@ export function Button({
       onClick={onClick}
       type={type}
       className={cn(
-        "inline-flex items-center justify-center font-medium transition-all duration-200 rounded-xl",
+        "inline-flex items-center justify-center rounded-lg font-medium transition-all duration-200",
         // Variants
         variant === "primary" &&
-          "bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white shadow-lg shadow-violet-500/25",
+          "bg-gradient-to-r from-[#004D4D] to-[#007373] text-white shadow-lg shadow-[#007373]/20 hover:from-[#006666] hover:to-[#00AFAF]",
         variant === "secondary" &&
           "bg-gray-800/50 hover:bg-gray-700/50 text-white border border-gray-700/50",
         variant === "ghost" &&
@@ -92,7 +92,7 @@ export function Badge({ children, variant = "default", className }: BadgeProps) 
         variant === "success" && "bg-green-500/20 text-green-400 border-green-500/30",
         variant === "warning" && "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
         variant === "error" && "bg-red-500/20 text-red-400 border-red-500/30",
-        variant === "info" && "bg-blue-500/20 text-blue-400 border-blue-500/30",
+        variant === "info" && "bg-cyan-500/20 text-cyan-300 border-cyan-500/30",
         className
       )}
     >
@@ -133,7 +133,7 @@ export function ProgressBar({
           transition={{ duration: 0.5, ease: "easeOut" }}
           className={cn(
             "h-full rounded-full",
-            variant === "default" && "bg-gradient-to-r from-violet-500 to-purple-500",
+            variant === "default" && "bg-gradient-to-r from-[#004D4D] to-[#00AFAF]",
             variant === "success" && "bg-gradient-to-r from-green-500 to-emerald-500",
             variant === "warning" && "bg-gradient-to-r from-yellow-500 to-orange-500",
             variant === "error" && "bg-gradient-to-r from-red-500 to-pink-500"

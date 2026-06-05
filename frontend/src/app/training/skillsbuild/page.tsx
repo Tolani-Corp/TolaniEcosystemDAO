@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { formatUnits, keccak256, toBytes } from "viem";
 import { CONTRACT_ADDRESSES, ABIS, CHAIN_IDS } from "@/config/contracts";
+import { getExplorerLink, getExplorerName } from "@/lib/explorer";
 
 // Campaign IDs (must match deployed contracts)
 const CAMPAIGN_IDS = {
@@ -90,6 +91,7 @@ export default function SkillsBuildPage() {
   const chainId = CHAIN_IDS.SEPOLIA;
   const uTUTAddress = CONTRACT_ADDRESSES[chainId].uTUT;
   const trainingRewardsAddress = CONTRACT_ADDRESSES[chainId].trainingRewardsV2;
+  const explorerName = getExplorerName(chainId);
 
   // Read uTUT balance
   const { data: uTUTBalance } = useReadContract({
@@ -97,6 +99,7 @@ export default function SkillsBuildPage() {
     abi: ABIS.uTUT,
     functionName: "balanceOf",
     args: address ? [address] : undefined,
+    chainId,
     query: { enabled: !!address },
   });
 
@@ -106,6 +109,7 @@ export default function SkillsBuildPage() {
     abi: ABIS.trainingRewardsV2,
     functionName: "campaigns",
     args: [CAMPAIGN_IDS.CONSTRUCTION],
+    chainId,
   });
 
   const { data: aiCloudData } = useReadContract({
@@ -113,6 +117,7 @@ export default function SkillsBuildPage() {
     abi: ABIS.trainingRewardsV2,
     functionName: "campaigns",
     args: [CAMPAIGN_IDS.AI_CLOUD],
+    chainId,
   });
 
   const { data: esgData } = useReadContract({
@@ -120,6 +125,7 @@ export default function SkillsBuildPage() {
     abi: ABIS.trainingRewardsV2,
     functionName: "campaigns",
     args: [CAMPAIGN_IDS.ESG],
+    chainId,
   });
 
   // Process campaign data
@@ -449,23 +455,23 @@ export default function SkillsBuildPage() {
           <p>
             uTUT Token:{" "}
             <a
-              href={`https://sepolia.etherscan.io/address/${uTUTAddress}`}
+              href={getExplorerLink("address", uTUTAddress, chainId)}
               target="_blank"
               rel="noopener noreferrer"
               className="text-blue-400 hover:text-blue-300 transition"
             >
-              {uTUTAddress?.slice(0, 10)}...{uTUTAddress?.slice(-8)}
+              {uTUTAddress?.slice(0, 10)}...{uTUTAddress?.slice(-8)} on {explorerName}
             </a>
           </p>
           <p>
             Training Rewards:{" "}
             <a
-              href={`https://sepolia.etherscan.io/address/${trainingRewardsAddress}`}
+              href={getExplorerLink("address", trainingRewardsAddress, chainId)}
               target="_blank"
               rel="noopener noreferrer"
               className="text-blue-400 hover:text-blue-300 transition"
             >
-              {trainingRewardsAddress?.slice(0, 10)}...{trainingRewardsAddress?.slice(-8)}
+              {trainingRewardsAddress?.slice(0, 10)}...{trainingRewardsAddress?.slice(-8)} on {explorerName}
             </a>
           </p>
         </motion.div>

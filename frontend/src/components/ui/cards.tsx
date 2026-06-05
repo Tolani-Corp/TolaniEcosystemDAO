@@ -23,20 +23,20 @@ export function StatCard({
 }: StatCardProps) {
   return (
     <motion.div
-      whileHover={{ y: -4, scale: 1.02 }}
-      className="relative overflow-hidden rounded-2xl bg-gray-900/50 border border-gray-800/50 p-6 backdrop-blur-sm"
+      whileHover={{ y: -2 }}
+      className="relative overflow-hidden rounded-lg bg-gray-900/50 border border-gray-800/50 p-5 backdrop-blur-sm"
     >
       {/* Gradient Background */}
       <div
         className={cn(
-          "absolute inset-0 opacity-10 blur-2xl",
+          "absolute inset-0 opacity-10",
           gradient
         )}
       />
 
       <div className="relative">
         <div className="flex items-start justify-between mb-4">
-          <div className={cn("p-3 rounded-xl", gradient.replace("bg-gradient-to-br", "bg-gradient-to-br"))}>
+          <div className={cn("rounded-lg p-3", gradient)}>
             <Icon className="w-6 h-6 text-white" />
           </div>
           {change && (
@@ -70,7 +70,7 @@ export function GlassCard({ children, className }: GlassCardProps) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       className={cn(
-        "rounded-2xl bg-gray-900/50 border border-gray-800/50 backdrop-blur-sm",
+        "rounded-lg bg-gray-900/50 border border-gray-800/50 backdrop-blur-sm",
         className
       )}
     >

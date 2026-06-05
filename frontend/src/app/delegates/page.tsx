@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { GlassCard, CardHeader, CardContent, StatCard } from "@/components/ui/cards";
 import { formatNumber, cn, formatAddress } from "@/lib/utils";
 import { useAccount } from "wagmi";
+import { useEffectiveChainId } from "@/hooks/useContracts";
+import { getExplorerLink, getExplorerName } from "@/lib/explorer";
 import { 
   useVotingPower, 
   useTokenBalance, 
@@ -16,6 +18,8 @@ import {
 
 export default function DelegatesPage() {
   const { isConnected, address } = useAccount();
+  const effectiveChainId = useEffectiveChainId();
+  const explorerName = getExplorerName(effectiveChainId);
   const { votingPowerFormatted, isLoading: votingLoading, refetch: refetchVoting } = useVotingPower();
   const { balanceFormatted, isLoading: balanceLoading } = useTokenBalance();
   const { delegate, hasDelegated, isSelfDelegated, isLoading: delegateLoading, refetch: refetchDelegate } = useDelegate();
@@ -116,12 +120,12 @@ export default function DelegatesPage() {
               </p>
               {hash && (
                 <a 
-                  href={`https://sepolia.etherscan.io/tx/${hash}`}
+                  href={getExplorerLink("tx", hash, effectiveChainId)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-sm text-gray-400 hover:text-white"
                 >
-                  View on Etherscan →
+                  View on {explorerName}
                 </a>
               )}
             </div>

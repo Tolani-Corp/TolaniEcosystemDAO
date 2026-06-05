@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import type { ElementType } from "react";
 import { Plus, FileText, Vote, Users, ArrowRight, Loader2, Clock, CheckCircle, XCircle, AlertTriangle, Timer, Play } from "lucide-react";
 import Link from "next/link";
 import { Button, Badge } from "@/components/ui/button";
@@ -11,7 +12,7 @@ import { useProposals, type Proposal } from "@/hooks/useProposals";
 import { formatNumber, formatAddress, cn } from "@/lib/utils";
 
 // State colors and icons
-const stateConfig: Record<string, { color: string; bgColor: string; icon: React.ElementType }> = {
+const stateConfig: Record<string, { color: string; bgColor: string; icon: ElementType }> = {
   Pending: { color: "text-yellow-400", bgColor: "bg-yellow-500/20", icon: Clock },
   Active: { color: "text-green-400", bgColor: "bg-green-500/20", icon: Vote },
   Canceled: { color: "text-gray-400", bgColor: "bg-gray-500/20", icon: XCircle },
@@ -21,6 +22,34 @@ const stateConfig: Record<string, { color: string; bgColor: string; icon: React.
   Expired: { color: "text-orange-400", bgColor: "bg-orange-500/20", icon: AlertTriangle },
   Executed: { color: "text-violet-400", bgColor: "bg-violet-500/20", icon: Play },
 };
+
+const proposalLifecycle = [
+  {
+    state: "Pending",
+    className: "bg-yellow-500/20 text-yellow-400",
+    desc: "Waiting for voting to begin",
+  },
+  {
+    state: "Active",
+    className: "bg-green-500/20 text-green-400",
+    desc: "Open for voting",
+  },
+  {
+    state: "Succeeded",
+    className: "bg-emerald-500/20 text-emerald-400",
+    desc: "Passed and ready to queue",
+  },
+  {
+    state: "Queued",
+    className: "bg-blue-500/20 text-blue-400",
+    desc: "In timelock waiting period",
+  },
+  {
+    state: "Executed",
+    className: "bg-violet-500/20 text-violet-400",
+    desc: "Successfully executed",
+  },
+];
 
 function ProposalCard({ proposal }: { proposal: Proposal }) {
   const config = stateConfig[proposal.state] || stateConfig.Pending;
@@ -161,9 +190,9 @@ export default function ProposalsPage() {
                 {formatNumber(parseFloat(proposalThresholdFormatted))} TUT
               </p>
               {hasEnoughVotingPower ? (
-                <p className="text-xs text-green-400 mt-1">✓ You can create proposals</p>
+                <p className="text-xs text-green-400 mt-1">Eligible to create proposals</p>
               ) : (
-                <p className="text-xs text-yellow-400 mt-1">⚠️ Need more voting power</p>
+                <p className="text-xs text-yellow-400 mt-1">Need more voting power</p>
               )}
             </div>
           </div>
@@ -329,16 +358,10 @@ export default function ProposalsPage() {
         />
         <CardContent>
           <div className="flex flex-col lg:flex-row gap-4">
-            {[
-              { state: "Pending", color: "yellow", desc: "Waiting for voting to begin" },
-              { state: "Active", color: "green", desc: "Open for voting" },
-              { state: "Succeeded", color: "emerald", desc: "Passed and ready to queue" },
-              { state: "Queued", color: "blue", desc: "In timelock waiting period" },
-              { state: "Executed", color: "violet", desc: "Successfully executed" },
-            ].map((item, index) => (
+            {proposalLifecycle.map((item, index) => (
               <div key={item.state} className="flex-1 flex items-center">
                 <div className="flex-1 p-4 rounded-xl bg-gray-800/30 text-center">
-                  <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium mb-2 bg-${item.color}-500/20 text-${item.color}-400`}>
+                  <span className={cn("inline-block px-3 py-1 rounded-full text-xs font-medium mb-2", item.className)}>
                     {item.state}
                   </span>
                   <p className="text-xs text-gray-400">{item.desc}</p>

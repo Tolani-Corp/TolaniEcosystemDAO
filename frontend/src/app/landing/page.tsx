@@ -15,6 +15,8 @@ import {
   Lock,
   Sparkles,
 } from "lucide-react";
+import { CHAIN_IDS, CONTRACT_ADDRESSES } from "@/config/contracts";
+import { getExplorerLink } from "@/lib/explorer";
 
 const BRAND_COLORS = {
   baseTeal: "#004D4D",
@@ -22,6 +24,12 @@ const BRAND_COLORS = {
   gold: "#E5C64B",
   circuit: "#00AFAF",
 };
+
+const tutTokenUrl = getExplorerLink(
+  "token",
+  CONTRACT_ADDRESSES[CHAIN_IDS.BASE].token,
+  CHAIN_IDS.BASE
+);
 
 const features = [
   {
@@ -450,7 +458,7 @@ export default function LandingPage() {
               <ul className="space-y-2 text-sm">
                 <li><a href="https://docs.tuttoken.pw" className="text-gray-400 hover:text-[#E5C64B] transition-colors">Documentation</a></li>
                 <li><a href="https://github.com/Tolani-Corp" className="text-gray-400 hover:text-[#E5C64B] transition-colors">GitHub</a></li>
-                <li><a href="https://sepolia.etherscan.io/token/0x6888CE424242B2d4460104Ffc5042E8B1A52F3E6" className="text-gray-400 hover:text-[#E5C64B] transition-colors">Token Contract</a></li>
+                <li><a href={tutTokenUrl} className="text-gray-400 hover:text-[#E5C64B] transition-colors">Token Contract</a></li>
               </ul>
             </div>
           </div>

@@ -4,6 +4,8 @@ import { useUDName } from '@/lib/hooks';
 import { formatAddress } from '@/lib/utils';
 import { Globe, Copy, Check, ExternalLink } from 'lucide-react';
 import { useState } from 'react';
+import { useEffectiveChainId } from '@/hooks/useContracts';
+import { getExplorerLink, getExplorerName } from '@/lib/explorer';
 
 interface AddressDisplayProps {
   address: string;
@@ -22,6 +24,8 @@ export function AddressDisplay({
 }: AddressDisplayProps) {
   const { name: udName, isLoading } = useUDName(address);
   const [copied, setCopied] = useState(false);
+  const effectiveChainId = useEffectiveChainId();
+  const explorerName = getExplorerName(effectiveChainId);
 
   const copyAddress = async () => {
     await navigator.clipboard.writeText(address);
@@ -51,7 +55,7 @@ export function AddressDisplay({
 
   return (
     <span className={`inline-flex items-center gap-1.5 ${className}`}>
-      {udName && <Globe className={`${iconSizes[size]} text-violet-400`} />}
+      {udName && <Globe className={`${iconSizes[size]} text-cyan-300`} />}
       <span className={`${sizeClasses[size]} font-medium`}>
         {udName || formatAddress(address)}
       </span>
@@ -75,11 +79,11 @@ export function AddressDisplay({
       )}
       {showExplorer && (
         <a
-          href={`https://sepolia.etherscan.io/address/${address}`}
+          href={getExplorerLink('address', address, effectiveChainId)}
           target="_blank"
           rel="noopener noreferrer"
           className="p-1 hover:bg-white/10 rounded transition-colors"
-          title="View on Etherscan"
+          title={`View on ${explorerName}`}
         >
           <ExternalLink className={`${iconSizes[size]} text-gray-400 hover:text-white`} />
         </a>
@@ -97,7 +101,7 @@ export function Address({ address, className = '' }: { address: string; classNam
   return (
     <span className={`font-mono ${className}`}>
       {udName ? (
-        <span className="text-violet-400">{udName}</span>
+        <span className="text-cyan-300">{udName}</span>
       ) : (
         formatAddress(address)
       )}

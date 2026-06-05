@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Settings,
   Shield,
@@ -10,18 +10,97 @@ import {
   Sun,
   Check,
 } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { GlassCard, CardHeader, CardContent } from "@/components/ui/cards";
-import { cn } from "@/lib/utils";
+import { cn, formatAddress } from "@/lib/utils";
+import { useTheme, type Theme } from "@/components/ThemeProvider";
+import { ConnectWallet } from "@/components/connect-wallet";
+import { DEFAULT_CHAIN_ID, SUPPORTED_CHAIN_IDS, getChainName } from "@/config/contracts";
+import { useAccount, useChainId, useSwitchChain } from "wagmi";
+
+type NotificationPreferences = {
+  proposals: boolean;
+  votes: boolean;
+  treasury: boolean;
+  email: boolean;
+};
+
+const DEFAULT_NOTIFICATIONS: NotificationPreferences = {
+  proposals: true,
+  votes: true,
+  treasury: false,
+  email: false,
+};
+
+const THEME_OPTIONS: { value: Theme; label: string; icon: LucideIcon }[] = [
+  { value: "light", label: "Light", icon: Sun },
+  { value: "dark", label: "Dark", icon: Moon },
+  { value: "system", label: "System", icon: Settings },
+];
+
+const NOTIFICATION_OPTIONS: {
+  key: keyof NotificationPreferences;
+  label: string;
+  description: string;
+}[] = [
+  {
+    key: "proposals",
+    label: "New Proposals",
+    description: "Get notified when new proposals are created",
+  },
+  {
+    key: "votes",
+    label: "Voting Reminders",
+    description: "Remind me before voting periods end",
+  },
+  {
+    key: "treasury",
+    label: "Treasury Updates",
+    description: "Notify on significant treasury changes",
+  },
+  {
+    key: "email",
+    label: "Email Notifications",
+    description: "Receive email summaries (requires email)",
+  },
+];
+
+const BRAND_SWATCHES = [
+  { label: "Base teal", className: "bg-[#004D4D]" },
+  { label: "Circuit teal", className: "bg-[#00AFAF]" },
+  { label: "Gold", className: "bg-[#E5C64B]" },
+  { label: "Surface", className: "bg-gray-800" },
+];
 
 export default function SettingsPage() {
-  const [theme, setTheme] = useState("dark");
-  const [notifications, setNotifications] = useState({
-    proposals: true,
-    votes: true,
-    treasury: false,
-    email: false,
-  });
+  const { theme, setTheme } = useTheme();
+  const { address, isConnected } = useAccount();
+  const chainId = useChainId();
+  const { switchChain, isPending: isSwitchingNetwork } = useSwitchChain();
+  const [notifications, setNotifications] =
+    useState<NotificationPreferences>(DEFAULT_NOTIFICATIONS);
+  const [saved, setSaved] = useState(false);
+
+  useEffect(() => {
+    const storedPreferences = window.localStorage.getItem("dao-notifications");
+    if (!storedPreferences) return;
+
+    try {
+      setNotifications({
+        ...DEFAULT_NOTIFICATIONS,
+        ...JSON.parse(storedPreferences),
+      });
+    } catch {
+      window.localStorage.removeItem("dao-notifications");
+    }
+  }, []);
+
+  const savePreferences = () => {
+    window.localStorage.setItem("dao-notifications", JSON.stringify(notifications));
+    setSaved(true);
+    window.setTimeout(() => setSaved(false), 2000);
+  };
 
   return (
     <div className="max-w-4xl mx-auto space-y-8">
@@ -46,18 +125,14 @@ export default function SettingsPage() {
               Theme
             </label>
             <div className="grid grid-cols-3 gap-4">
-              {[
-                { value: "light", label: "Light", icon: Sun },
-                { value: "dark", label: "Dark", icon: Moon },
-                { value: "system", label: "System", icon: Settings },
-              ].map((option) => (
+              {THEME_OPTIONS.map((option) => (
                 <button
                   key={option.value}
                   onClick={() => setTheme(option.value)}
                   className={cn(
                     "flex flex-col items-center gap-2 p-4 rounded-xl border transition-all",
                     theme === option.value
-                      ? "bg-violet-600/20 border-violet-500/50 text-violet-400"
+                      ? "bg-[#004D4D]/30 border-[#00AFAF]/50 text-cyan-200"
                       : "bg-gray-800/30 border-gray-700/50 text-gray-400 hover:text-white"
                   )}
                 >
@@ -68,27 +143,17 @@ export default function SettingsPage() {
             </div>
           </div>
 
-          {/* Accent Color */}
+          {/* Brand System */}
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-3">
-              Accent Color
+              Brand System
             </label>
             <div className="flex gap-3">
-              {[
-                { color: "violet", class: "bg-violet-500" },
-                { color: "blue", class: "bg-blue-500" },
-                { color: "emerald", class: "bg-emerald-500" },
-                { color: "orange", class: "bg-orange-500" },
-                { color: "pink", class: "bg-pink-500" },
-              ].map((accent) => (
-                <button
-                  key={accent.color}
-                  className={cn(
-                    "w-10 h-10 rounded-full transition-transform hover:scale-110",
-                    accent.class,
-                    accent.color === "violet" && "ring-2 ring-white ring-offset-2 ring-offset-gray-950"
-                  )}
-                />
+              {BRAND_SWATCHES.map((swatch) => (
+                <div key={swatch.label} className="flex flex-col items-center gap-2">
+                  <span className={cn("h-10 w-10 rounded-lg border border-white/10", swatch.className)} />
+                  <span className="text-xs text-gray-400">{swatch.label}</span>
+                </div>
               ))}
             </div>
           </div>
@@ -102,28 +167,7 @@ export default function SettingsPage() {
           description="Configure how you receive notifications"
         />
         <CardContent className="space-y-4">
-          {[
-            {
-              key: "proposals",
-              label: "New Proposals",
-              description: "Get notified when new proposals are created",
-            },
-            {
-              key: "votes",
-              label: "Voting Reminders",
-              description: "Remind me before voting periods end",
-            },
-            {
-              key: "treasury",
-              label: "Treasury Updates",
-              description: "Notify on significant treasury changes",
-            },
-            {
-              key: "email",
-              label: "Email Notifications",
-              description: "Receive email summaries (requires email)",
-            },
-          ].map((item) => (
+          {NOTIFICATION_OPTIONS.map((item) => (
             <div
               key={item.key}
               className="flex items-center justify-between p-4 rounded-xl bg-gray-800/30 hover:bg-gray-800/50 transition-colors"
@@ -136,20 +180,20 @@ export default function SettingsPage() {
                 onClick={() =>
                   setNotifications({
                     ...notifications,
-                    [item.key]: !notifications[item.key as keyof typeof notifications],
+                    [item.key]: !notifications[item.key],
                   })
                 }
                 className={cn(
                   "relative w-12 h-6 rounded-full transition-colors",
-                  notifications[item.key as keyof typeof notifications]
-                    ? "bg-violet-600"
+                  notifications[item.key]
+                    ? "bg-[#007373]"
                     : "bg-gray-700"
                 )}
               >
                 <motion.div
                   initial={false}
                   animate={{
-                    x: notifications[item.key as keyof typeof notifications] ? 24 : 2,
+                    x: notifications[item.key] ? 24 : 2,
                   }}
                   className="absolute top-1 w-4 h-4 rounded-full bg-white"
                 />
@@ -167,45 +211,54 @@ export default function SettingsPage() {
         />
         <CardContent>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            {[
-              { name: "Ethereum", chainId: 1, icon: "Ξ", active: false },
-              { name: "Sepolia", chainId: 11155111, icon: "Ξ", active: true },
-              { name: "Polygon", chainId: 137, icon: "P", active: false },
-              { name: "Arbitrum", chainId: 42161, icon: "A", active: false },
-            ].map((network) => (
-              <button
-                key={network.chainId}
-                className={cn(
-                  "flex flex-col items-center gap-2 p-4 rounded-xl border transition-all",
-                  network.active
-                    ? "bg-violet-600/20 border-violet-500/50"
-                    : "bg-gray-800/30 border-gray-700/50 hover:border-gray-600/50"
-                )}
-              >
-                <div
+            {SUPPORTED_CHAIN_IDS.map((networkId) => {
+              const active = isConnected ? chainId === networkId : networkId === DEFAULT_CHAIN_ID;
+              const label = getChainName(networkId);
+              const icon = networkId === DEFAULT_CHAIN_ID ? "B" : label.slice(0, 2).toUpperCase();
+
+              return (
+                <button
+                  key={networkId}
+                  onClick={() => switchChain?.({ chainId: networkId })}
+                  disabled={!isConnected || isSwitchingNetwork}
                   className={cn(
-                    "w-10 h-10 rounded-full flex items-center justify-center text-lg font-bold",
-                    network.active
-                      ? "bg-violet-600 text-white"
-                      : "bg-gray-700 text-gray-300"
+                    "flex flex-col items-center gap-2 p-4 rounded-xl border transition-all",
+                    active
+                      ? "bg-[#004D4D]/30 border-[#00AFAF]/50"
+                      : "bg-gray-800/30 border-gray-700/50 hover:border-gray-600/50",
+                    (!isConnected || isSwitchingNetwork) && "cursor-not-allowed opacity-70"
                   )}
                 >
-                  {network.icon}
-                </div>
-                <span
-                  className={cn(
-                    "text-sm font-medium",
-                    network.active ? "text-violet-400" : "text-gray-400"
+                  <div
+                    className={cn(
+                      "w-10 h-10 rounded-full flex items-center justify-center text-lg font-bold",
+                      active
+                        ? "bg-[#007373] text-white"
+                        : "bg-gray-700 text-gray-300"
+                    )}
+                  >
+                    {icon}
+                  </div>
+                  <span
+                    className={cn(
+                      "text-sm font-medium",
+                      active ? "text-cyan-200" : "text-gray-400"
+                    )}
+                  >
+                    {label}
+                  </span>
+                  {active && (
+                    <Check className="w-4 h-4 text-[#E5C64B]" />
                   )}
-                >
-                  {network.name}
-                </span>
-                {network.active && (
-                  <Check className="w-4 h-4 text-violet-400" />
-                )}
-              </button>
-            ))}
+                </button>
+              );
+            })}
           </div>
+          {!isConnected && (
+            <p className="mt-4 text-sm text-gray-400">
+              Connect a wallet to switch networks. Base is the production default.
+            </p>
+          )}
         </CardContent>
       </GlassCard>
 
@@ -218,19 +271,17 @@ export default function SettingsPage() {
         <CardContent className="space-y-4">
           <div className="flex items-center justify-between p-4 rounded-xl bg-gray-800/30">
             <div className="flex items-center gap-4">
-              <div className="p-3 rounded-xl bg-violet-500/20">
-                <Shield className="w-5 h-5 text-violet-400" />
+              <div className="p-3 rounded-xl bg-[#004D4D]/30">
+                <Shield className="w-5 h-5 text-cyan-200" />
               </div>
               <div>
                 <p className="text-white font-medium">Connected Wallet</p>
                 <p className="text-sm text-gray-400">
-                  No wallet connected
+                  {address ? formatAddress(address) : "No wallet connected"}
                 </p>
               </div>
             </div>
-            <Button variant="secondary" size="sm">
-              Connect
-            </Button>
+            <ConnectWallet />
           </div>
 
           <div className="flex items-center justify-between p-4 rounded-xl bg-gray-800/30">
@@ -256,8 +307,9 @@ export default function SettingsPage() {
       </GlassCard>
 
       {/* Save Button */}
-      <div className="flex justify-end">
-        <Button size="lg">Save Changes</Button>
+      <div className="flex items-center justify-end gap-3">
+        {saved && <span className="text-sm text-green-400">Preferences saved</span>}
+        <Button size="lg" onClick={savePreferences}>Save Changes</Button>
       </div>
     </div>
   );

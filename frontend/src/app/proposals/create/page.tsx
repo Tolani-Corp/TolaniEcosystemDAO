@@ -8,13 +8,16 @@ import { Button } from "@/components/ui/button";
 import { GlassCard, CardHeader, CardContent } from "@/components/ui/cards";
 import { useAccount } from "wagmi";
 import { useVotingPower, useGovernorParams, useCreateProposal } from "@/hooks/useGovernance";
-import { useContracts } from "@/hooks/useContracts";
+import { useContracts, useEffectiveChainId } from "@/hooks/useContracts";
 import { formatNumber, cn } from "@/lib/utils";
 import { encodeFunctionData, parseEther, parseUnits } from "viem";
+import { getExplorerLink, getExplorerName } from "@/lib/explorer";
 
 export default function CreateProposalPage() {
   const { isConnected } = useAccount();
   const contracts = useContracts();
+  const effectiveChainId = useEffectiveChainId();
+  const explorerName = getExplorerName(effectiveChainId);
   const { votingPowerFormatted, isLoading: votingLoading } = useVotingPower();
   const { proposalThresholdFormatted } = useGovernorParams();
   const { propose, isPending, isConfirming, isSuccess, error, hash } = useCreateProposal();
@@ -133,12 +136,12 @@ export default function CreateProposalPage() {
               </p>
               {hash && (
                 <a 
-                  href={`https://sepolia.etherscan.io/tx/${hash}`}
+                  href={getExplorerLink("tx", hash, effectiveChainId)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-sm text-gray-400 hover:text-white"
                 >
-                  View on Etherscan →
+                  View on {explorerName}
                 </a>
               )}
             </div>

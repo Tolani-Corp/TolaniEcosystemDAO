@@ -16,6 +16,8 @@ import {
 } from "lucide-react";
 import { formatUnits, parseUnits } from "viem";
 import { CONTRACT_ADDRESSES, ABIS, CHAIN_IDS } from "@/config/contracts";
+import { useEffectiveChainId } from "@/hooks/useContracts";
+import { getExplorerLink, getExplorerName } from "@/lib/explorer";
 
 const STAKING_TIERS = [
   {
@@ -72,20 +74,25 @@ const STAKING_TIERS = [
 
 export default function StakingPage() {
   const { address, isConnected } = useAccount();
+  const effectiveChainId = useEffectiveChainId();
   const [selectedTier, setSelectedTier] = useState<number>(0);
   const [stakeAmount, setStakeAmount] = useState("");
   const [isStaking, setIsStaking] = useState(false);
   const [isClaiming, setIsClaiming] = useState(false);
 
-  const chainId = CHAIN_IDS.SEPOLIA;
-  const stakingPoolAddress = CONTRACT_ADDRESSES[chainId].stakingPool;
-  const tokenAddress = CONTRACT_ADDRESSES[chainId].token;
+  const stakingChainId =
+    effectiveChainId === CHAIN_IDS.SEPOLIA ? CHAIN_IDS.SEPOLIA : CHAIN_IDS.BASE;
+  const stakingContracts = CONTRACT_ADDRESSES[stakingChainId];
+  const stakingPoolAddress = stakingContracts.stakingPool;
+  const tokenAddress = stakingContracts.token;
+  const explorerName = getExplorerName(stakingChainId);
 
   // Read pool stats
   const { data: poolStats } = useReadContract({
     address: stakingPoolAddress,
     abi: ABIS.stakingPool,
     functionName: "getPoolStats",
+    chainId: stakingChainId,
   });
 
   // Read user token balance
@@ -94,6 +101,7 @@ export default function StakingPage() {
     abi: ABIS.token,
     functionName: "balanceOf",
     args: address ? [address] : undefined,
+    chainId: stakingChainId,
   });
 
   // Read user's staked amount
@@ -102,6 +110,7 @@ export default function StakingPage() {
     abi: ABIS.stakingPool,
     functionName: "userTotalStaked",
     args: address ? [address] : undefined,
+    chainId: stakingChainId,
   });
 
   // Read pending rewards
@@ -110,6 +119,7 @@ export default function StakingPage() {
     abi: ABIS.stakingPool,
     functionName: "pendingRewards",
     args: address ? [address] : undefined,
+    chainId: stakingChainId,
   });
 
   // Read voting power
@@ -118,6 +128,7 @@ export default function StakingPage() {
     abi: ABIS.stakingPool,
     functionName: "getVotingPower",
     args: address ? [address] : undefined,
+    chainId: stakingChainId,
   });
 
   const { writeContract: stake, data: stakeHash } = useWriteContract();
@@ -180,6 +191,7 @@ export default function StakingPage() {
         abi: ABIS.token,
         functionName: "approve",
         args: [stakingPoolAddress, amount],
+        chainId: stakingChainId,
       });
 
       // Then stake
@@ -188,6 +200,7 @@ export default function StakingPage() {
         abi: ABIS.stakingPool,
         functionName: "stake",
         args: [amount, selectedTier],
+        chainId: stakingChainId,
       });
     } catch (error) {
       console.error("Staking error:", error);
@@ -205,6 +218,7 @@ export default function StakingPage() {
         address: stakingPoolAddress,
         abi: ABIS.stakingPool,
         functionName: "claimRewards",
+        chainId: stakingChainId,
       });
     } catch (error) {
       console.error("Claim error:", error);
@@ -469,9 +483,9 @@ export default function StakingPage() {
           className="mt-12 text-center text-sm text-gray-500"
         >
           <p>
-            Staking Pool Contract:{" "}
+            Staking Pool Contract ({explorerName}):{" "}
             <a
-              href={`https://sepolia.etherscan.io/address/${stakingPoolAddress}`}
+              href={getExplorerLink("address", stakingPoolAddress, stakingChainId)}
               target="_blank"
               rel="noopener noreferrer"
               className="text-green-400 hover:text-green-300 transition"
