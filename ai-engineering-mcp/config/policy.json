@@ -1,0 +1,102 @@
+{
+  "version": "1.0",
+  "description": "Policy configuration for AI Engineering MCP",
+  "capabilities": {
+    "code_search": {
+      "tier": 0,
+      "enabled": true,
+      "scope": ["*"],
+      "description": "Search code in repositories"
+    },
+    "repo_analysis": {
+      "tier": 0,
+      "enabled": true,
+      "scope": ["*"],
+      "description": "Analyze repository structure and files"
+    },
+    "read_docs": {
+      "tier": 0,
+      "enabled": true,
+      "scope": ["*"],
+      "description": "Read documentation"
+    },
+    "get_metrics": {
+      "tier": 0,
+      "enabled": true,
+      "scope": ["*"],
+      "description": "Read metrics and logs"
+    },
+    "generate_pr": {
+      "tier": 1,
+      "enabled": true,
+      "scope": ["*"],
+      "description": "Generate pull request (draft)"
+    },
+    "update_docs": {
+      "tier": 1,
+      "enabled": true,
+      "scope": ["*"],
+      "description": "Update documentation"
+    },
+    "run_tests": {
+      "tier": 1,
+      "enabled": true,
+      "scope": ["dev", "test"],
+      "description": "Run tests in non-prod environments"
+    },
+    "update_feature_flag": {
+      "tier": 1,
+      "enabled": true,
+      "scope": ["dev", "test"],
+      "description": "Update feature flags in non-prod"
+    },
+    "modify_ci": {
+      "tier": 2,
+      "enabled": false,
+      "scope": ["dev", "staging"],
+      "description": "Modify CI/CD configuration"
+    },
+    "deploy_staging": {
+      "tier": 2,
+      "enabled": false,
+      "scope": ["staging"],
+      "description": "Deploy to staging environment"
+    },
+    "modify_infra": {
+      "tier": 2,
+      "enabled": false,
+      "scope": ["dev", "staging"],
+      "description": "Modify infrastructure as code"
+    },
+    "deploy_production": {
+      "tier": 3,
+      "enabled": false,
+      "scope": ["production"],
+      "description": "Deploy to production"
+    },
+    "write_infra": {
+      "tier": 3,
+      "enabled": false,
+      "scope": ["*"],
+      "description": "Write infrastructure changes"
+    },
+    "modify_iam": {
+      "tier": 3,
+      "enabled": false,
+      "scope": ["*"],
+      "description": "Modify IAM roles and permissions"
+    }
+  },
+  "environments": {
+    "dev": { "tier": 0, "approval_required": false },
+    "test": { "tier": 0, "approval_required": false },
+    "staging": { "tier": 2, "approval_required": true },
+    "production": { "tier": 3, "approval_required": true }
+  },
+  "denylist": [],
+  "approval_roles": {
+    "tier1": ["AI Engineering Steward", "GitHub Maintainer"],
+    "tier2": ["AI Engineering Steward", "Security Council"],
+    "tier3": ["Security Council", "DAO Safe Transaction", "Time Delay Satisfied"]
+  }
+}
