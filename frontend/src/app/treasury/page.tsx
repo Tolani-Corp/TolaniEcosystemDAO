@@ -400,13 +400,28 @@ function BalanceRow({
   );
 }
 
+const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
+
 function ContractLink({ name, address, chainId }: { name: string; address: string; chainId: number }) {
+  const isUnavailable = address.toLowerCase() === ZERO_ADDRESS;
+
+  if (isUnavailable) {
+    return (
+      <div className="flex items-center justify-between rounded-lg border border-gray-800/50 bg-gray-900/30 p-4 opacity-75">
+        <div>
+          <p className="text-sm text-gray-400">{name}</p>
+          <p className="text-sm text-gray-500">Not deployed on this network</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <a
       href={getExplorerLink("address", address, chainId)}
       target="_blank"
       rel="noopener noreferrer"
-      className="flex items-center justify-between p-4 rounded-xl bg-gray-800/30 border border-gray-700/30 hover:border-violet-500/30 transition-colors group"
+      className="group flex items-center justify-between rounded-lg border border-gray-700/30 bg-gray-800/30 p-4 transition-colors hover:border-[#00AFAF]/40"
     >
       <div>
         <p className="text-sm text-gray-400">{name}</p>
@@ -414,7 +429,7 @@ function ContractLink({ name, address, chainId }: { name: string; address: strin
           {address.slice(0, 6)}...{address.slice(-4)}
         </p>
       </div>
-      <ExternalLink className="w-4 h-4 text-gray-500 group-hover:text-violet-400 transition-colors" />
+      <ExternalLink className="w-4 h-4 text-gray-500 transition-colors group-hover:text-cyan-300" />
     </a>
   );
 }

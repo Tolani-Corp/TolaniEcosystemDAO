@@ -3,7 +3,7 @@
 import { ConnectWallet } from "./connect-wallet";
 import Link from "next/link";
 import { Bell, Moon, Network, Search, Sun, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { usePages } from "@/context/pages-context";
 import { useTheme } from "@/components/ThemeProvider";
@@ -15,6 +15,8 @@ export function Header() {
   const { theme, setTheme } = useTheme();
   const { isConnected } = useAccount();
   const chainId = useChainId();
+  const desktopSearchInputRef = useRef<HTMLInputElement>(null);
+  const mobileSearchInputRef = useRef<HTMLInputElement>(null);
   const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [searchFocused, setSearchFocused] = useState(false);
@@ -26,6 +28,35 @@ export function Header() {
     : isConnected
       ? "Wrong network"
       : `${getChainName(DEFAULT_CHAIN_ID)} ready`;
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      const isSearchShortcut = (event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k";
+
+      if (isSearchShortcut) {
+        event.preventDefault();
+        setSearchOpen(true);
+        setSearchFocused(true);
+        window.setTimeout(() => {
+          if (window.innerWidth >= 1024) {
+            desktopSearchInputRef.current?.focus();
+          } else {
+            mobileSearchInputRef.current?.focus();
+          }
+        }, 0);
+      }
+
+      if (event.key === "Escape") {
+        setSearchOpen(false);
+        setSearchFocused(false);
+        desktopSearchInputRef.current?.blur();
+        mobileSearchInputRef.current?.blur();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   return (
     <header className="sticky top-0 z-40 border-b border-gray-800/50 bg-gray-950/80 backdrop-blur-xl">
@@ -66,6 +97,7 @@ export function Header() {
             <div className="hidden items-center gap-2 rounded-lg border border-gray-700/50 bg-gray-800/50 px-4 py-2.5 transition-colors focus-within:border-cyan-500/50 lg:flex">
               <Search className="h-4 w-4 text-gray-400" />
               <input
+                ref={desktopSearchInputRef}
                 type="text"
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
@@ -145,6 +177,7 @@ export function Header() {
           <div className="flex items-center gap-2 rounded-lg border border-gray-700/50 bg-gray-800/50 px-3 py-2.5">
             <Search className="h-4 w-4 text-gray-400" />
             <input
+              ref={mobileSearchInputRef}
               type="text"
               autoFocus
               value={query}

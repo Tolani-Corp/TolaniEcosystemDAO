@@ -128,17 +128,15 @@ export default function MerchantDashboard() {
 
   if (!isConnected) {
     return (
-      <div className="min-h-screen bg-gray-950 text-white flex items-center justify-center p-6">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold mb-3">Tolani Merchant POS</h1>
-          <p className="text-gray-400">Connect your wallet to register or run a checkout terminal.</p>
-        </div>
+      <div className="rounded-lg border border-gray-800/70 bg-gray-900/50 p-8 text-center text-white">
+        <h2 className="text-2xl font-bold">Tolani Merchant POS</h2>
+        <p className="mt-2 text-gray-400">Connect your wallet to register or run a checkout terminal.</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white p-6">
+    <div className="text-white">
       <div className="max-w-4xl mx-auto">
         <div className="mb-8">
           <p className="text-sm text-emerald-300">{pos.chainName}</p>

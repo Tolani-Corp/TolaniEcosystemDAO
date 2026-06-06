@@ -16,17 +16,17 @@ export function NetworkGuard({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-gray-900 border border-yellow-500/50 rounded-2xl p-8 max-w-md w-full text-center">
-        <div className="w-16 h-16 bg-yellow-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-          <AlertTriangle className="w-8 h-8 text-yellow-500" />
+      <div className="w-full max-w-md rounded-lg border border-[#E5C64B]/40 bg-gray-950 p-6 text-center shadow-2xl">
+        <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-lg bg-[#E5C64B]/15">
+          <AlertTriangle className="h-7 w-7 text-[#E5C64B]" />
         </div>
         
-        <h2 className="text-2xl font-bold text-white mb-2">Wrong Network</h2>
+        <h2 className="mb-2 text-2xl font-bold text-white">Unsupported Network</h2>
         
         <p className="text-gray-400 mb-6">
           You&apos;re connected to <span className="text-white font-medium">{getChainName(chainId)}</span>.
           <br />
-          Please switch to a supported network.
+          Switch networks to use DAO actions.
         </p>
 
         <div className="space-y-3">
@@ -34,9 +34,9 @@ export function NetworkGuard({ children }: { children: React.ReactNode }) {
             <button
               key={id}
               onClick={() => switchChain?.({ chainId: id })}
-              className={`w-full py-3 px-4 rounded-xl font-medium transition-all ${
+              className={`w-full rounded-lg px-4 py-3 font-medium transition-all ${
                 id === DEFAULT_CHAIN_ID
-                  ? 'bg-purple-600 hover:bg-purple-700 text-white'
+                  ? 'bg-[#007373] text-white hover:bg-[#008f8f]'
                   : 'bg-gray-800 hover:bg-gray-700 text-gray-300'
               }`}
             >
