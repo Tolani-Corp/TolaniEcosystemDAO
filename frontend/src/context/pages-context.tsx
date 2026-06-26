@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  BadgeCheck,
   BookOpen,
   Coins,
   ClipboardCheck,
@@ -188,6 +189,26 @@ export const DAO_PAGES: DAOPageContext[] = [
     section: "governance",
     nav: true,
     status: "Labs",
+  },
+  {
+    id: "nft-policy",
+    name: "NFT Policy",
+    href: "/nft-policy",
+    icon: BadgeCheck,
+    description: "Manage ecosystem NFT policy, source-of-truth IDs, credential issuance, and mint records.",
+    keywords: [
+      "nft",
+      "credential",
+      "certificate",
+      "badge",
+      "work order",
+      "source of truth",
+      "mint",
+      "policy",
+    ],
+    section: "governance",
+    nav: true,
+    status: "Policy",
   },
   {
     id: "training-base",

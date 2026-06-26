@@ -42,6 +42,29 @@ const daoMetricCategory = v.union(
   v.literal("training")
 );
 const rewardToken = v.union(v.literal("uTUT"), v.literal("TUT"));
+const nftRecordType = v.union(
+  v.literal("training_certificate"),
+  v.literal("work_order"),
+  v.literal("work_deliverable"),
+  v.literal("dao_evidence"),
+  v.literal("steward_badge")
+);
+const nftTokenStandard = v.union(v.literal("ERC721"), v.literal("ERC1155"));
+const nftTransferability = v.union(
+  v.literal("soulbound"),
+  v.literal("restricted"),
+  v.literal("transferable")
+);
+const nftMintStatus = v.union(
+  v.literal("draft"),
+  v.literal("eligible"),
+  v.literal("approved"),
+  v.literal("mint_queued"),
+  v.literal("minted"),
+  v.literal("revoked"),
+  v.literal("superseded"),
+  v.literal("rejected")
+);
 const daoMetricReport = v.object({
   metricId: v.string(),
   label: v.string(),
@@ -109,6 +132,9 @@ export default defineSchema({
     updatedAt: v.number(),
     createdByWallet: v.optional(v.string()),
     claimedByWallet: v.optional(v.string()),
+    nftPolicyId: v.optional(v.string()),
+    nftSourceOfTruthId: v.optional(v.string()),
+    nftMintStatus: v.optional(nftMintStatus),
   })
     .index("by_public_id", ["publicId"])
     .index("by_status", ["status"])
@@ -170,6 +196,9 @@ export default defineSchema({
     packet: sourceDaoEvidencePacket,
     reviewerWallet: v.optional(v.string()),
     reviewNote: v.optional(v.string()),
+    nftPolicyId: v.optional(v.string()),
+    nftSourceOfTruthId: v.optional(v.string()),
+    nftMintStatus: v.optional(nftMintStatus),
     createdAt: v.number(),
     updatedAt: v.number(),
   })
@@ -177,4 +206,40 @@ export default defineSchema({
     .index("by_source_packet", ["sourcePacketId"])
     .index("by_project", ["projectId"])
     .index("by_status", ["status"]),
+
+  nftMintRecords: defineTable({
+    schema: v.literal("dao.dynamic-nft-record.v1"),
+    sourceType: nftRecordType,
+    sourceId: v.string(),
+    sourceOfTruthId: v.string(),
+    policyId: v.string(),
+    policyVersion: v.string(),
+    recordTitle: v.string(),
+    status: nftMintStatus,
+    tokenStandard: nftTokenStandard,
+    transferability: nftTransferability,
+    chainId: v.number(),
+    contractAddress: v.optional(v.string()),
+    tokenId: v.optional(v.string()),
+    txHash: v.optional(v.string()),
+    metadataUri: v.optional(v.string()),
+    metadataHash: v.optional(v.string()),
+    evidenceUri: v.optional(v.string()),
+    evidenceHash: v.optional(v.string()),
+    recipientWallet: v.optional(v.string()),
+    issuerWallet: v.optional(v.string()),
+    reviewerWallet: v.optional(v.string()),
+    proposalId: v.optional(v.string()),
+    revocationReason: v.optional(v.string()),
+    supersededBySourceOfTruthId: v.optional(v.string()),
+    notes: v.optional(v.string()),
+    policySnapshotJson: v.optional(v.string()),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_source", ["sourceType", "sourceId"])
+    .index("by_source_of_truth", ["sourceOfTruthId"])
+    .index("by_policy", ["policyId"])
+    .index("by_status", ["status"])
+    .index("by_recipient", ["recipientWallet"]),
 });
