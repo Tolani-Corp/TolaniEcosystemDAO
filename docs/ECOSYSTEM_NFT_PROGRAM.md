@@ -12,7 +12,7 @@ The executable frontend policy registry is `frontend/src/lib/nft-policy.ts`. The
 - Keep NFTs anchored to existing DAO records instead of creating a second source of truth.
 - Publish only safe public metadata on-chain and keep private evidence in controlled storage.
 - Support revocation and supersession without deleting historical issuance records.
-- Prepare a clean path to a future `TolaniEcosystemNFT` contract on Base.
+- Provide a clean path to the `TolaniEcosystemNFT` credential contract on Base.
 
 ## Source Of Truth IDs
 
@@ -20,7 +20,7 @@ Every NFT must have one durable source-of-truth ID before metadata is pinned or 
 
 | Record Type | Policy ID | Source ID Format | Source System |
 | --- | --- | --- | --- |
-| Training certificate | `tut.training-certificate.nft.v1` | `TUT-CERT-{YYYY}-{SEQ}` | Training rewards, SkillsBuild, verified credential provider |
+| Training certificate | `tut.training-certificate.nft.v1` | `TUT-CERT-{YYYY}-{SEQ}` | Training rewards, SkillsBuild, TCAS credential issue packets, verified credential provider |
 | Work order | `tccg.work-order.nft.v1` | `TCCG-WO-{YYYY}-{SEQ}` | Work board, TCCG operations |
 | Work deliverable | `tccg.work-deliverable.nft.v1` | `TCCG-DELIV-{YYYY}-{SEQ}` | Work deliverable and review records |
 | DAO evidence packet | `dao.evidence-packet.nft.v1` | `DAO-EVID-{YYYY}-{SEQ}` | Tolani Labs to DAO evidence queue |
@@ -75,20 +75,21 @@ Do not treat the deployer wallet as the long-term authority. The smart default i
 
 Practical rule: `Tolani Labs can originate evidence; Tolani DAO controls canonical ecosystem issuance`.
 
-Recommended future contract:
+Credential contract:
 
 ```text
 contracts/ecosystem/TolaniEcosystemNFT.sol
 ```
 
-Recommended contract features:
+Implemented credential contract features:
 
-- `ERC721` issuer contract for typed ecosystem records.
+- ERC-5192-style `ERC721` issuer contract for typed ecosystem records.
 - `AccessControl` roles for issuer, revoker, pauser, and admin.
-- Non-transferable behavior for credentials and evidence.
-- Duplicate prevention by `keccak256(kind, recipient, referenceId, evidenceHash)`.
+- Non-transferable behavior for credentials and evidence; wallet-to-wallet transfers revert.
+- Duplicate prevention by credential ID.
 - On-chain fields limited to token ID, owner, token URI, reference hash, evidence hash, issuer, timestamps, and revocation state.
 - No raw learner data, work files, grades, payroll details, or private evidence on-chain.
+- TCAS lifecycle events: `CredentialIssued`, `CredentialRevoked`, `CredentialRenewed`, `IssuerApproved`, and `IssuerRemoved`.
 
 ## Storage Policy
 
@@ -148,6 +149,7 @@ Public metadata must not include:
 
 5. Mint execution
    - Submit mint transaction from an approved issuer wallet or controlled mint service.
+   - For TCAS training certificates, call `issueCredential` or `issueCredentialWithEvidence`.
    - Record contract address, chain ID, token ID, and transaction hash.
    - Move mint record to `minted`.
 
@@ -183,7 +185,7 @@ The executable readiness evaluator is `evaluateNftMintRailReadiness` in `fronten
 
 | Shortfall | Risk | Mitigation |
 | --- | --- | --- |
-| No NFT issuer contract is deployed yet | UI records could imply mint readiness before on-chain rails exist | Keep mint records in `draft`, `eligible`, or `approved` until contract address and issuer roles are configured |
+| Credential contract not deployed to target chain | UI records could imply mint readiness before on-chain rails exist | Keep mint records in `draft`, `eligible`, or `approved` until contract address and issuer roles are configured |
 | Private data exposure | Token metadata could leak learner, project, payroll, or supplier details | Use hashes and restricted evidence URIs; keep private files in R2/D1 access-controlled storage |
 | Duplicate credential issuance | Same proof could mint multiple tokens | Use source-of-truth ID uniqueness in Convex and duplicate keys in the future contract |
 | False credential claims | Bad evidence could create trusted credentials | Require issuer proof, reviewer wallet, evidence hash, and optional DAO proposal approval |
@@ -200,12 +202,13 @@ Completed in this phase:
 - Added the `/nft-policy` UI surface and navigation entry.
 - Added the `nftMintRecords` Convex table and public query/mutation functions.
 - Added lifecycle states, risk controls, source-of-truth ID generation, and policy review structure.
+- Added `contracts/ecosystem/TolaniEcosystemNFT.sol` as the TCAS non-transferable credential contract.
+- Added Hardhat tests for soulbound transfer rejection, duplicate prevention, role gates, minting, revocation, renewal, and URI behavior.
+- Added `scripts/deployments/deploy-tcas-credentials.js` for Base Sepolia/Base deployment.
 
 Next implementation phase:
 
-- Add `contracts/ecosystem/TolaniEcosystemNFT.sol`.
-- Add Hardhat tests for soulbound transfer rejection, duplicate prevention, role gates, minting, revocation, and URI behavior.
-- Add a deployment script for Base Sepolia first.
+- Deploy `TolaniEcosystemNFT` to Base Sepolia after DAO approval of admin, issuer, and revoker addresses.
 - Add R2 metadata writer and IPFS pinning worker.
 - Add UI actions that create mint records from training completions, work board approvals, accepted deliverables, DAO evidence approvals, and steward badge assignments.
 - Add D1 production index for source-of-truth IDs and metadata hash manifests.

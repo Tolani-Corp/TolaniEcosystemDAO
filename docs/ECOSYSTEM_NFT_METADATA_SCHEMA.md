@@ -37,7 +37,7 @@ NFT metadata must follow this public-safe envelope before it is pinned or submit
     },
     {
       "trait_type": "Transferability",
-      "value": "soulbound"
+      "value": "ERC-5192 soulbound"
     }
   ],
   "revocation": {
@@ -79,7 +79,7 @@ The operational record is stored in `nftMintRecords`.
   "policyVersion": "1.0.0",
   "recordTitle": "Training Certificate NFT",
   "status": "approved",
-  "tokenStandard": "ERC721",
+  "tokenStandard": "ERC5192",
   "transferability": "soulbound",
   "chainId": 8453,
   "metadataUri": "ipfs://metadata-json",
@@ -94,32 +94,30 @@ The operational record is stored in `nftMintRecords`.
 }
 ```
 
-## Future Contract Record
+## TCAS Credential Contract Record
 
-The future `TolaniEcosystemNFT` contract should store only compact public references.
+`contracts/ecosystem/TolaniEcosystemNFT.sol` stores only compact public references. It is the on-chain credential layer for TCAS training certificates and other non-transferable ecosystem credentials.
 
 ```solidity
-struct TokenRecord {
-    uint8 kind;
-    address issuer;
-    string referenceId;
-    string schemaId;
+struct CredentialRecord {
+    bytes32 credentialId;
+    bytes32 credentialType;
     bytes32 evidenceHash;
-    address sourceContract;
-    uint256 sourceId;
+    bytes32 sourceHash;
+    address issuer;
     uint64 issuedAt;
     uint64 expiresAt;
     bool revoked;
 }
 ```
 
-Recommended duplicate key:
+Duplicate prevention:
 
 ```solidity
-bytes32 duplicateKey = keccak256(
-    abi.encode(kind, recipient, referenceId, evidenceHash)
-);
+mapping(bytes32 credentialId => uint256 tokenId)
 ```
+
+The contract implements ERC-5192-style `locked(tokenId)` behavior. Minting is allowed by approved issuers, renewal is allowed by approved issuers, and revocation is allowed by approved revokers. Wallet-to-wallet transfers, sales, marketplace listings, and delegated assignment must fail.
 
 ## Privacy Rules
 

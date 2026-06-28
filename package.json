@@ -24,6 +24,8 @@
     "roles:base": "hardhat run --no-compile scripts/deployments/transfer-to-multisig.js --network base",
     "fund:base": "hardhat run --no-compile scripts/deployments/fund-base-tut.js --network base",
     "staking:deploy:base": "hardhat run --no-compile scripts/deployments/deploy-clean-staking.js --network base",
+    "credentials:deploy:base-sepolia": "hardhat run scripts/deployments/deploy-tcas-credentials.js --network baseSepolia",
+    "credentials:deploy:base": "hardhat run scripts/deployments/deploy-tcas-credentials.js --network base",
     "verify": "hardhat verify"
   },
   "keywords": [

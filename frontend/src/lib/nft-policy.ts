@@ -5,7 +5,7 @@ export type NftRecordType =
   | "dao_evidence"
   | "steward_badge";
 
-export type NftTokenStandard = "ERC721" | "ERC1155";
+export type NftTokenStandard = "ERC721" | "ERC1155" | "ERC5192";
 export type NftTransferability = "soulbound" | "restricted" | "transferable";
 export type NftPrivacyLevel = "public" | "limited" | "private_reference";
 export type NftStorageTarget = "R2" | "IPFS" | "D1" | "Convex";
@@ -262,10 +262,10 @@ export const nftPolicyRegistry: NftDynamicPolicy[] = [
     sourceOfTruthPrefix: "TUT-CERT",
     summary:
       "Non-transferable credential for verified training completions and reward-eligible certifications.",
-    tokenStandard: "ERC721",
+    tokenStandard: "ERC5192",
     transferability: "soulbound",
     defaultChainId: 8453,
-    contractScope: "Tolani credential contract with locked transfer behavior.",
+    contractScope: "contracts/ecosystem/TolaniEcosystemNFT.sol with ERC-5192 locked transfer behavior.",
     issuerRoles: ["TrainingRewards.REWARDER_ROLE", "Training administrator"],
     approverRoles: ["Training reviewer", "DAO evidence reviewer"],
     revocationRoles: ["Training administrator", "DAO governance"],
@@ -304,10 +304,11 @@ export const nftPolicyRegistry: NftDynamicPolicy[] = [
       "Never publish private learner identifiers in token metadata.",
       "Require reviewer approval before reward-linked minting.",
       "Revoke or supersede when an issuer invalidates the credential.",
+      "All wallet-to-wallet transfers must revert; issuer mint, renew, and revoke are the only lifecycle actions.",
     ],
     statusFlow: defaultFlow,
-    onChainFields: ["tokenId", "recipient", "tokenURI", "locked"],
-    offChainFields: ["completionProofUri", "completionProofHash", "reviewerWallet", "rewardAction"],
+    onChainFields: ["tokenId", "recipient", "tokenURI", "locked", "credentialId", "evidenceHash", "expiresAt", "revoked"],
+    offChainFields: ["completionProofUri", "completionProofHash", "reviewerWallet", "rewardAction", "tcasIssuePacketId"],
     proposalRequired: false,
     active: true,
   },
