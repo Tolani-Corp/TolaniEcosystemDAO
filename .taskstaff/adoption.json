@@ -1,0 +1,205 @@
+{
+  "schema": "taskstaff.adoption.v1",
+  "repository": "Tolani-Corp/TolaniEcosystemDAO",
+  "productName": "Tolani Ecosystem DAO",
+  "domain": "governance_treasury",
+  "tier": "tier_1_operational_pilot",
+  "status": "pilot",
+  "evidenceLevel": "repository_reviewed",
+  "reviewedRef": "master@2026-07-30",
+  "reviewedAt": "2026-07-31T01:15:00.000Z",
+  "systemOfRecordFor": [
+    "DAO smart contracts and deployment code",
+    "on-chain proposals, votes, timelock, and execution records",
+    "token and treasury contract state"
+  ],
+  "taskstaffAuthorityFor": [
+    "off-chain proposal review staffing requirements",
+    "technical, legal, treasury, and security reviewer assignments",
+    "execution readiness, conflicts, evidence, and outcome verification",
+    "governance shortfalls and operational gaps"
+  ],
+  "nonAuthoritativeFor": [
+    "on-chain voting power",
+    "wallet signatures",
+    "timelock or treasury execution",
+    "legal determination or fiduciary authority"
+  ],
+  "missions": [
+    {
+      "id": "dao.proposal-to-verified-outcome",
+      "name": "Proposal-to-verified-outcome governance",
+      "objective": "Staff proposal review and execution with independent governance, technical, legal, treasury, and security roles before any on-chain or treasury action, then verify the delivered outcome.",
+      "why": "A valid on-chain transaction does not prove that the proposal was adequately reviewed, safely staffed, executed by the correct authority, or verified against the promised outcome.",
+      "sourceRecords": [
+        "proposal draft",
+        "governance discussion",
+        "technical specification",
+        "legal and compliance review",
+        "treasury impact review",
+        "security review",
+        "vote and quorum result",
+        "timelock record",
+        "execution transaction",
+        "outcome evidence"
+      ],
+      "lifecycle": [
+        "draft",
+        "intake_review",
+        "requirements_approved",
+        "review_team_assigned",
+        "review_active",
+        "ready_for_vote",
+        "voting",
+        "queued",
+        "ready_for_execution",
+        "executed",
+        "outcome_verification",
+        "accepted",
+        "closed"
+      ],
+      "roles": [
+        {
+          "code": "proposal_owner",
+          "title": "Proposal owner",
+          "responsibility": "Define the requested change, rationale, measurable outcome, implementation plan, dependencies, and evidence without self-approving the proposal.",
+          "authorityCodes": ["submit_proposal", "respond_to_review"],
+          "evidenceRequired": ["proposal specification", "outcome criteria", "implementation plan"],
+          "backupRequired": false
+        },
+        {
+          "code": "governance_reviewer",
+          "title": "Governance reviewer",
+          "responsibility": "Verify process, scope, voting requirements, conflicts, member impact, and consistency with approved governance policy.",
+          "authorityCodes": ["approve_governance_review", "return_proposal"],
+          "evidenceRequired": ["governance checklist", "conflict disclosure", "review decision"],
+          "backupRequired": true
+        },
+        {
+          "code": "technical_security_reviewer",
+          "title": "Technical and security reviewer",
+          "responsibility": "Review contract behavior, upgrade path, tests, threat model, deployment parameters, rollback or pause capability, and execution risk independently from implementation.",
+          "authorityCodes": ["approve_technical_review", "approve_security_review", "block_execution_readiness"],
+          "evidenceRequired": ["test results", "security findings", "deployment simulation"],
+          "backupRequired": true
+        },
+        {
+          "code": "treasury_legal_reviewer",
+          "title": "Treasury and legal reviewer",
+          "responsibility": "Review financial exposure, authority, restrictions, conflicts, agreements, and required approvals before vote or execution readiness.",
+          "authorityCodes": ["approve_treasury_review", "approve_legal_review", "escalate_risk"],
+          "evidenceRequired": ["treasury impact", "legal review", "authority record"],
+          "backupRequired": true
+        },
+        {
+          "code": "execution_operator",
+          "title": "Execution operator",
+          "responsibility": "Execute only the approved and queued action through the authorized wallet, Safe, timelock, or role and preserve transaction evidence.",
+          "authorityCodes": ["prepare_execution", "submit_authorized_transaction"],
+          "evidenceRequired": ["approved proposal", "timelock readiness", "transaction receipt"],
+          "backupRequired": true
+        },
+        {
+          "code": "outcome_verifier",
+          "title": "Independent outcome verifier",
+          "responsibility": "Confirm that the executed action produced the approved result, identify residual gaps, and accept, conditionally accept, or reject outcome closure.",
+          "authorityCodes": ["accept_outcome", "require_remediation", "reject_outcome"],
+          "evidenceRequired": ["execution receipt", "post-execution state", "outcome criteria"],
+          "backupRequired": false
+        }
+      ],
+      "controls": [
+        {
+          "code": "proposal_review_separation",
+          "title": "Proposal and reviewer separation",
+          "controlType": "segregation_of_duties",
+          "description": "Prevent the proposal owner or implementer from serving as the sole governance, technical, security, treasury, legal, execution, and outcome authority.",
+          "evidenceTypes": ["role assignments", "conflict disclosures", "review approvals"],
+          "humanAuthorityRequired": true
+        },
+        {
+          "code": "execution_readiness",
+          "title": "On-chain execution readiness gate",
+          "controlType": "release",
+          "description": "Require approved proposal text, completed reviews, vote and quorum evidence, timelock state, exact execution payload, simulation, authorized signer readiness, and incident response posture.",
+          "evidenceTypes": ["vote result", "timelock state", "payload hash", "simulation", "signer readiness"],
+          "humanAuthorityRequired": true
+        },
+        {
+          "code": "post_execution_acceptance",
+          "title": "Post-execution outcome acceptance",
+          "controlType": "acceptance",
+          "description": "Keep the proposal operationally open until the expected on-chain and off-chain outcomes, documentation, communications, and residual risks are independently verified.",
+          "evidenceTypes": ["transaction receipt", "state comparison", "outcome verification", "acceptance record"],
+          "humanAuthorityRequired": true
+        }
+      ],
+      "expectedShortfalls": [
+        "A proposal may lack independent legal, treasury, technical, or security reviewer capacity.",
+        "Execution payload, signer, timelock, or deployment simulation evidence may be incomplete.",
+        "The proposal may define an action without measurable post-execution success criteria."
+      ],
+      "resultingGaps": [
+        "A proposal cannot safely progress to vote or execution readiness.",
+        "Treasury, upgrade, access-control, or governance risk may remain undisclosed.",
+        "An executed transaction may be treated as complete without proving the promised ecosystem outcome."
+      ],
+      "integrationEvents": [
+        "dao.proposal_submitted",
+        "reviewer.assigned",
+        "governance_review.completed",
+        "security_review.completed",
+        "proposal.ready_for_vote",
+        "timelock.ready",
+        "execution.completed",
+        "outcome.verified"
+      ],
+      "prohibitedAutomation": [
+        "No agent may cast a governance vote, sign a wallet transaction, execute a timelock action, move treasury assets, approve legal risk, or accept governance residual risk.",
+        "No successful transaction receipt may substitute for independent outcome verification."
+      ],
+      "kpis": [
+        "proposal evidence completeness",
+        "independent reviewer coverage",
+        "review cycle time",
+        "unresolved conflict count",
+        "execution readiness rejection count",
+        "failed execution count",
+        "execution-to-outcome verification time",
+        "post-execution acceptance rate"
+      ]
+    }
+  ],
+  "marketingProof": {
+    "caseStudyEligible": false,
+    "proofStatement": "Demonstrate that TaskStaff governs the off-chain people, authority, evidence, and QA/QC required around a DAO proposal without controlling votes, wallets, or treasury execution.",
+    "baselineEvidence": [
+      "sample proposal and deployment records",
+      "existing test and governance flow",
+      "baseline review and execution checklist"
+    ],
+    "targetEvidence": [
+      "validated multi-reviewer proposal scenario",
+      "execution-readiness packet",
+      "simulated timelock and transaction evidence",
+      "independent outcome-acceptance record"
+    ],
+    "proofGates": [
+      "Use local or testnet transactions only during the pilot.",
+      "Wallet signing and on-chain execution must remain outside TaskStaff authority.",
+      "Security, legal, treasury, and governance claims require their authorized reviewers."
+    ],
+    "prohibitedClaims": [
+      "Do not claim that TaskStaff controls, secures, audits, or guarantees the DAO, token, treasury, or smart contracts.",
+      "Do not claim fewer governance failures or improved participation without outcome-verified evidence."
+    ]
+  },
+  "implementation": {
+    "mode": "event_adapter",
+    "taskstaffEndpoint": null,
+    "authentication": "not_configured",
+    "dataClassification": "restricted",
+    "realDataAllowed": false,
+    "nextAction": "Validate the manifest and run a local or testnet proposal scenario with independent governance, technical/security, treasury/legal, execution, and outcome-verification roles."
+  }
+}
