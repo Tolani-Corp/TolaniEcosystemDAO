@@ -1,44 +1,50 @@
-name: CI
+name: Protocol CI
 
 on:
+  workflow_dispatch:
   push:
     branches: [master, main]
   pull_request:
     branches: [master, main]
 
+permissions:
+  contents: read
+
+concurrency:
+  group: protocol-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CI: true
+  PNPM_VERSION: "8.15.9"
+
 jobs:
   test:
-    runs-on: ubuntu-latest
-
+    name: Compile and test
+    runs-on: ubuntu-latest-m
+    timeout-minutes: 30
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Setup Node.js
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "20"
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8
-
-      - name: Get pnpm store directory
+      - name: Enable pnpm
         shell: bash
         run: |
-          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
-
-      - name: Setup pnpm cache
-        uses: actions/cache@v4
-        with:
-          path: ${{ env.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
+          corepack enable
+          corepack prepare "pnpm@${PNPM_VERSION}" --activate
+          pnpm --version
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       - name: Compile contracts
         run: pnpm compile
@@ -51,55 +57,63 @@ jobs:
         continue-on-error: true
 
   lint:
-    runs-on: ubuntu-latest
-
+    name: Solidity formatting
+    runs-on: ubuntu-latest-m
+    timeout-minutes: 20
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "20"
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8
+      - name: Enable pnpm
+        shell: bash
+        run: |
+          corepack enable
+          corepack prepare "pnpm@${PNPM_VERSION}" --activate
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       - name: Check Solidity formatting
-        run: npx prettier --check 'contracts/**/*.sol'
+        run: pnpm exec prettier --check 'contracts/**/*.sol'
         continue-on-error: true
 
   security:
-    runs-on: ubuntu-latest
-
+    name: Slither analysis
+    runs-on: ubuntu-latest-m
+    timeout-minutes: 30
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "20"
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8
+      - name: Enable pnpm
+        shell: bash
+        run: |
+          corepack enable
+          corepack prepare "pnpm@${PNPM_VERSION}" --activate
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       - name: Compile contracts
         run: pnpm compile
 
+      - name: Install Slither
+        run: python3 -m pip install --disable-pip-version-check slither-analyzer
+
       - name: Run Slither
-        uses: crytic/slither-action@v0.3.0
+        run: slither . --exclude naming-convention,external-function
         continue-on-error: true
-        with:
-          target: "contracts/"
-          slither-args: "--exclude naming-convention,external-function"
