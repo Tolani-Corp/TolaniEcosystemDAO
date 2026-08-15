@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "migration": "tolani-protocol-monorepo",
+  "status": "repository-creation-pending",
+  "target": {
+    "repository": "Tolani-Corp/tolani-protocol",
+    "visibility": "internal",
+    "defaultBranch": "main",
+    "created": false
+  },
+  "sources": [
+    {
+      "repository": "Tolani-Corp/TolaniEcosystemDAO",
+      "commit": "210ea674811c1e219f3449384b3e058517859e0c",
+      "role": "deployed-dao-and-protocol-source",
+      "defaultBranch": "master"
+    },
+    {
+      "repository": "Tolani-Corp/TolaniToken",
+      "commit": "61753df8949430b5de13b4b381b86e0febad16d6",
+      "role": "historical-engineering-inventory",
+      "defaultBranch": "main"
+    },
+    {
+      "repository": "TolaniCorp/TolaniUtilityToken",
+      "commit": "0cf04e665108eecd8103e3adfabbcf7df33313d9",
+      "role": "public-documentation-and-provenance",
+      "defaultBranch": "main"
+    }
+  ],
+  "canonicalCandidates": [
+    {
+      "sourceRepository": "Tolani-Corp/TolaniEcosystemDAO",
+      "sourcePath": "contracts/token/TUTToken.sol",
+      "disposition": "migrate-and-validate"
+    },
+    {
+      "sourceRepository": "Tolani-Corp/TolaniEcosystemDAO",
+      "sourcePath": "contracts/TUTTokenSmartV2.sol",
+      "disposition": "migrate-and-validate"
+    },
+    {
+      "sourceRepository": "Tolani-Corp/TolaniEcosystemDAO",
+      "sourcePath": "deployments/base-mainnet-ecosystem.json",
+      "disposition": "deployment-provenance"
+    }
+  ],
+  "rewriteRequired": [
+    "uTUTv2",
+    "MerchantRegistryV2",
+    "TerminalRegistry",
+    "PaymentIntentV2",
+    "PaymentRouterV2",
+    "SettlementRouter",
+    "ERC4337PaymasterPolicy",
+    "DeviceAttestationRegistry"
+  ],
+  "archiveRules": {
+    "compileDisabled": true,
+    "excludedFromPackageExports": true,
+    "excludedFromDeploymentTasks": true,
+    "excludedFromProductionBuilds": true,
+    "retainProvenance": true,
+    "retainGitHistory": true
+  },
+  "legacyPaths": [
+    "TolaniCorp/TolaniUtilityToken/contracts/**",
+    "TolaniCorp/TolaniUtilityToken/backend/**",
+    "Tolani-Corp/TolaniToken/contracts/04_TUTToken.sol",
+    "Tolani-Corp/TolaniToken/hardhat/contracts/**"
+  ],
+  "releaseGates": {
+    "repositoryCreated": false,
+    "provenanceLocked": false,
+    "chainReconciliationPassed": false,
+    "canonicalRegistrySigned": false,
+    "compilePassed": false,
+    "unitTestsPassed": false,
+    "invariantTestsPassed": false,
+    "forkTestsPassed": false,
+    "storageLayoutPassed": false,
+    "staticAnalysisPassed": false,
+    "independentSecurityReviewPassed": false,
+    "legacyDefaultBranchCleanupAuthorized": false,
+    "productionDeploymentAuthorized": false,
+    "posActivationAuthorized": false
+  }
+}
