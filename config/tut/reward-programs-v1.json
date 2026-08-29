@@ -1,0 +1,37 @@
+{
+  "schema": "tolani.tut.reward-programs.v1",
+  "version": "1.0.0",
+  "defaultEmissionEnabled": false,
+  "programs": [
+    {
+      "programId": "taskstaff.worker-qualification-evidence.v1",
+      "producerEntityId": "tolani.taskstaff",
+      "repository": "Tolani-Corp/taskstaff.io",
+      "sourceEvent": "worker_intake.qualified",
+      "taesClass": "E0_EVIDENCE_ANCHOR",
+      "evidenceProductionEnabled": true,
+      "rewardEligibilityEnabled": false,
+      "emissionEnabled": false,
+      "perReceiptCapTUT": "0",
+      "epochCapTUT": "0",
+      "walletEligibilityRequired": false,
+      "purpose": "Prove the TaskStaff-to-DAO evidence path without making qualification itself a compensated or token-rewarded event.",
+      "status": "evidence_pilot"
+    },
+    {
+      "programId": "taskstaff.accepted-mission-outcome.v1",
+      "producerEntityId": "tolani.taskstaff",
+      "repository": "Tolani-Corp/taskstaff.io",
+      "sourceEvent": "mission_outcome.accepted",
+      "taesClass": "E0_EVIDENCE_ANCHOR",
+      "evidenceProductionEnabled": false,
+      "rewardEligibilityEnabled": false,
+      "emissionEnabled": false,
+      "perReceiptCapTUT": "0",
+      "epochCapTUT": "0",
+      "walletEligibilityRequired": true,
+      "purpose": "Reserved future reward path for independently accepted mission outcomes after commercial, worker-classification, tax, treasury and legal review.",
+      "status": "reserved_not_active"
+    }
+  ]
+}
