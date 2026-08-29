@@ -21,7 +21,7 @@ env:
 jobs:
   test:
     name: Compile and test
-    runs-on: ubuntu-latest-m
+    runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
       - name: Checkout repository
@@ -58,7 +58,7 @@ jobs:
 
   lint:
     name: Solidity formatting
-    runs-on: ubuntu-latest-m
+    runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
       - name: Checkout repository
@@ -86,7 +86,7 @@ jobs:
 
   security:
     name: Slither analysis
-    runs-on: ubuntu-latest-m
+    runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
       - name: Checkout repository
