@@ -1,0 +1,78 @@
+name: TAES v1 DAO Conformance
+
+on:
+  pull_request:
+    branches: [master]
+    paths:
+      - "contracts/**"
+      - "scripts/**"
+      - "README.md"
+      - "config/taes-v1.json"
+      - "config/taes-canonical-standard.json"
+      - ".github/workflows/taes-v1-conformance.yml"
+  push:
+    branches: [master]
+    paths:
+      - "contracts/**"
+      - "scripts/**"
+      - "README.md"
+      - "config/taes-v1.json"
+      - "config/taes-canonical-standard.json"
+      - ".github/workflows/taes-v1-conformance.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  conformance:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+      - name: Verify exact canonical TAES validator blob
+        shell: bash
+        run: |
+          set -euo pipefail
+          expected="6af515282238ff083f06b11f96cf2812bfde3b5f"
+          observed="$(git hash-object scripts/taes/taes_v1.py)"
+          test "${observed}" = "${expected}" || {
+            echo "TAES validator drift: expected ${expected}, observed ${observed}" >&2
+            exit 2
+          }
+          python - <<'PY'
+          import json
+          pin = json.load(open("config/taes-canonical-standard.json", encoding="utf-8"))
+          assert pin["repository"] == "Tolani-Corp/TolaniCorp-HQ"
+          assert pin["commitSha"] == "4e8d620a33637a5918174840352e5880a1efa610"
+          assert pin["validatorGitBlobSha"] == "6af515282238ff083f06b11f96cf2812bfde3b5f"
+          assert pin["crossRepositoryActionAccessAccepted"] is False
+          PY
+      - name: Validate DAO project boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/taes/taes_v1.py \
+            --project-manifest config/taes-v1.json \
+            --output taes-v1-dao-conformance-receipt.json
+          python - <<'PY'
+          import json
+          manifest = json.load(open("config/taes-v1.json", encoding="utf-8"))
+          assert manifest["enabledAssetClasses"] == ["E0_EVIDENCE_ANCHOR", "TUT_UTILITY_GOVERNANCE"]
+          assert manifest["productionMintingEnabled"] is False
+          receipt = json.load(open("taes-v1-dao-conformance-receipt.json", encoding="utf-8"))
+          assert receipt["projectDecision"]["allowed"] is True
+          assert receipt["projectDecision"]["status"] == "CONFORMANT"
+          assert receipt["productionAuthorityGranted"] is False
+          PY
+          sha256sum taes-v1-dao-conformance-receipt.json > taes-v1-dao-conformance-receipt.json.sha256
+      - name: Upload TAES conformance receipt
+        uses: actions/upload-artifact@v7
+        with:
+          name: taes-v1-dao-conformance-${{ github.run_id }}-${{ github.run_attempt }}
+          retention-days: 30
+          if-no-files-found: error
+          path: |
+            taes-v1-dao-conformance-receipt.json
+            taes-v1-dao-conformance-receipt.json.sha256
