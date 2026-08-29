@@ -39,7 +39,7 @@ jobs:
         shell: bash
         run: |
           corepack enable
-          corepack prepare pnpm@8.15.9 --activate
+          corepack prepare pnpm@10.15.0 --activate
           pnpm --version
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
