@@ -1,0 +1,47 @@
+{
+  "schema": "tolani.tut.legal-classification.v1",
+  "version": "1.0.0",
+  "token": {
+    "name": "Tolani Utility Token",
+    "symbol": "TUT",
+    "taesClass": "TUT_UTILITY_GOVERNANCE",
+    "classificationPosture": "utility_governance_only_pending_counsel_confirmation",
+    "productionMintingEnabled": false
+  },
+  "wyomingDao": {
+    "entityName": "Tolani Ecosystem DAO LLC",
+    "originalId": "2026-002049125",
+    "filedDate": "2026-08-05",
+    "memberManaged": true,
+    "publicIdentifier": "0x90e9d7189D605a824C2481Fe88A1d9A7DDFAF71D",
+    "governor": "0xeEd65936FaEDb315c598F8b1aF796289BCE2B7f6",
+    "sourceStatus": "formation_document_verified",
+    "operatingAgreementReconciled": false
+  },
+  "membershipFirewall": {
+    "tokenPossessionCreatesLegalMembership": false,
+    "tokenVotingPowerCreatesLegalMembership": false,
+    "tokenDelegationCreatesLegalMembership": false,
+    "utilityRewardCreatesLegalMembership": false,
+    "membershipAdmissionAuthority": "operating_agreement_and_formal_legal_admission",
+    "smartContractMaySelfAdmitLegalMembers": false
+  },
+  "investorRights": {
+    "equity": false,
+    "debt": false,
+    "principal": false,
+    "interest": false,
+    "dividend": false,
+    "revenueShare": false,
+    "redemptionRight": false,
+    "subsidiaryOwnership": false,
+    "guaranteedValue": false,
+    "guaranteedAppreciation": false
+  },
+  "legalReview": {
+    "requiredBeforePublicSaleOrLiquidityActivation": true,
+    "requiredBeforeMembershipRightsChange": true,
+    "requiredBeforeInvestorEconomicRightsChange": true,
+    "status": "pending"
+  }
+}
