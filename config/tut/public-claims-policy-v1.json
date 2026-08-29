@@ -1,0 +1,35 @@
+{
+  "schema": "tolani.tut.public-claims-policy.v1",
+  "version": "1.0.0",
+  "defaultDecision": "deny_unapproved_claim",
+  "approvedThemes": [
+    "utility",
+    "service_access",
+    "program_participation",
+    "governance_participation_subject_to_governing_documents",
+    "evidence_based_rewards_when_separately_activated"
+  ],
+  "prohibitedThemes": [
+    "price_appreciation",
+    "guaranteed_value",
+    "guaranteed_return",
+    "passive_income",
+    "dividend",
+    "revenue_share",
+    "interest",
+    "principal_repayment",
+    "equity_or_subsidiary_ownership",
+    "automatic_legal_dao_membership",
+    "investment_or_profit_promise",
+    "guaranteed_liquidity"
+  ],
+  "requiredDisclosures": [
+    "TUT possession does not by itself establish legal membership in Tolani Ecosystem DAO LLC.",
+    "TUT does not by itself grant equity, debt, dividends, revenue share, interest, principal repayment or subsidiary ownership.",
+    "Utility, reward and governance features are available only when the applicable program is separately activated and governed.",
+    "No token price, appreciation, liquidity or return is guaranteed."
+  ],
+  "aiCampaignGenerationEnabled": false,
+  "publicSaleOrLiquidityMarketingEnabled": false,
+  "legalReviewRequiredForPolicyChange": true
+}
