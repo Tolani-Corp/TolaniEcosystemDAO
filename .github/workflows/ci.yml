@@ -33,8 +33,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-          cache: pnpm
-          cache-dependency-path: pnpm-lock.yaml
 
       - name: Enable pnpm
         shell: bash
@@ -68,8 +66,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-          cache: pnpm
-          cache-dependency-path: pnpm-lock.yaml
 
       - name: Enable pnpm
         shell: bash
@@ -96,8 +92,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-          cache: pnpm
-          cache-dependency-path: pnpm-lock.yaml
 
       - name: Enable pnpm
         shell: bash
