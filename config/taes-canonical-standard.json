@@ -1,0 +1,12 @@
+{
+  "schema": "tolani.taes.canonical-standard-pin.v1",
+  "standardVersion": "1.0.0",
+  "repository": "Tolani-Corp/TolaniCorp-HQ",
+  "commitSha": "4e8d620a33637a5918174840352e5880a1efa610",
+  "validatorPath": "platform/taes/v1/taes_v1.py",
+  "validatorGitBlobSha": "6af515282238ff083f06b11f96cf2812bfde3b5f",
+  "distributionMode": "vendored-exact-blob",
+  "localValidatorPath": "scripts/taes/taes_v1.py",
+  "crossRepositoryActionAccessRequired": true,
+  "crossRepositoryActionAccessAccepted": false
+}

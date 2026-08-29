@@ -1,0 +1,20 @@
+{
+  "schema": "tolani.taes.project-conformance.v1",
+  "standardVersion": "1.0.0",
+  "projectId": "tolani-ecosystem-dao",
+  "repository": "Tolani-Corp/TolaniEcosystemDAO",
+  "required": true,
+  "contractPackage": "tolani-taes-v1",
+  "evidenceSystem": {
+    "metadataAuthority": "DAO governance, treasury, deployment records and authoritative chain state",
+    "artifactAuthority": "DAO governed proposal, deployment and evidence artifacts",
+    "rawObjectKeysUserFacing": false
+  },
+  "enabledAssetClasses": [
+    "E0_EVIDENCE_ANCHOR",
+    "TUT_UTILITY_GOVERNANCE"
+  ],
+  "productionMintingEnabled": false,
+  "legalGateRequiredForFinancialAssets": true,
+  "humanGateRequiredForMinting": true
+}
