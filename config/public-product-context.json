@@ -1,30 +1,76 @@
 {
-  "schemaVersion":"1.0.0",
-  "entityId":"tolani.ecosystem.dao",
-  "canonicalRepo":"Tolani-Corp/TolaniEcosystemDAO",
-  "canonicalDomain":null,
-  "classification":"governance_authority",
-  "publicStatus":"G2",
-  "commercialAuthority":"canonical_tut_and_governance_authority",
-  "inheritsProtocolFrom":"Tolani-Corp/TolaniCorp-HQ:tolani.portfolio.commercial_context.v1",
-  "audiences":[{"id":"members_stewards","jobToBeDone":"Understand governance, utility and eligible participation without confusing governance with commercial product claims."}],
-  "offers":[{"id":"governance_education","status":"approved","description":"Governance education, transparency and eligible participation information."}],
-  "valueProposition":"Provide the canonical governance and TUT authority layer for the Tolani ecosystem.",
-  "differentiators":["Canonical TUT authority","Governance source of truth"],
-  "approvedClaims":[],
-  "conditionalClaims":[],
-  "prohibitedClaims":["Investment-return promises","Guaranteed token value","Commercial claims that belong to operating subsidiaries"],
-  "proof":[],
-  "primaryCTA":{"label":"Review governance","route":null,"owner":"Tolani Ecosystem DAO","downstreamState":"governance_education","event":"dao_governance_cta_clicked"},
-  "secondaryCTA":null,
-  "operationalHandoff":{"owner":"Tolani Ecosystem DAO","state":"governance_review","system":null},
-  "pricing":null,
-  "serviceArea":null,
-  "legalAndCompliance":{"rule":"Utility and governance messaging must not be reframed as investment solicitation."},
-  "seo":{},
-  "analytics":{"events":["public_page_viewed","dao_governance_cta_clicked"],"funnel":["visitor","governance_education","eligible_participation"]},
-  "contentOwner":"Tolani Ecosystem DAO",
-  "evidenceOwner":"Tolani Ecosystem DAO",
-  "reviewedAt":"2026-08-19T19:00:00Z",
-  "reviewExpiresAt":"2026-11-19T19:00:00Z"
+  "schemaVersion": "1.1.0",
+  "entityId": "tolani.ecosystem.dao",
+  "canonicalRepo": "Tolani-Corp/TolaniEcosystemDAO",
+  "canonicalDomain": null,
+  "classification": "governance_authority",
+  "publicStatus": "G2",
+  "commercialAuthority": "canonical_tut_and_governance_authority",
+  "inheritsProtocolFrom": "Tolani-Corp/TolaniCorp-HQ:tolani.portfolio.commercial_context.v1",
+  "audiences": [
+    {
+      "id": "members_stewards_participants",
+      "jobToBeDone": "Understand Tolani governance, TUT utility and eligible participation without confusing token possession, voting, delegation or evidence receipts with legal DAO membership, investment rights or automatic token issuance."
+    }
+  ],
+  "offers": [
+    {
+      "id": "governance_utility_education",
+      "status": "approved",
+      "description": "Governance, TUT utility, evidence-authority, treasury-policy and eligible-participation information."
+    }
+  ],
+  "valueProposition": "Provide the canonical governance, TUT utility and evidence-authority layer for the Tolani ecosystem while separating source evidence, legal membership and treasury execution.",
+  "differentiators": [
+    "Canonical Tolani Ecosystem DAO governance authority",
+    "Evidence before reward eligibility",
+    "Legal-membership and investor-rights firewalls",
+    "Human treasury authorization before economic execution"
+  ],
+  "approvedClaims": [],
+  "conditionalClaims": [],
+  "prohibitedClaims": [
+    "Investment-return promises",
+    "Guaranteed token value, price appreciation, return or liquidity",
+    "Dividend, revenue-share, interest, principal, equity or subsidiary-ownership claims",
+    "TUT possession, voting power, delegation or utility rewards automatically create legal DAO membership",
+    "A source-system evidence receipt automatically creates reward eligibility or authorizes TUT issuance",
+    "Any Tolani operating entity may accept TUT before that utility is activated in the authorized utility registry",
+    "Commercial claims that belong to operating subsidiaries"
+  ],
+  "proof": [],
+  "primaryCTA": {
+    "label": "Review governance and utility policy",
+    "route": null,
+    "owner": "Tolani Ecosystem DAO",
+    "downstreamState": "governance_utility_education",
+    "event": "dao_governance_cta_clicked"
+  },
+  "secondaryCTA": null,
+  "operationalHandoff": {
+    "owner": "Tolani Ecosystem DAO",
+    "state": "governance_review",
+    "system": "TUT Utility & Evidence Authority Plane v1. Production minting, token transfer execution, automatic reward distribution and live entity TUT acceptance remain disabled until separately authorized."
+  },
+  "pricing": null,
+  "serviceArea": null,
+  "legalAndCompliance": {
+    "rule": "Utility and governance messaging must not be reframed as investment solicitation. TUT possession, voting, delegation, utility rewards or evidence receipts do not by themselves establish legal DAO membership or token issuance authority."
+  },
+  "seo": {},
+  "analytics": {
+    "events": [
+      "public_page_viewed",
+      "dao_governance_cta_clicked"
+    ],
+    "funnel": [
+      "visitor",
+      "governance_utility_education",
+      "eligible_participation"
+    ]
+  },
+  "contentOwner": "Tolani Ecosystem DAO",
+  "evidenceOwner": "Tolani Ecosystem DAO",
+  "reviewedAt": "2026-08-30T00:35:18Z",
+  "reviewExpiresAt": "2026-11-30T00:35:18Z"
 }
