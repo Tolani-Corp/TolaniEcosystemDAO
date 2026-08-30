@@ -9,6 +9,30 @@ describe("TUTUtilityEvidenceAuthority", function () {
 
   const id = (value) => ethers.id(value);
   const digest = (value) => ethers.keccak256(ethers.toUtf8Bytes(value));
+  const programConfig = (overrides = {}) => ({
+    producerEntityId: id("tolani.taskstaff"),
+    sourceEvent: id("worker_intake.qualified"),
+    perReceiptCap: 0,
+    epochCap: 0,
+    epochStart: 0,
+    epochEnd: 0,
+    complianceRequired: false,
+    evidenceProductionEnabled: true,
+    rewardEligibilityEnabled: false,
+    emissionEnabled: false,
+    policyDigest: digest("default-program-policy"),
+    ...overrides,
+  });
+  const evidenceSubmission = (programId, sourceEvent, overrides = {}) => ({
+    programId,
+    subjectIdHash: digest("subject"),
+    sourceRecordIdHash: digest("source"),
+    evidenceDigest: digest("evidence"),
+    decisionReceiptDigest: digest("decision"),
+    sourceEvent,
+    occurredAt: 1,
+    ...overrides,
+  });
 
   beforeEach(async function () {
     [admin, producer, workerWallet] = await ethers.getSigners();
@@ -35,36 +59,26 @@ describe("TUTUtilityEvidenceAuthority", function () {
     const receiptId = id("receipt-1");
 
     await authority.setEntityAuthority(entityId, producer.address, true, digest("taskstaff-policy"));
-    await authority.setRewardProgram(
-      programId,
-      entityId,
+    await authority.setRewardProgram(programId, programConfig({
+      producerEntityId: entityId,
       sourceEvent,
-      0,
-      0,
-      0,
-      0,
-      false,
-      true,
-      false,
-      false,
-      digest("evidence-pilot-policy")
-    );
+      policyDigest: digest("evidence-pilot-policy"),
+    }));
 
     await authority.connect(producer).submitEvidenceReceipt(
       receiptId,
-      programId,
-      digest("subject-pseudonym"),
-      digest("source-record"),
-      digest("evidence-root"),
-      digest("human-decision-receipt"),
-      sourceEvent,
-      1
+      evidenceSubmission(programId, sourceEvent, {
+        subjectIdHash: digest("subject-pseudonym"),
+        sourceRecordIdHash: digest("source-record"),
+        evidenceDigest: digest("evidence-root"),
+        decisionReceiptDigest: digest("human-decision-receipt"),
+      })
     );
 
     const receipt = await authority.evidenceReceipts(receiptId);
     expect(receipt.producer).to.equal(producer.address);
     expect(receipt.rewardEligible).to.equal(false);
-    expect(receipt.status).to.equal(1n); // Submitted
+    expect(receipt.status).to.equal(1n);
 
     await expect(
       authority.reviewEvidenceReceipt(receiptId, 2, true, digest("review"))
@@ -72,26 +86,21 @@ describe("TUTUtilityEvidenceAuthority", function () {
 
     await authority.reviewEvidenceReceipt(receiptId, 2, false, digest("review-no-reward"));
     const reviewed = await authority.evidenceReceipts(receiptId);
-    expect(reviewed.status).to.equal(2n); // Verified
+    expect(reviewed.status).to.equal(2n);
     expect(reviewed.rewardEligible).to.equal(false);
   });
 
   it("rejects any program that attempts to enable emission in v1", async function () {
     await expect(
-      authority.setRewardProgram(
-        id("program"),
-        id("entity"),
-        id("event"),
-        100,
-        1000,
-        0,
-        0,
-        false,
-        true,
-        true,
-        true,
-        digest("policy")
-      )
+      authority.setRewardProgram(id("program"), programConfig({
+        producerEntityId: id("entity"),
+        sourceEvent: id("event"),
+        perReceiptCap: 100,
+        epochCap: 1000,
+        rewardEligibilityEnabled: true,
+        emissionEnabled: true,
+        policyDigest: digest("policy"),
+      }))
     ).to.be.revertedWithCustomError(authority, "ProgramEmissionMustRemainDisabled");
   });
 
@@ -105,30 +114,21 @@ describe("TUTUtilityEvidenceAuthority", function () {
     const now = BigInt(block.timestamp);
 
     await authority.setEntityAuthority(entityId, producer.address, true, digest("taskstaff-policy"));
-    await authority.setRewardProgram(
-      programId,
-      entityId,
+    await authority.setRewardProgram(programId, programConfig({
+      producerEntityId: entityId,
       sourceEvent,
-      100,
-      500,
-      now - 10n,
-      now + 3600n,
-      true,
-      true,
-      true,
-      false,
-      digest("reward-policy")
-    );
+      perReceiptCap: 100,
+      epochCap: 500,
+      epochStart: now - 10n,
+      epochEnd: now + 3600n,
+      complianceRequired: true,
+      rewardEligibilityEnabled: true,
+      policyDigest: digest("reward-policy"),
+    }));
 
     await authority.connect(producer).submitEvidenceReceipt(
       receiptId,
-      programId,
-      digest("subject"),
-      digest("source"),
-      digest("evidence"),
-      digest("decision"),
-      sourceEvent,
-      Number(now)
+      evidenceSubmission(programId, sourceEvent, { occurredAt: Number(now) })
     );
     await authority.reviewEvidenceReceipt(receiptId, 2, true, digest("review-approved"));
 
@@ -162,7 +162,7 @@ describe("TUTUtilityEvidenceAuthority", function () {
     const reward = await authority.rewardAuthorizations(authorizationId);
     expect(reward.amount).to.equal(80n);
     expect(reward.wallet).to.equal(workerWallet.address);
-    expect(await authority.accountingTotals(0)).to.equal(80n); // Earned
+    expect(await authority.accountingTotals(0)).to.equal(80n);
 
     await expect(
       authority.authorizeReward(
@@ -186,29 +186,19 @@ describe("TUTUtilityEvidenceAuthority", function () {
     const now = BigInt(block.timestamp);
 
     await authority.setEntityAuthority(entityId, producer.address, true, digest("entity"));
-    await authority.setRewardProgram(
-      programId,
-      entityId,
+    await authority.setRewardProgram(programId, programConfig({
+      producerEntityId: entityId,
       sourceEvent,
-      100,
-      500,
-      now - 10n,
-      now + 3600n,
-      false,
-      true,
-      true,
-      false,
-      digest("program")
-    );
+      perReceiptCap: 100,
+      epochCap: 500,
+      epochStart: now - 10n,
+      epochEnd: now + 3600n,
+      rewardEligibilityEnabled: true,
+      policyDigest: digest("program"),
+    }));
     await authority.connect(producer).submitEvidenceReceipt(
       receiptId,
-      programId,
-      digest("subject"),
-      digest("source"),
-      digest("evidence"),
-      digest("decision"),
-      sourceEvent,
-      Number(now)
+      evidenceSubmission(programId, sourceEvent, { occurredAt: Number(now) })
     );
     await authority.reviewEvidenceReceipt(receiptId, 2, true, digest("review"));
     await authority.authorizeReward(
@@ -229,7 +219,7 @@ describe("TUTUtilityEvidenceAuthority", function () {
       digest("external-treasury-receipt")
     );
     expect(await authority.issuedAgainstAuthorization(authorizationId)).to.equal(50n);
-    expect(await authority.accountingTotals(1)).to.equal(50n); // Issued
+    expect(await authority.accountingTotals(1)).to.equal(50n);
 
     await expect(
       authority.recordAccountingEntry(
