@@ -5,6 +5,7 @@ on:
     paths:
       - "contracts/TUTUtilityEvidenceAuthority.sol"
       - "config/tut/**"
+      - "config/public-product-context.json"
       - "schemas/tut-*.json"
       - "fixtures/tut/**"
       - "scripts/validate-tut-utility-authority-v1.mjs"
@@ -16,6 +17,7 @@ on:
     paths:
       - "contracts/TUTUtilityEvidenceAuthority.sol"
       - "config/tut/**"
+      - "config/public-product-context.json"
       - "schemas/tut-*.json"
       - "fixtures/tut/**"
       - "scripts/validate-tut-utility-authority-v1.mjs"
