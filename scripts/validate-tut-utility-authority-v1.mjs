@@ -14,6 +14,7 @@ const legalPath = "config/tut/legal-classification-v1.json";
 const utilitiesPath = "config/tut/authorized-utilities-v1.json";
 const programsPath = "config/tut/reward-programs-v1.json";
 const claimsPath = "config/tut/public-claims-policy-v1.json";
+const publicContextPath = "config/public-product-context.json";
 const evidenceSchemaPath = "schemas/tut-evidence-receipt-v1.schema.json";
 const accountingSchemaPath = "schemas/tut-accounting-entry-v1.schema.json";
 const fixturePath = "fixtures/tut/taskstaff-worker-qualified-receipt.json";
@@ -25,6 +26,7 @@ const legal = json(legalPath);
 const utilities = json(utilitiesPath);
 const programs = json(programsPath);
 const claims = json(claimsPath);
+const publicContext = json(publicContextPath);
 const evidenceSchema = json(evidenceSchemaPath);
 const accountingSchema = json(accountingSchemaPath);
 const fixture = json(fixturePath);
@@ -112,6 +114,30 @@ for (const blocked of [
 fail(claims.aiCampaignGenerationEnabled === false, "AI token campaign generation must remain disabled");
 fail(claims.publicSaleOrLiquidityMarketingEnabled === false, "public sale/liquidity marketing must remain disabled");
 
+fail(publicContext.schemaVersion === "1.1.0", "public product context must use the hardened v1.1 schema version");
+fail(publicContext.entityId === "tolani.ecosystem.dao", "public product context entity drifted");
+fail(publicContext.publicStatus === "G2", "public product context must remain G2");
+fail(publicContext.commercialAuthority === "canonical_tut_and_governance_authority", "public TUT/governance authority drifted");
+const publicProhibitedClaims = publicContext.prohibitedClaims ?? [];
+for (const requiredClaim of [
+  "Investment-return promises",
+  "Guaranteed token value, price appreciation, return or liquidity",
+  "Dividend, revenue-share, interest, principal, equity or subsidiary-ownership claims",
+  "TUT possession, voting power, delegation or utility rewards automatically create legal DAO membership",
+  "A source-system evidence receipt automatically creates reward eligibility or authorizes TUT issuance",
+  "Any Tolani operating entity may accept TUT before that utility is activated in the authorized utility registry",
+]) {
+  fail(publicProhibitedClaims.includes(requiredClaim), `public context firewall missing: ${requiredClaim}`);
+}
+fail(
+  publicContext.operationalHandoff?.system?.includes("Production minting, token transfer execution, automatic reward distribution and live entity TUT acceptance remain disabled") === true,
+  "public operational handoff must disclose disabled TUT execution authorities"
+);
+fail(
+  publicContext.legalAndCompliance?.rule?.includes("do not by themselves establish legal DAO membership or token issuance authority") === true,
+  "public legal/compliance rule must preserve membership and issuance firewalls"
+);
+
 fail(evidenceSchema.additionalProperties === false, "evidence receipt must reject unknown fields");
 for (const required of [
   "receiptId",
@@ -162,7 +188,19 @@ if (failures.length) {
   process.exit(1);
 }
 
-const inputs = [planePath, legalPath, utilitiesPath, programsPath, claimsPath, evidenceSchemaPath, accountingSchemaPath, fixturePath, contractPath, taesPath];
+const inputs = [
+  planePath,
+  legalPath,
+  utilitiesPath,
+  programsPath,
+  claimsPath,
+  publicContextPath,
+  evidenceSchemaPath,
+  accountingSchemaPath,
+  fixturePath,
+  contractPath,
+  taesPath,
+];
 const receipt = {
   schema: "tolani.tut.utility-evidence-authority-validation-receipt.v1",
   valid: true,
@@ -172,6 +210,7 @@ const receipt = {
   taskstaffEvidenceProducer: true,
   taskstaffRewardEligibility: false,
   taskstaffEmissionEnabled: false,
+  publicContextAuthorityBound: true,
   inputs: Object.fromEntries(inputs.map((path) => [path, `sha256:${sha256(read(path))}`])),
 };
 writeFileSync("tut-utility-authority-v1-validation-receipt.json", `${JSON.stringify(receipt, null, 2)}\n`);
