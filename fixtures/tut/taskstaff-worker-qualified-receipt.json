@@ -1,0 +1,18 @@
+{
+  "schema": "tolani.tut.evidence-receipt.v1",
+  "receiptId": "taskstaff-worker-qualified-fixture-0001",
+  "producerEntityId": "tolani.taskstaff",
+  "sourceSystem": "TaskStaff Worker Intake Operations",
+  "sourceEvent": "worker_intake.qualified",
+  "sourceRecordIdHash": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+  "subjectIdHash": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+  "evidenceDigestSha256": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+  "decisionAuthorityType": "HUMAN",
+  "decisionReceiptDigestSha256": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+  "occurredAt": "2026-08-29T22:28:00Z",
+  "recordedAt": "2026-08-29T22:28:01Z",
+  "environment": "staging",
+  "rewardProgramId": "taskstaff.worker-qualification-evidence.v1",
+  "rewardEligible": false,
+  "metadataDigestSha256": "sha256:5555555555555555555555555555555555555555555555555555555555555555"
+}

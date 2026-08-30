@@ -1,0 +1,72 @@
+name: TUT Utility & Evidence Authority v1
+
+on:
+  pull_request:
+    paths:
+      - "contracts/TUTUtilityEvidenceAuthority.sol"
+      - "config/tut/**"
+      - "schemas/tut-*.json"
+      - "fixtures/tut/**"
+      - "scripts/validate-tut-utility-authority-v1.mjs"
+      - "test/TUTUtilityEvidenceAuthority.test.js"
+      - "config/taes-v1.json"
+      - ".github/workflows/tut-utility-authority-v1.yml"
+  push:
+    branches: [master]
+    paths:
+      - "contracts/TUTUtilityEvidenceAuthority.sol"
+      - "config/tut/**"
+      - "schemas/tut-*.json"
+      - "fixtures/tut/**"
+      - "scripts/validate-tut-utility-authority-v1.mjs"
+      - "test/TUTUtilityEvidenceAuthority.test.js"
+      - "config/taes-v1.json"
+      - ".github/workflows/tut-utility-authority-v1.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  authority-plane:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "20"
+      - name: Activate pinned pnpm
+        shell: bash
+        run: |
+          corepack enable
+          corepack prepare pnpm@10.15.0 --activate
+          pnpm --version
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Validate TAES dependency
+        run: |
+          python3 scripts/taes/taes_v1.py \
+            --project-manifest config/taes-v1.json \
+            --output taes-v1-tut-authority-receipt.json
+      - name: Validate TUT authority registries and claims firewall
+        run: node scripts/validate-tut-utility-authority-v1.mjs
+      - name: Compile contracts
+        run: pnpm compile
+      - name: Run TUT authority tests
+        run: pnpm exec hardhat test test/TUTUtilityEvidenceAuthority.test.js
+      - name: Hash acceptance receipts
+        shell: bash
+        run: |
+          sha256sum taes-v1-tut-authority-receipt.json > taes-v1-tut-authority-receipt.json.sha256
+          sha256sum tut-utility-authority-v1-validation-receipt.json > tut-utility-authority-v1-validation-receipt.json.sha256
+      - name: Upload authority receipts
+        uses: actions/upload-artifact@v7
+        with:
+          name: tut-utility-authority-v1-${{ github.run_id }}-${{ github.run_attempt }}
+          retention-days: 30
+          if-no-files-found: error
+          path: |
+            taes-v1-tut-authority-receipt.json
+            taes-v1-tut-authority-receipt.json.sha256
+            tut-utility-authority-v1-validation-receipt.json
+            tut-utility-authority-v1-validation-receipt.json.sha256

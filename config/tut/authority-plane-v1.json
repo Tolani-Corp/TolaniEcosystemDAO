@@ -1,0 +1,44 @@
+{
+  "schema": "tolani.tut.utility-evidence-authority-plane.v1",
+  "version": "1.0.0",
+  "repository": "Tolani-Corp/TolaniEcosystemDAO",
+  "taesDependency": {
+    "manifest": "config/taes-v1.json",
+    "requiredClasses": ["E0_EVIDENCE_ANCHOR", "TUT_UTILITY_GOVERNANCE"],
+    "productionMintingEnabled": false
+  },
+  "registries": {
+    "legalClassification": "config/tut/legal-classification-v1.json",
+    "authorizedUtilities": "config/tut/authorized-utilities-v1.json",
+    "rewardPrograms": "config/tut/reward-programs-v1.json",
+    "publicClaims": "config/tut/public-claims-policy-v1.json"
+  },
+  "schemas": {
+    "evidenceReceipt": "schemas/tut-evidence-receipt-v1.schema.json",
+    "accountingEntry": "schemas/tut-accounting-entry-v1.schema.json"
+  },
+  "contract": "contracts/TUTUtilityEvidenceAuthority.sol",
+  "productionAuthority": {
+    "mint": false,
+    "transfer": false,
+    "treasuryExecution": false,
+    "entityDirectMint": false,
+    "agentDirectMint": false,
+    "automaticRewardDistribution": false
+  },
+  "requiredHumanAuthorities": [
+    "DAO or treasury policy authority",
+    "evidence review authority",
+    "compliance authority when wallet screening is required",
+    "accounting/reconciliation authority"
+  ],
+  "firstEvidenceProducer": {
+    "entityId": "tolani.taskstaff",
+    "repository": "Tolani-Corp/taskstaff.io",
+    "programId": "taskstaff.worker-qualification-evidence.v1",
+    "sourceEvent": "worker_intake.qualified",
+    "rewardEligible": false,
+    "emissionEnabled": false
+  },
+  "accountingKinds": ["EARNED", "ISSUED", "REDEEMED", "EXPIRED", "BURNED", "TREASURY_HELD"]
+}

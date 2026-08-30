@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.tolani.dev/tut/accounting-entry-v1.schema.json",
+  "title": "TUT Accounting Entry v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "entryId",
+    "kind",
+    "amountTUT",
+    "referenceId",
+    "externalReceiptDigestSha256",
+    "recordedAt",
+    "authority"
+  ],
+  "properties": {
+    "schema": { "const": "tolani.tut.accounting-entry.v1" },
+    "entryId": { "type": "string", "minLength": 16, "maxLength": 160 },
+    "kind": { "enum": ["EARNED", "ISSUED", "REDEEMED", "EXPIRED", "BURNED", "TREASURY_HELD"] },
+    "amountTUT": { "type": "string", "pattern": "^[0-9]+(?:\\.[0-9]{1,18})?$" },
+    "referenceId": { "type": "string", "minLength": 3, "maxLength": 160 },
+    "walletAddress": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+    "entityId": { "type": "string", "pattern": "^tolani\\.[a-z0-9._-]+$" },
+    "externalReceiptDigestSha256": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "recordedAt": { "type": "string", "format": "date-time" },
+    "authority": { "enum": ["TREASURY", "ACCOUNTING", "RECONCILIATION"] },
+    "noteDigestSha256": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" }
+  }
+}

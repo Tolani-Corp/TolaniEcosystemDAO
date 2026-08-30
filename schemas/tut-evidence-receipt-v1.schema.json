@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.tolani.dev/tut/evidence-receipt-v1.schema.json",
+  "title": "TUT Evidence Receipt v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "receiptId",
+    "producerEntityId",
+    "sourceSystem",
+    "sourceEvent",
+    "sourceRecordIdHash",
+    "subjectIdHash",
+    "evidenceDigestSha256",
+    "decisionAuthorityType",
+    "decisionReceiptDigestSha256",
+    "occurredAt",
+    "recordedAt",
+    "environment",
+    "rewardProgramId",
+    "rewardEligible"
+  ],
+  "properties": {
+    "schema": { "const": "tolani.tut.evidence-receipt.v1" },
+    "receiptId": { "type": "string", "minLength": 16, "maxLength": 160 },
+    "producerEntityId": { "type": "string", "pattern": "^tolani\\.[a-z0-9._-]+$" },
+    "sourceSystem": { "type": "string", "minLength": 3, "maxLength": 160 },
+    "sourceEvent": { "type": "string", "pattern": "^[a-z0-9._-]+$" },
+    "sourceRecordIdHash": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "subjectIdHash": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "evidenceDigestSha256": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "decisionAuthorityType": { "enum": ["HUMAN", "AUTHORITATIVE_SYSTEM", "INDEPENDENT"] },
+    "decisionReceiptDigestSha256": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "occurredAt": { "type": "string", "format": "date-time" },
+    "recordedAt": { "type": "string", "format": "date-time" },
+    "environment": { "enum": ["development", "staging", "production"] },
+    "rewardProgramId": { "type": "string", "minLength": 3, "maxLength": 160 },
+    "rewardEligible": { "type": "boolean" },
+    "metadataDigestSha256": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" }
+  }
+}

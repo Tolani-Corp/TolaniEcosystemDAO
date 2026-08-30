@@ -1,0 +1,37 @@
+{
+  "schema": "tolani.tut.authorized-utilities.v1",
+  "version": "1.0.0",
+  "defaultAcceptanceEnabled": false,
+  "utilities": [
+    {
+      "utilityId": "taskstaff.service-credit.v1",
+      "entityId": "tolani.taskstaff",
+      "repository": "Tolani-Corp/taskstaff.io",
+      "useCase": "future_service_access_or_fee_credit",
+      "acceptanceEnabled": false,
+      "status": "staged_requires_commercial_legal_and_treasury_activation",
+      "cashEquivalentRepresentationAllowed": false,
+      "transferOrExchangeServiceAllowed": false
+    },
+    {
+      "utilityId": "tolani-labs.learning-access.v1",
+      "entityId": "tolani.labs",
+      "repository": "Tolani-Corp/TolaniLabs",
+      "useCase": "future_learning_access_or_program_credit",
+      "acceptanceEnabled": false,
+      "status": "staged_requires_program_and_treasury_activation",
+      "cashEquivalentRepresentationAllowed": false,
+      "transferOrExchangeServiceAllowed": false
+    },
+    {
+      "utilityId": "tccg.workforce-program.v1",
+      "entityId": "tolani.tccg",
+      "repository": "Tolani-Corp/TCCG.work",
+      "useCase": "future_workforce_training_or_program_credit",
+      "acceptanceEnabled": false,
+      "status": "staged_requires_program_and_treasury_activation",
+      "cashEquivalentRepresentationAllowed": false,
+      "transferOrExchangeServiceAllowed": false
+    }
+  ]
+}
