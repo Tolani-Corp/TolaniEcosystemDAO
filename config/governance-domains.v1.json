@@ -1,0 +1,71 @@
+{
+  "schema": "tolani.governance-domains.v1",
+  "version": "1.0.0",
+  "status": "SPECIFICATION",
+  "effectiveIntent": "Separate public-benefit governance from enterprise/corporate-support governance without transferring or activating treasury authority.",
+  "domains": {
+    "TOLANI_ECOSYSTEM_DAO": {
+      "legalEntity": "Tolani Ecosystem DAO, LLC",
+      "role": "enterprise-corporate-support-dao",
+      "authorityScope": [
+        "enterprise-protocol-governance",
+        "tut-utility-standards",
+        "enterprise-role-management",
+        "enterprise-treasury-governance",
+        "ecosystem-partner-registry",
+        "authorized-ecosystem-operator-registry",
+        "cross-company-infrastructure-coordination"
+      ],
+      "prohibitedAuthority": [
+        "foundation-restricted-donations",
+        "foundation-unrestricted-assets",
+        "foundation-community-treasury",
+        "foundation-employment",
+        "foundation-safeguarding",
+        "foundation-legal-or-tax-filings",
+        "foundation-charitable-program-control"
+      ]
+    },
+    "TOLANI_FOUNDATION_COMMUNITY_DAO": {
+      "role": "foundation-public-benefit-community-governance-domain",
+      "legalWrapper": "not-created-by-this-repository",
+      "authoritySource": "The Tolani Foundation governing documents and delegated authority policy",
+      "authorityScope": [
+        "community-signals",
+        "foundation-loe-priority-signaling",
+        "eligible-community-proposals",
+        "open-community-treasury-allocation-within-delegated-policy",
+        "community-grant-rounds-within-delegated-policy",
+        "working-group-formation",
+        "public-impact-review"
+      ],
+      "reservedToFoundationInstitution": [
+        "restricted-donation-enforcement",
+        "employment",
+        "safeguarding",
+        "legal-and-tax",
+        "privacy-and-protected-data",
+        "material-contracting-outside-delegated-thresholds",
+        "related-party-transaction-approval",
+        "credential-issuance-policy",
+        "emergency-risk-controls",
+        "dissolution"
+      ]
+    }
+  },
+  "crossDomainPolicy": {
+    "authorityInheritance": false,
+    "treasuryCommingling": false,
+    "directCrossDomainExecution": false,
+    "decisionReceiptRequiredForExecution": true,
+    "relatedPartyReviewRequiredForEconomicTransfers": true,
+    "sharedInfrastructureDoesNotCreateSharedAuthority": true,
+    "sharedTokenUtilityDoesNotCreateSharedGovernance": true
+  },
+  "activation": {
+    "moneyMovingEnabled": false,
+    "productionExecutionEnabled": false,
+    "newSmartContractAuthorityEnabled": false,
+    "migrationMode": "SPECIFICATION_TO_SHADOW"
+  }
+}
