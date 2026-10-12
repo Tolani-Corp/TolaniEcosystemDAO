@@ -1,0 +1,52 @@
+{
+  "schema": "tolani.tut.classification-invariants.v1",
+  "version": "1.0.0",
+  "status": "fail-closed",
+  "asset": {
+    "symbol": "TUT",
+    "name": "Tolani Utility Token",
+    "classification": "UTILITY_ACCESS_PARTICIPATION_ASSET"
+  },
+  "affirmativeClassification": {
+    "utility": true,
+    "access": true,
+    "participation": true
+  },
+  "prohibitedCharacterizations": {
+    "tolaniCorpStock": true,
+    "foundationOwnership": true,
+    "privateFundInterest": true,
+    "spvEquity": true,
+    "automaticRevenueShare": true,
+    "guaranteedAppreciation": true,
+    "debt": true
+  },
+  "hardInvariants": {
+    "TUT_IS_UTILITY_ACCESS_PARTICIPATION_ASSET": true,
+    "TUT_IS_NOT_TOLANI_CORP_STOCK": true,
+    "TUT_IS_NOT_FOUNDATION_OWNERSHIP": true,
+    "TUT_IS_NOT_PRIVATE_FUND_INTEREST": true,
+    "TUT_IS_NOT_SPV_EQUITY": true,
+    "TUT_IS_NOT_AUTOMATIC_REVENUE_SHARE": true,
+    "TUT_HAS_NO_GUARANTEED_APPRECIATION": true,
+    "TUT_IS_NOT_DEBT": true
+  },
+  "authorityBoundary": {
+    "tokenBalanceCreatesCorporateOwnership": false,
+    "tokenBalanceCreatesFoundationOwnership": false,
+    "tokenBalanceCreatesFundOwnership": false,
+    "tokenBalanceCreatesSpvOwnership": false,
+    "tokenBalanceCreatesRevenueEntitlement": false,
+    "tokenBalanceCreatesRepaymentClaim": false,
+    "tokenBalanceCreatesGuaranteedReturn": false,
+    "tokenBalanceCreatesLegalMembership": false
+  },
+  "mutationPolicy": {
+    "automaticReclassificationAllowed": false,
+    "daoVoteMayReclassifyAsset": false,
+    "agentMayReclassifyAsset": false,
+    "z4MayReclassifyAsset": false,
+    "deboMayReclassifyWithoutHumanLegalAuthority": false,
+    "humanLegalReviewRequired": true
+  }
+}

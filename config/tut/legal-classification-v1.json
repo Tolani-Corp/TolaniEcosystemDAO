@@ -6,7 +6,8 @@
     "symbol": "TUT",
     "taesClass": "TUT_UTILITY_GOVERNANCE",
     "classificationPosture": "utility_governance_only_pending_counsel_confirmation",
-    "productionMintingEnabled": false
+    "productionMintingEnabled": false,
+    "classificationInvariant": "UTILITY_ACCESS_PARTICIPATION_ASSET"
   },
   "wyomingDao": {
     "entityName": "Tolani Ecosystem DAO LLC",
@@ -36,7 +37,11 @@
     "redemptionRight": false,
     "subsidiaryOwnership": false,
     "guaranteedValue": false,
-    "guaranteedAppreciation": false
+    "guaranteedAppreciation": false,
+    "foundationOwnership": false,
+    "privateFundInterest": false,
+    "spvEquity": false,
+    "automaticRevenueShare": false
   },
   "legalReview": {
     "requiredBeforePublicSaleOrLiquidityActivation": true,

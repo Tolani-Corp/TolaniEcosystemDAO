@@ -4,14 +4,18 @@
   "repository": "Tolani-Corp/TolaniEcosystemDAO",
   "taesDependency": {
     "manifest": "config/taes-v1.json",
-    "requiredClasses": ["E0_EVIDENCE_ANCHOR", "TUT_UTILITY_GOVERNANCE"],
+    "requiredClasses": [
+      "E0_EVIDENCE_ANCHOR",
+      "TUT_UTILITY_GOVERNANCE"
+    ],
     "productionMintingEnabled": false
   },
   "registries": {
     "legalClassification": "config/tut/legal-classification-v1.json",
     "authorizedUtilities": "config/tut/authorized-utilities-v1.json",
     "rewardPrograms": "config/tut/reward-programs-v1.json",
-    "publicClaims": "config/tut/public-claims-policy-v1.json"
+    "publicClaims": "config/tut/public-claims-policy-v1.json",
+    "classificationInvariants": "config/tut/classification-invariants-v1.json"
   },
   "schemas": {
     "evidenceReceipt": "schemas/tut-evidence-receipt-v1.schema.json",
@@ -40,5 +44,12 @@
     "rewardEligible": false,
     "emissionEnabled": false
   },
-  "accountingKinds": ["EARNED", "ISSUED", "REDEEMED", "EXPIRED", "BURNED", "TREASURY_HELD"]
+  "accountingKinds": [
+    "EARNED",
+    "ISSUED",
+    "REDEEMED",
+    "EXPIRED",
+    "BURNED",
+    "TREASURY_HELD"
+  ]
 }
