@@ -1,0 +1,22 @@
+name: DAO Web3 Public Evidence V1 (read-only)
+on:
+  pull_request:
+    paths:
+      - "config/web3-gateway-evidence-adoption-v1.json"
+      - "scripts/verify-web3-public-evidence-v1.cjs"
+      - "test/web3-public-evidence-v1.test.cjs"
+      - ".github/workflows/dao-web3-public-evidence-v1.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: node --test test/web3-public-evidence-v1.test.cjs
+      - run: node --check scripts/verify-web3-public-evidence-v1.cjs
