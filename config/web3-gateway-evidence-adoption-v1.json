@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "tolani.dao-web3-evidence-adoption.v1",
+  "serviceContract": "tolani.web3-gateway-fabric.v1",
+  "producerRepository": "Tolani-Corp/TolaniLabs",
+  "consumerRepository": "Tolani-Corp/TolaniEcosystemDAO",
+  "status": "CANDIDATE",
+  "productionEnabled": false,
+  "allowedPurpose": "read-only-verification-of-approved-public-dao-evidence",
+  "evidenceClasses": ["PUBLIC_APPROVED"],
+  "requiredReceiptSchema": "tolani.web3-evidence-observation.v1",
+  "requiredTruthState": "OBSERVED",
+  "z4Qualification": "PENDING",
+  "legalMembershipInferredFromTokens": false,
+  "tokenMintingEnabled": false,
+  "transferEnabled": false,
+  "treasuryExecutionEnabled": false,
+  "daoProposalExecutionEnabled": false,
+  "automaticPublicationEnabled": false,
+  "authoritativeIssuanceEnabled": false,
+  "canonicalSourceOfTruth": "DAO source records and approved operating agreement, not IPFS metadata",
+  "reviewOwners": ["DAO governance", "DEBO authority", "Z4 independent evidence"],
+  "notes": "This candidate verifies cryptographic artifact bytes locally; it neither provisions an IPFS gateway nor signs or executes transactions."
+}
